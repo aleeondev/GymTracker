@@ -34,5 +34,5 @@ formulario.addEventListener("submit", async function (event) {
     mensaje.textContent = "Inicio de sesión correcto.";
     mensaje.classList.add("is-success");
 
-    window.location.href = "/";
+    window.location.href = "/dashboard";
 });

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Gym Tracker</title>
+    <link rel="icon" type="image/svg+xml" th:href="@{/img/favicon.svg}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">  
+</head>
+<body class="dashboard-page">
+    <header class="dashboard-header">
+        <a th:href="@{/dashboard}" class="dashboard-brand">Gym Tracker</a>
+        <button id="cerrarSesion" class="btn-logout" type="button">Cerrar sesión</button>
+    </header>
+    <main class="dashboard-main">
+        <section class="dashboard-welcome">
+            <p class="dashboard-eyebrow">MI ESPACIO PERSONAL</p>
+            <h1 id="saludo">Cargando tu espacio...</h1>
+            <p class="dashboard-description">Tu entrenamiento. Bajo control.</p>
+        </section>
+        <section class="dashboard-section">
+            <div class="section-heading">
+                <div>
+                    <p class="dashboard-eyebrow">MI ACTIVIDAD</p>
+                    <h2>Todo empieza aquí</h2>
+                </div>
+            </div>
+            <div class="dashboard-grid">
+                <a th:href="@{/rutinas}" class="dashboard-card">
+                    <span class="dashboard-card-icon">01</span>
+                    <h3>Mis rutinas</h3>
+                    <p>Organiza tus entrenamientos y ejercicios.</p>
+                    <span class="dashboard-card-link">Ver mis rutinas →</span>
+                </a>
+                <a th:href="@{/ejercicios}" class="dashboard-card">
+                    <span class="dashboard-card-icon">02</span>
+                    <h3>Mis ejercicios</h3>
+                    <p>Explora nuestra biblioteca de ejercicios.</p>
+                    <span class="dashboard-card-link">Ver mis ejercicios →</span>
+                </a>
+                <a th:href="@{/entrenamiento}" class="dashboard-card">
+                    <span class="dashboard-card-icon">03</span>
+                    <h3>Mi entrenamiento</h3>
+                    <p>Accede a tu espacio de entrenamiento.</p>
+                    <span class="dashboard-card-link">Entrenar →</span>
+                </a>
+                <a th:href="@{/historial}" class="dashboard-card">
+                    <span class="dashboard-card-icon">04</span>
+                    <h3>Mi historial</h3>
+                    <p>Consulta tu actividad y sigue tu evolución.</p>
+                    <span class="dashboard-card-link">Ver historial →</span>
+                </a>
+            </div>
+        </section>
+        <p id="mensajeDashboard" class="dashboard-message" role="status" aria-live="polite"></p>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script th:src="@{/js/supabase.js}"></script>
+    <script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

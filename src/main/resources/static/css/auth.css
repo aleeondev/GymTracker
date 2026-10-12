@@ -165,21 +165,19 @@
     margin-top: 25px;
 }
 
-/* Campo de contraseña con botón de mostrar/ocultar.
-   En vez de "position: absolute" (frágil: depende de que el ancestro
-   correcto tenga position:relative, y se puede romper con cualquier
-   cambio en la cascada), el input y el botón son una fila flex: el
-   contenedor lleva el borde/fondo del campo, y el input pierde los suyos.
-   Así el botón SIEMPRE queda a la derecha, pase lo que pase alrededor. */
-.password-field {
-    display: flex;
-    align-items: stretch;
-    width: 100%;
+/* CAMPO CONTRASEÑA */
 
+.password-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 48px;
+    box-sizing: border-box;
     background-color: rgba(255, 255, 255, 0.75);
     border: 1px solid #dddddd;
     border-radius: 9px;
-
+    overflow: hidden;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -189,51 +187,42 @@
 }
 
 .password-field input {
-    flex: 1 1 0%;
-    min-width: 0;
-    width: auto;
-
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 0 45px 0 14px;
+    margin: 0;
     background: transparent;
     border: none;
     border-radius: 0;
-}
-
-.password-field input:focus {
-    box-shadow: none;
+    outline: none;
 }
 
 .toggle-password {
-    flex: 0 0 auto;
-
-    display: inline-flex;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    
+    display: flex;
     align-items: center;
     justify-content: center;
 
     width: 44px;
+    height: 100%;
     padding: 0;
+    margin: 0;
 
-    background: none;
+    background: transparent;
     border: none;
-
-    color: var(--color-texto-secundario);
     cursor: pointer;
-
-    transition: color 0.2s;
-}
-
-.toggle-password:hover {
-    color: var(--color-principal);
-}
-
-.toggle-password:focus-visible {
-    outline: 2px solid var(--color-principal);
-    outline-offset: -2px;
+    color: var(--color-texto-secundario);
 }
 
 .toggle-password svg {
-    display: block;
     width: 20px;
     height: 20px;
+    display: block;
 }
 
 .toggle-password .icon-eye-off {
