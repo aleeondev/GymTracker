@@ -1,0 +1,301 @@
+/* ==========================================================
+   AUTH — Páginas de login y registro
+   Estilos exclusivos de estas dos vistas. Todo lo genérico
+   (botones, inputs, variables de color) sigue viviendo en
+   styles.css; aquí solo va lo que las hace únicas.
+========================================================== */
+
+/* =========================
+   FONDO
+========================= */
+
+.auth-page {
+    /* La regla global "main { max-width:1200px; margin:0 auto; }" de styles.css
+       también afecta a este <main>. Sin este reset, el fondo se queda
+       encogido en una caja de 1200px centrada y deja bandas en blanco
+       a los lados en pantallas anchas. */
+    max-width: none;
+    width: 100%;
+    margin: 0;
+
+    position: relative;
+    overflow: hidden;
+
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+
+    background: linear-gradient(160deg, #fff6f8 0%, #fdf0f3 45%, #f9e3e8 100%);
+}
+
+/* Manchas de color difuminadas flotando de fondo: dan el aire "glass".
+   Se posicionan en % (no en px fijos) y son grandes a propósito para que
+   parte de ellas quede SIEMPRE detrás de la tarjeta central, sea cual
+   sea el ancho de la pantalla — si no, el blur no se llega a notar. */
+.auth-page::before,
+.auth-page::after {
+    content: "";
+
+    position: absolute;
+    z-index: 0;
+
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.6;
+
+    animation: auth-float 16s ease-in-out infinite;
+}
+
+.auth-page::before {
+    width: 55vw;
+    height: 55vw;
+    max-width: 650px;
+    max-height: 650px;
+    top: -10%;
+    left: -5%;
+
+    background: var(--color-principal);
+}
+
+.auth-page::after {
+    width: 50vw;
+    height: 50vw;
+    max-width: 600px;
+    max-height: 600px;
+    right: -5%;
+    bottom: -12%;
+
+    background: #ff9a76;
+    animation-delay: -8s;
+}
+
+@keyframes auth-float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%      { transform: translate(30px, -25px) scale(1.08); }
+}
+
+/* =========================
+   TARJETA (GLASSMORPHISM)
+========================= */
+
+.auth-card {
+    position: relative;
+    z-index: 1;
+
+    width: 100%;
+    max-width: 450px;
+    padding: 42px 40px;
+
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow:
+        0 25px 50px rgba(201, 47, 75, 0.16),
+        0 2px 10px rgba(0, 0, 0, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+    animation: fadeInUp 0.7s ease-out both;
+}
+
+.auth-logo {
+    display: block;
+
+    margin-bottom: 28px;
+
+    color: var(--color-principal);
+    text-decoration: none;
+    text-align: center;
+
+    font-family: "Nunito", sans-serif;
+    font-size: 30px;
+    font-weight: 800;
+
+    transition: color 0.2s;
+}
+
+.auth-logo:hover {
+    color: var(--color-principal-hover);
+}
+
+.auth-card h1 {
+    margin: 0;
+
+    font-family: "Nunito", sans-serif;
+    font-size: 30px;
+    text-align: center;
+}
+
+.auth-subtitle {
+    margin: 10px 0 30px;
+
+    color: var(--color-texto-secundario);
+    text-align: center;
+    line-height: 1.5;
+}
+
+/* =========================
+   FORMULARIO
+========================= */
+
+.auth-card form {
+    max-width: none;
+    margin: 0;
+}
+
+.auth-card form label {
+    margin-top: 18px;
+}
+
+.auth-card form label:first-of-type {
+    margin-top: 0;
+}
+
+.auth-card form input {
+    background-color: rgba(255, 255, 255, 0.75);
+}
+
+.auth-card form button {
+    width: 100%;
+    margin-top: 25px;
+}
+
+/* Campo de contraseña con botón de mostrar/ocultar.
+   En vez de "position: absolute" (frágil: depende de que el ancestro
+   correcto tenga position:relative, y se puede romper con cualquier
+   cambio en la cascada), el input y el botón son una fila flex: el
+   contenedor lleva el borde/fondo del campo, y el input pierde los suyos.
+   Así el botón SIEMPRE queda a la derecha, pase lo que pase alrededor. */
+.password-field {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+
+    background-color: rgba(255, 255, 255, 0.75);
+    border: 1px solid #dddddd;
+    border-radius: 9px;
+
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.password-field:focus-within {
+    border-color: var(--color-principal);
+    box-shadow: 0 0 0 3px var(--color-suave);
+}
+
+.password-field input {
+    flex: 1 1 0%;
+    min-width: 0;
+    width: auto;
+
+    background: transparent;
+    border: none;
+    border-radius: 0;
+}
+
+.password-field input:focus {
+    box-shadow: none;
+}
+
+.toggle-password {
+    flex: 0 0 auto;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 44px;
+    padding: 0;
+
+    background: none;
+    border: none;
+
+    color: var(--color-texto-secundario);
+    cursor: pointer;
+
+    transition: color 0.2s;
+}
+
+.toggle-password:hover {
+    color: var(--color-principal);
+}
+
+.toggle-password:focus-visible {
+    outline: 2px solid var(--color-principal);
+    outline-offset: -2px;
+}
+
+.toggle-password svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
+.toggle-password .icon-eye-off {
+    display: none;
+}
+
+.toggle-password.is-visible .icon-eye {
+    display: none;
+}
+
+.toggle-password.is-visible .icon-eye-off {
+    display: block;
+}
+
+/* =========================
+   MENSAJES DE ESTADO
+========================= */
+
+.auth-message {
+    min-height: 24px;
+    margin-top: 20px;
+
+    color: var(--color-texto-secundario);
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+
+    transition: color 0.2s;
+}
+
+.auth-message.is-error {
+    color: #c92f4b;
+}
+
+.auth-message.is-success {
+    color: #1f9254;
+}
+
+.auth-footer {
+    margin-top: 25px;
+
+    color: var(--color-texto-secundario);
+    text-align: center;
+    font-size: 14px;
+}
+
+.auth-footer a {
+    color: var(--color-principal);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.auth-footer a:hover {
+    color: var(--color-principal-hover);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 500px) {
+    .auth-card {
+        padding: 30px 22px;
+    }
+}

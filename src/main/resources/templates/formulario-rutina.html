@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rutina - Gym Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=PT+Sans:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/rutinas.css}">
+</head>
+<body>
+
+    <header>
+
+        <a class="logo" th:href="@{/}">
+            Gym Tracker
+        </a>
+
+        <nav>
+
+            <a th:href="@{/}">
+                Inicio
+            </a>
+
+            <a th:href="@{/rutinas}">
+                Rutinas
+            </a>
+
+            <a th:href="@{/ejercicios}">
+                Ejercicios
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <main>
+
+        <div class="routine-form-container">
+
+            <div class="routine-form-card">
+
+                <h2>
+                    Crear rutina
+                </h2>
+
+                <p class="form-description">
+                    Crea una rutina y después podremos añadirle
+                    tus ejercicios, series, repeticiones y pesos.
+                </p>
+                <form th:action="@{/rutinas/guardar}" th:object="${rutina}" method="post">
+                    <!-- Necesario para editar -->
+                    <input type="hidden" th:field="*{id}">
+                    <label for="nombre">Nombre de la rutina</label>
+                    <input type="text" id="nombre" th:field="*{nombre}" placeholder="Ej. Pecho y tríceps" required>
+                    <label for="descripcion">Descripción</label>
+                    <textarea id="descripcion" th:field="*{descripcion}" rows="5" placeholder="Describe brevemente esta rutina..."></textarea>
+                    <div class="form-buttons">
+                        <button class="button" type="submit">Guardar rutina</button>
+                        <a class="button button-delete" th:href="@{/rutinas}">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Gym Tracker: organiza tus rutinas, registra tus entrenamientos y sigue tu progreso en un solo sitio.">
+    <title>Gym Tracker</title>
+    <!-- Cargar el favicon SVG -->
+    <link rel="icon" type="image/svg+xml" th:href="@{/img/favicon.svg}">
+    <link rel="icon" href="/img/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" th:href="@{/img/favicon-180.png}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/inicio.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Solo se cargan las familias que realmente se usan en el CSS: Nunito y Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <a class="logo" th:href="@{/}">Gym Tracker</a>
+        <nav>
+            <a href="#funciones">Funciones</a>
+            <a href="#proyecto">Sobre el proyecto</a>
+            <a th:href="@{/login}">Iniciar sesión</a>
+        </nav>
+        <a class="header-button" th:href="@{/registro}">Crear cuenta</a>
+    </header>
+    <main>
+        <section class="hero landing-hero">
+            <div class="hero-content">
+                <p class="hero-label">GYM TRACKER · ENTRENAMIENTO PERSONAL</p>
+                <h1>Entrena.<br>Registra.<br>Evoluciona.</h1>
+                <p class="hero-description">Una forma sencilla de organizar tus rutinas, registrar tus entrenamientos y seguir de cerca tu proceso.</p>
+                <div class="hero-buttons">
+                    <a class="button" th:href="@{/registro}">Crear mi cuenta →</a>
+                    <a class="secondary-button" th:href="@{/login}">Ya tengo una cuenta</a>
+                </div>
+            </div>
+            <div class="hero-side">
+                <span class="hero-side-number">01</span>
+                <p>TU ENTRENAMIENTO.<br> BAJO CONTROL.</p>
+            </div>
+        </section>
+
+        <!-- FUNCIONES -->
+        <section class="landing-section" id="funciones">
+            <div class="section-heading">
+                <span>01 · FUNCIONES</span>
+                <h2>Todo lo que necesitas<br>para entrenar mejor.</h2>
+            </div>
+            <div class="feature-grid">
+                <article class="feature">
+                    <span class="feature-number">01</span>
+                    <h3>Rutinas</h3>
+                    <p>Crea y organiza tus entrenamiento según tus objetivos.</p>
+                </article>
+                <article class="feature">
+                    <span class="feature-number">02</span>
+                    <h3>Entrenamiento</h3>
+                    <p>Registra series, repeticiones, peso y descanso mientras entrenas.</p>
+                </article>
+                <article class="feature">
+                    <span class="feature-number">03</span>
+                    <h3>Progreso</h3>
+                    <p>Consulta tu historial y descubre la manera en la que evolucionas.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- PROYECTO -->
+        <section class="project-section" id="proyecto">
+            <div>
+                <span class="section-label">02 · EL PROYECTO</span>
+                <h2>Más que un<br>gestor de rutinas.</h2>
+            </div>
+            <div class="project-text">
+                <p>Gym Tracker nace como un proyecto de desarrollo web pensado para convertir el entrenamiento en una experiencia más organizada, visual y personal.</p>
+                <p>Desde tus primeras rutinas hasta el seguimiento de tu evolución, todo queda reunido en un mismo lugar.</p>
+                <!-- TODO: enlazar a una página "Sobre el proyecto" cuando exista; de momento se quita el enlace muerto -->
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="final-cta">
+            <p class="hero-label">EMPIEZA HOY</p>
+            <h2>Tu próximo<br>entrenamiento empieza aquí.</h2>
+            <a class="button" th:href="@{/registro}">Crear cuenta →</a>
+        </section>
+    </main>
+    <!-- FOOTER -->
+    <footer>
+        <span>© 2026 Gym Tracker</span>
+        <span>Entrena · Registra · Evoluciona</span>
+    </footer>
+    <script th:src="@{/js/landing.js}"></script>
+</body>
+</html>

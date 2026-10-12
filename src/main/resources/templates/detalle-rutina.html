@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${rutina.nombre} + ' - Gym Tracker'">Rutina - Gym Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/rutinas.css}">
+</head>
+<body>
+    <header>
+        <a class="logo" th:href="@{/}">Gym Tracker</a>
+        <nav>
+            <a th:href="@{/}">Inicio</a>
+            <a th:href="@{/rutinas}">Rutinas</a>
+            <a th:href="@{/ejercicios}">Ejercicios</a>
+        </nav>
+    </header>
+    <main>
+        <div class="routine-detail-header">
+            <div>
+                <p class="routine-label">MI RUTINA</p>
+                <h2 th:text="${rutina.nombre}">Pecho y tríceps</h2>
+                <p class="routine-detail-description" th:text="${rutina.descripcion}">Descripción de la rutina.</p>
+            </div>
+            <div class="routine-detail-actions">
+                <a class="button" th:href="@{/rutinas/editar/{id}(id=${rutina.id})}">Editar rutina</a>
+                <a class="button button-delete" th:href="@{/rutinas}">Volver</a>
+            </div>
+        </div>
+        <div class="routine-exercises">
+            <div class="section-title">
+                <div>
+                    <h3>Ejercicios</h3>
+                    <p>Organiza tus ejercicios de esta rutina.</p>
+                </div>
+                <a class="button" th:href="@{/rutinas/{id}/ejercicios/nuevo(id=${rutina.id})}">+ Añadir ejercicio</a>
+            </div>
+            <!--<div class="empty-routine">
+                <div class="empty-routine-icon">🏋️</div>
+                <h3>Aún no hay ejercicios.</h3>
+                <p>Añade ejercicios a esta rutina para configurar series, repeticiones, peso y descanso de cada una de ellas.</p>
+                <a class="button" th:href="@{/rutinas/{id}/ejercicios/nuevo(id=${rutina.id})}">+ Añadir primer ejercicio</a>
+            </div>-->
+
+            <!-- SIN EJERCICIOS -->
+            <div class="empty-routine" th:if="${#lists.isEmpty(rutinaEjercicios)}">
+                <div class="empty-routine-icon">🏋️</div>
+                <h3>Aún no hay ejercicios.</h3>
+                <p>Añade ejercicios a esta rutina para configurar series, repeticiones, peso y descanso de cada una de ellas.</p>
+                <a class="button" th:href="@{/rutinas/{id}/ejercicios/nuevo(id=${rutina.id})}">+ Añadir primer ejercicio</a>
+            </div>
+            <!-- CON EJERCICIOS -->
+            <div class="routine-exercise-list" th:if="${!#lists.isEmpty(rutinaEjercicios)}">
+                <div class="routine-exercise-card" th:each="rutinaEjercicio : ${rutinaEjercicios}">
+                    <div class="routine-exercise-order" th:text="${rutinaEjercicio.orden}">1</div>
+                    <div class="routine-exercise-content">
+                        <h3 th:text="${rutinaEjercicio.ejercicio.nombre}">Press banca</h3>
+                        <p class="routine-exercise-description" th:text="${rutinaEjercicio.ejercicio.descripcion}">Descripción del ejercicio.</p>
+                        <div class="routine-exercise-data">
+                            <div>
+                                <strong>Series</strong>
+                                <span th:text="${rutinaEjercicio.series}">4</span>
+                            </div>
+                            <div>
+                                <strong>Repeticiones</strong>
+                                <span th:text="${rutinaEjercicio.repeticiones}">10</span>
+                            </div>
+                            <div>
+                                <strong>Peso objetivo</strong>
+                                <span th:text="${rutinaEjercicio.pesoObjetivo} + ' kg'">20 kg</span>
+                            </div>
+                            <div>
+                                <strong>Descanso</strong>
+                                <span th:text="${rutinaEjercicio.descanso} + ' s'">90 s</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

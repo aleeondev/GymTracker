@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rutinas - Gym Tracker</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/rutinas.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <a class="logo" th:href="@{/}">Gym Tracker</a>
+        <nav>
+            <a th:href="@{/}">Inicio</a>
+            <a th:href="@{/rutinas}">Rutinas</a>
+            <a th:href="@{/ejercicios}">Ejercicios</a>
+            <a th:href="@{/entrenamiento}">Entrenamiento</a>
+            <a th:href="@{/historial}">Historial</a>
+        </nav>
+    </header>
+    <main>
+        <div class="page-header">
+            <div>
+                <h2>Mis rutinas</h2>
+                <p>Crea y organiza tus rutinas de entrenamiento.</p>
+            </div>
+            <a class="button" th:href="@{/rutinas/nuevo}">+ Nueva rutina</a>
+        </div>
+        <div class="cards">
+            <div class="routine-card" th:each="rutina : ${rutinas}">
+                <div class="routine-icon">🏋️</div>
+                <h3 th:text="${rutina.nombre}">Rutina de pecho</h3>
+                <p class="routine-description" th:text="${rutina.descripcion}">Rutina enfocada en pecho y tríceps.</p>
+                <div class="routine-actions">
+                    <a class="button" th:href="@{/rutinas/{id}(id=${rutina.id})}">Ver rutina</a>
+                    <a class="button button-delete" th:href="@{/rutinas/editar/{id}(id=${rutina.id})}">Editar</a>
+                    <a class="button button-delete" th:href="@{/rutinas/eliminar/{id}(id=${rutina.id})}">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
