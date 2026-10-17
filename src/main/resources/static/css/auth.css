@@ -306,6 +306,173 @@
     color: var(--color-principal-hover);
 }
 
+/* ENLACE "¿HAS OLVIDADO TU CONTRASEÑA?" (login.html)
+   Alineado a la derecha, justo debajo del campo contraseña. */
+
+.auth-olvido {
+    display: block;
+    margin-top: 10px;
+
+    color: var(--color-principal);
+    text-align: right;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.auth-olvido:hover {
+    color: var(--color-principal-hover);
+    text-decoration: underline;
+}
+
+/* REGISTRO: nombre de usuario con "@", fortaleza de contraseña y consentimiento */
+
+.auth-card .campo-arroba {
+    display: flex;
+    align-items: center;
+    border: 1px solid #dddddd;
+    border-radius: 9px;
+    background-color: rgba(255, 255, 255, 0.75);
+}
+
+.auth-card .campo-arroba:focus-within {
+    border-color: var(--color-principal);
+    box-shadow: 0 0 0 3px var(--color-suave);
+}
+
+.auth-card .campo-arroba span {
+    padding-left: 13px;
+    color: var(--color-texto-secundario);
+    font-weight: 800;
+}
+
+.auth-card form .campo-arroba input,
+.auth-card form .campo-arroba input:focus {
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    padding-left: 4px;
+}
+
+.auth-ayuda {
+    margin: 6px 0 0;
+    color: var(--color-texto-secundario);
+    font-size: 13px;
+}
+
+.auth-ayuda:empty {
+    display: none;
+}
+
+.auth-ayuda.is-error {
+    color: var(--color-principal);
+    font-weight: 700;
+}
+
+.auth-ayuda.is-success {
+    color: #1f9254;
+    font-weight: 700;
+}
+
+.fuerza {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.fuerza span {
+    height: 5px;
+    border-radius: 999px;
+    background: var(--color-borde);
+    transition: background-color 0.2s;
+}
+
+.fuerza[data-nivel="1"] span:nth-child(-n+1) { background: #c92f4b; }
+.fuerza[data-nivel="2"] span:nth-child(-n+2) { background: #e0952b; }
+.fuerza[data-nivel="3"] span { background: #1f9254; }
+
+.auth-card form .auth-check {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-top: 20px;
+    color: var(--color-texto-secundario);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.auth-card form .auth-check input {
+    width: auto;
+    margin-top: 2px;
+    accent-color: var(--color-principal);
+}
+
+/* PÁGINA DE ENLACE CADUCADO (enlace-error.html) */
+
+.auth-icono-error {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    background-color: var(--color-suave);
+    color: var(--color-principal);
+}
+
+.auth-icono-error svg {
+    width: 30px;
+    height: 30px;
+}
+
+.auth-consejos {
+    margin: 25px 0;
+    padding: 18px 20px;
+
+    border: 1px solid var(--color-borde);
+    border-radius: 14px;
+    background-color: rgba(255, 255, 255, 0.7);
+
+    text-align: left;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-texto-secundario);
+}
+
+.auth-consejos-titulo {
+    margin: 0 0 8px;
+
+    color: var(--color-texto);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.auth-consejos ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.auth-consejos li + li {
+    margin-top: 6px;
+}
+
+.auth-boton-ancho {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.auth-footer-junto {
+    margin-top: 12px;
+}
+
 /* =========================
    RESPONSIVE
 ========================= */

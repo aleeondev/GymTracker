@@ -33,12 +33,72 @@
             <div class="stat">
                 <span class="stat-label">03 · VOLUMEN SEMANAL</span>
                 <span class="stat-valor" th:text="${@fmt.entero(resumen.volumenSemana())}">0</span>
-                <span class="stat-unidad">kg levantados</span>
+                <span class="stat-unidad">kg movidos (peso × reps)</span>
             </div>
             <div class="stat">
                 <span class="stat-label">04 · RACHA</span>
                 <span class="stat-valor" th:text="${resumen.rachaSemanas()}">0</span>
                 <span class="stat-unidad" th:text="${resumen.rachaSemanas() == 1} ? 'semana seguida' : 'semanas seguidas'">semanas seguidas</span>
+            </div>
+        </section>
+
+        <!-- TU OBJETIVO (datos del cuestionario de bienvenida, tabla perfiles) -->
+        <section class="panel objetivo-card" th:if="${perfil.cuestionarioCompleto}" aria-label="Tu objetivo">
+            <div class="objetivo-dato">
+                <span class="stat-label">TU OBJETIVO</span>
+                <strong th:text="${opcionesPerfil.objetivo[perfil.objetivo]}">💪 Ganar músculo</strong>
+                <span class="objetivo-sub" th:if="${perfil.pesoObjetivoKg != null}"
+                      th:text="${@fmt.num(perfil.pesoKg)} + ' kg → ' + ${@fmt.num(perfil.pesoObjetivoKg)} + ' kg'">76 kg → 80 kg</span>
+                <span class="objetivo-sub" th:unless="${perfil.pesoObjetivoKg != null}"
+                      th:text="'Peso: ' + ${@fmt.num(perfil.pesoKg)} + ' kg'">Peso: 76 kg</span>
+            </div>
+            <div class="objetivo-dato">
+                <span class="stat-label">IMC</span>
+                <strong th:text="${@fmt.num(perfil.imc)}">24,1</strong>
+                <span class="objetivo-sub" th:text="${perfil.imcCategoria}">Peso normal</span>
+            </div>
+            <div class="objetivo-dato" th:if="${perfil.diasSemana != null}">
+                <span class="stat-label">DÍAS ESTA SEMANA</span>
+                <strong th:text="${resumen.entrenosSemana()} + ' de ' + ${perfil.diasSemana}">2 de 4</strong>
+                <progress class="barra-dias" th:attr="max=${perfil.diasSemana},value=${resumen.entrenosSemana()}"
+                          th:text="${resumen.entrenosSemana()} + ' de ' + ${perfil.diasSemana}">2 de 4</progress>
+            </div>
+            <a class="enlace objetivo-editar" th:href="@{/bienvenida(editar='')}">Editar</a>
+        </section>
+        <section class="panel objetivo-card objetivo-pendiente" th:unless="${perfil.cuestionarioCompleto}">
+            <div>
+                <strong>Completa tu perfil</strong>
+                <p>Tu objetivo, tu peso y los días que puedes entrenar: menos de un minuto y el panel se adapta a ti.</p>
+            </div>
+            <a class="button" th:href="@{/bienvenida(editar='')}">Completar →</a>
+        </section>
+
+        <!-- VOLUMEN SEMANAL (gráfica de barras con Chart.js: js/grafica-volumen.js) -->
+        <section class="seccion">
+            <div class="seccion-head">
+                <div>
+                    <span class="eyebrow">02 · VOLUMEN</span>
+                    <h2>Volumen semanal</h2>
+                </div>
+                <span class="seccion-nota">Últimas 8 semanas · kg × reps</span>
+            </div>
+            <div class="panel grafica-panel">
+                <th:block th:if="${hayVolumen}">
+                    <div class="grafica-caja">
+                        <canvas id="grafica-volumen" role="img"
+                                th:attr="data-datos=${volumenJson},aria-label=${volumenDescripcion}">
+                            <p th:text="${volumenDescripcion}">Volumen de las últimas 8 semanas.</p>
+                        </canvas>
+                    </div>
+                    <p class="grafica-resumen">
+                        Esta semana: <strong th:text="${@fmt.entero(volumenEstaSemana)} + ' kg'">5.320 kg</strong>
+                        <span aria-hidden="true">·</span>
+                        Media: <strong th:text="${@fmt.entero(volumenMedia)} + ' kg'">4.100 kg</strong> por semana
+                    </p>
+                </th:block>
+                <p class="grafica-vacia" th:unless="${hayVolumen}">
+                    Cuando registres entrenamientos verás aquí los kg que mueves cada semana.
+                </p>
             </div>
         </section>
 
@@ -72,7 +132,7 @@
         <section class="seccion">
             <div class="seccion-head">
                 <div>
-                    <span class="eyebrow">02 · ACTIVIDAD</span>
+                    <span class="eyebrow">03 · ACTIVIDAD</span>
                     <h2>Últimos entrenamientos</h2>
                 </div>
                 <a class="enlace" th:href="@{/historial}" th:if="${resumen.totalEntrenos() > 0}">Ver historial →</a>
@@ -104,13 +164,13 @@
         <section class="seccion">
             <div class="rejilla">
                 <a class="tarjeta" th:href="@{/progreso}">
-                    <span class="tarjeta-num">03 · PROGRESO</span>
+                    <span class="tarjeta-num">04 · PROGRESO</span>
                     <h3>Tu evolución</h3>
                     <p>Mira cómo suben tus pesos y tu 1RM estimado ejercicio a ejercicio.</p>
                     <div class="tarjeta-pie"><span class="enlace">Ver progreso →</span></div>
                 </a>
                 <a class="tarjeta" th:href="@{/ejercicios}">
-                    <span class="tarjeta-num">04 · BIBLIOTECA</span>
+                    <span class="tarjeta-num">05 · BIBLIOTECA</span>
                     <h3>Ejercicios</h3>
                     <p>Consulta la biblioteca común o crea tus propios ejercicios.</p>
                     <div class="tarjeta-pie"><span class="enlace">Ver ejercicios →</span></div>
@@ -121,5 +181,9 @@
     <footer th:replace="~{fragments/app :: pie}"></footer>
     <nav th:replace="~{fragments/app :: tabbar}"></nav>
     <th:block th:replace="~{fragments/app :: scripts}"></th:block>
+    <!-- Gráficas: la librería, nuestra configuración común y la gráfica del panel -->
+    <script th:src="@{/js/vendor/chart-4.5.0.umd.min.js}"></script>
+    <script th:src="@{/js/graficas.js}"></script>
+    <script th:src="@{/js/grafica-volumen.js}"></script>
 </body>
 </html>

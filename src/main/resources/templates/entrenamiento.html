@@ -33,6 +33,31 @@
             </a>
         </div>
 
+        <!-- Repetir uno de los últimos entrenamientos (mismos ejercicios y series) -->
+        <section class="seccion" th:if="${!#lists.isEmpty(recientes)}">
+            <div class="seccion-head">
+                <div>
+                    <span class="eyebrow">REPETIR</span>
+                    <h2>Repite uno reciente</h2>
+                </div>
+            </div>
+            <div class="lista">
+                <a class="fila" th:each="e : ${recientes}" th:href="@{/entrenamiento/nuevo(repetir=${e.id})}">
+                    <div class="fila-fecha">
+                        <strong th:text="${e.fecha.dayOfMonth}">12</strong>
+                        <span th:text="${#strings.substring(@fmt.fecha(e.fecha), 0, 3)}">Sáb</span>
+                    </div>
+                    <div class="fila-cuerpo">
+                        <h3 th:text="${e.nombre}">Pecho y tríceps</h3>
+                        <p th:text="${@fmt.relativa(e.fecha)} + ' · ' + ${#lists.size(e.bloques)} + ' ejercicios · ' + ${#lists.size(e.series)} + ' series'">Hace 3 días · 5 ejercicios · 18 series</p>
+                    </div>
+                    <div class="fila-dato">
+                        <span class="enlace">↻ Repetir</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
         <p class="ayuda consejo" th:if="${#lists.isEmpty(rutinas)}">
             Consejo: <a class="enlace" th:href="@{/rutinas/nuevo}">crea una rutina</a> y así tendrás tus ejercicios preparados cada día.
         </p>

@@ -2,6 +2,7 @@ package com.gymtracker.gymtracker.controller;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,20 +56,61 @@ public class EntrenamientoController {
     /** Elegir qué entrenar: una rutina o un entrenamiento libre. */
     @GetMapping("/entrenamiento")
     public String elegir(Model model) {
-        model.addAttribute("rutinas", rutinaService.obtenerDelUsuario(UsuarioActual.id()));
+        UUID usuarioId = UsuarioActual.id();
+        model.addAttribute("rutinas", rutinaService.obtenerDelUsuario(usuarioId));
+        // Los 3 últimos entrenamientos, para "Repetir uno reciente"
+        List<Entrenamiento> historial = entrenamientoService.historial(usuarioId);
+        model.addAttribute("recientes", historial.subList(0, Math.min(3, historial.size())));
         return "entrenamiento";
     }
 
-    /** Formulario para registrar un entrenamiento nuevo (vacío o a partir de una rutina). */
+    /**
+     * Formulario para registrar un entrenamiento nuevo:
+     *  - vacío (entrenamiento libre),
+     *  - a partir de una rutina (?rutina=ID),
+     *  - o repitiendo uno ya hecho (?repetir=ID): mismos ejercicios y mismas
+     *    series, con los kg y reps de ese día como sugerencia.
+     */
     @GetMapping("/entrenamiento/nuevo")
-    public String nuevo(@RequestParam(required = false) Long rutina, Model model) {
+    public String nuevo(@RequestParam(required = false) Long rutina,
+                        @RequestParam(required = false) Long repetir, Model model) {
         UUID usuarioId = UsuarioActual.id();
         Map<Long, List<SerieEntrenamiento>> ultimaVez = entrenamientoService.ultimaVez(usuarioId, null);
 
         Map<String, Object> datos = new LinkedHashMap<>();
         List<Map<String, Object>> bloques = new ArrayList<>();
         String nombre = "Entrenamiento libre";
-        if (rutina != null) {
+        String claveBorrador = rutina != null ? "r" + rutina : "libre";
+        if (repetir != null) {
+            // obtener() solo encuentra entrenamientos del usuario: si el ID es de otro, da 404
+            Entrenamiento anterior = entrenamientoService.obtener(repetir, usuarioId);
+            nombre = anterior.getNombre();
+            claveBorrador = "rep" + anterior.getId();
+            datos.put("repetirId", anterior.getId());
+
+            // Si venía de una rutina, seguimos enlazados a ella y usamos sus descansos
+            Map<Long, Integer> descansos = new HashMap<>();
+            if (anterior.getRutina() != null) {
+                datos.put("rutinaId", anterior.getRutina().getId());
+                for (RutinaEjercicio re : anterior.getRutina().getEjercicios()) {
+                    descansos.putIfAbsent(re.getEjercicio().getId(), re.getDescanso());
+                }
+            }
+
+            String fecha = fmt.fecha(anterior.getFecha());
+            for (List<SerieEntrenamiento> series : anterior.getBloques()) {
+                Ejercicio ejercicio = series.get(0).getEjercicio();
+                Map<String, Object> bloque = bloque(ejercicio, descansos.get(ejercicio.getId()));
+                List<Map<String, Object>> filas = new ArrayList<>();
+                for (SerieEntrenamiento s : series) {
+                    filas.add(Map.of("peso", s.getPeso(), "reps", s.getRepeticiones()));
+                }
+                // "referencia": lo que hiciste ese día (entrenar.js lo usa como sugerencia)
+                bloque.put("referencia", Map.of("fecha", fecha, "series", filas));
+                bloque.put("series", List.of());
+                bloques.add(bloque);
+            }
+        } else if (rutina != null) {
             Rutina r = rutinaService.obtener(rutina, usuarioId);
             nombre = r.getNombre();
             datos.put("rutinaId", r.getId());
@@ -84,7 +126,7 @@ public class EntrenamientoController {
         }
         datos.put("nombre", nombre);
         datos.put("fecha", EntrenamientoService.hoy().toString());
-        datos.put("claveBorrador", "gt_borrador_" + usuarioId.toString().substring(0, 8) + "_" + (rutina != null ? "r" + rutina : "libre"));
+        datos.put("claveBorrador", "gt_borrador_" + usuarioId.toString().substring(0, 8) + "_" + claveBorrador);
         return formulario(datos, bloques, ultimaVez, usuarioId, model, false);
     }
 
@@ -119,7 +161,8 @@ public class EntrenamientoController {
     }
 
     @PostMapping("/entrenamiento/guardar")
-    public String guardar(@ModelAttribute EntrenamientoForm form, RedirectAttributes redirect) {
+    public String guardar(@ModelAttribute EntrenamientoForm form,
+                          @RequestParam(required = false) Long repetir, RedirectAttributes redirect) {
         try {
             Entrenamiento guardado = entrenamientoService.guardar(form, UsuarioActual.id());
             return "redirect:/historial/" + guardado.getId() + "?guardado";
@@ -127,6 +170,9 @@ public class EntrenamientoController {
             redirect.addFlashAttribute("error", ex.getMessage());
             if (form.getId() != null) {
                 return "redirect:/historial/" + form.getId() + "/editar";
+            }
+            if (repetir != null) {
+                return "redirect:/entrenamiento/nuevo?repetir=" + repetir;
             }
             return "redirect:/entrenamiento/nuevo" + (form.getRutinaId() != null ? "?rutina=" + form.getRutinaId() : "");
         }
@@ -161,10 +207,40 @@ public class EntrenamientoController {
 
     // ---------- Progreso ----------
 
+    /** Días que cubre la gráfica "Series por grupo muscular". */
+    private static final int DIAS_GRAFICA_GRUPOS = 28;
+
     @GetMapping("/progreso")
     public String progreso(Model model) {
-        model.addAttribute("progresos", entrenamientoService.progreso(UsuarioActual.id()));
+        UUID usuarioId = UsuarioActual.id();
+        model.addAttribute("progresos", entrenamientoService.progreso(usuarioId));
+        prepararGraficaGrupos(usuarioId, model);
         return "progreso";
+    }
+
+    /**
+     * Datos de la gráfica "Series por grupo muscular" (barras horizontales,
+     * js/grafica-grupos.js). Van al HTML como JSON en data-datos.
+     */
+    private void prepararGraficaGrupos(UUID usuarioId, Model model) {
+        Map<String, Integer> grupos = entrenamientoService.seriesPorGrupo(usuarioId, DIAS_GRAFICA_GRUPOS);
+        int total = grupos.values().stream().mapToInt(Integer::intValue).sum();
+
+        List<Map<String, Object>> barras = new ArrayList<>();
+        List<String> sinTrabajar = new ArrayList<>();
+        grupos.forEach((grupo, series) -> {
+            barras.add(Map.of("grupo", grupo, "series", series));
+            if (series == 0) {
+                sinTrabajar.add(grupo);
+            }
+        });
+
+        model.addAttribute("hayGrupos", total > 0);
+        model.addAttribute("gruposJson", JSON.writeValueAsString(barras));
+        model.addAttribute("gruposTotal", total);
+        model.addAttribute("gruposSinTrabajar", String.join(", ", sinTrabajar));
+        model.addAttribute("gruposDescripcion", "Series por grupo muscular en las últimas 4 semanas: "
+            + String.join(", ", barras.stream().map(b -> b.get("grupo") + " " + b.get("series")).toList()) + ".");
     }
 
     @GetMapping("/progreso/{ejercicioId}")
@@ -176,7 +252,8 @@ public class EntrenamientoController {
                 "fecha", s.fecha().toString(),
                 "etiqueta", fmt.fecha(s.fecha()),
                 "unoRm", Math.round(s.unoRm() * 10) / 10.0,
-                "mejorPeso", s.mejorPeso()));
+                "mejorPeso", s.mejorPeso(),
+                "reps", s.repsMejorPeso()));
         }
         model.addAttribute("progreso", progreso);
         model.addAttribute("puntosJson", JSON.writeValueAsString(puntos));
@@ -204,7 +281,8 @@ public class EntrenamientoController {
                 filas.add(Map.of("peso", s.getPeso(), "reps", s.getRepeticiones()));
             }
             LocalDate fecha = series.get(0).getEntrenamiento().getFecha();
-            ultima.put(ejercicioId.toString(), Map.of("fecha", fmt.relativa(fecha), "series", filas));
+            ultima.put(ejercicioId.toString(), Map.of("fecha", fmt.relativa(fecha), "series", filas,
+                "entrenamientoId", series.get(0).getEntrenamiento().getId()));
         });
         datos.put("ultimaVez", ultima);
 

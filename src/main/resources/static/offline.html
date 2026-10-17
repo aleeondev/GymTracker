@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<!--
+    Página que muestra el service worker (sw.js) cuando no hay conexión.
+    Es un HTML estático (no pasa por Thymeleaf) porque se guarda en el móvil
+    y tiene que funcionar sin servidor. Las fuentes de Google no estarán
+    disponibles sin red, así que usará las del sistema: es normal.
+-->
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#c92f4b">
+    <title>Sin conexión | Gym Tracker</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/app.css?v=8">
+</head>
+<body class="app">
+    <main>
+        <div class="error-pagina">
+            <img class="offline-icono" src="/img/favicon-192.png" alt="" width="72" height="72">
+            <h1 class="titulo-grande">Sin conexión</h1>
+            <p class="texto-suave">Gym Tracker necesita internet para cargar tus datos. Comprueba tu conexión e inténtalo de nuevo.</p>
+            <p class="texto-suave">Si estabas a mitad de un entrenamiento, no te preocupes: el borrador sigue guardado en tu móvil.</p>
+            <p><a class="button" href="/dashboard">Reintentar</a></p>
+        </div>
+    </main>
+</body>
+</html>

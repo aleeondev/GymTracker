@@ -448,7 +448,8 @@ form {
     text-align: left;
 }
 
-form label {
+form label,
+.campo-lectura label { /* campos solo de lectura, fuera de un <form> (ej. email en Mi perfil) */
     display: block;
 
     margin-top: 20px;
@@ -458,7 +459,8 @@ form label {
 }
 
 form input,
-form textarea {
+form textarea,
+.campo-lectura input {
     width: 100%;
 
     padding: 13px;

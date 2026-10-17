@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.ui.Model;
 
 import com.gymtracker.gymtracker.config.UsuarioActual;
+import com.gymtracker.gymtracker.dto.OpcionesPerfil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -19,6 +20,8 @@ public class DatosComunesAdvice {
             model.addAttribute("usuarioNombre", UsuarioActual.nombre());
         }
         model.addAttribute("rutaActual", request.getRequestURI());
+        // Textos de las opciones del cuestionario (objetivo, experiencia...) para las vistas
+        model.addAttribute("opcionesPerfil", OpcionesPerfil.TODAS);
 
         // Genera ya el token CSRF (y su cookie) antes de empezar a pintar la
         // página; si se generara a mitad, la respuesta podría estar ya enviada.

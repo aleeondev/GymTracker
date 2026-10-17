@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+
+    <title>Nueva contraseña | Gym Tracker</title>
+
+    <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+    <link rel="icon" href="/img/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/img/favicon-180.png">
+    <meta name="theme-color" content="#c92f4b">
+    <!-- App instalable (PWA): ficha de la app e icono/barra en iPhone -->
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Gym Tracker">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/auth.css?v=6">
+</head>
+
+<body>
+    <!--
+        Paso 2 de la recuperación: el usuario llega aquí desde el enlace del email.
+        nueva-contrasena.js comprueba el enlace y solo entonces muestra el formulario.
+    -->
+    <main class="auth-page">
+        <section class="auth-card">
+            <a href="/" class="auth-logo">Gym Tracker</a>
+            <h1>Nueva contraseña</h1>
+            <p class="auth-subtitle" id="subtitulo">Comprobando el enlace...</p>
+
+            <form id="nuevaForm" hidden>
+                <label for="password">Nueva contraseña</label>
+                <div class="password-field">
+                    <input type="password" id="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password" minlength="6" required>
+                    <button type="button" class="toggle-password" data-target="password" aria-label="Mostrar contraseña">
+                        <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.4 21.4 0 0 1 5.06-6.06M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.4 21.4 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24"></path>
+                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                    </button>
+                </div>
+                <label for="password2">Repite la contraseña</label>
+                <div class="password-field">
+                    <input type="password" id="password2" placeholder="Escríbela otra vez" autocomplete="new-password" minlength="6" required>
+                    <button type="button" class="toggle-password" data-target="password2" aria-label="Mostrar contraseña">
+                        <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.4 21.4 0 0 1 5.06-6.06M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.4 21.4 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24"></path>
+                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                    </button>
+                </div>
+                <button type="submit" class="button" id="submitBtn">Guardar contraseña</button>
+            </form>
+            <p id="mensaje" class="auth-message" role="status" aria-live="polite"></p>
+            <div class="auth-footer" id="enlaceNuevo" hidden>
+                <a href="/recuperar">Pedir un enlace nuevo</a>
+            </div>
+        </section>
+    </main>
+    <script src="/js/enlace-error-redirect.js"></script>
+    <script src="/js/vendor/supabase-2.117.2.min.js"></script>
+    <script src="/js/supabase.js"></script>
+    <script src="/js/auth-session.js"></script>
+    <script src="/js/auth-ui.js"></script>
+    <script src="/js/pwa.js"></script>
+    <script src="/js/nueva-contrasena.js"></script>
+</body>
+</html>

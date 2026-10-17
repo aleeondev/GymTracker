@@ -40,6 +40,20 @@ public final class UsuarioActual {
         return email != null && email.contains("@") ? email.substring(0, email.indexOf('@')) : "deportista";
     }
 
+    /** Un dato de user_metadata (lo que se guardó al registrarse), o null. */
+    public static String metadato(String clave) {
+        Object metadata = jwt().getClaims().get("user_metadata");
+        if (metadata instanceof Map<?, ?> datos && datos.get(clave) instanceof String texto && !texto.isBlank()) {
+            return texto.trim();
+        }
+        return null;
+    }
+
+    /** Email con el que inició sesión (viene dentro del token de Supabase). */
+    public static String email() {
+        return jwt().getClaimAsString("email");
+    }
+
     private static Jwt jwt() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth instanceof JwtAuthenticationToken token) {

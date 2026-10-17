@@ -48,9 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 grupo: b.grupo,
                 descanso: b.descanso || 90,
                 objetivo: b.objetivo || null,
+                referencia: b.referencia || null, // al repetir un entreno: lo que hiciste ese día
                 series: b.series.length
                     ? b.series.map((s) => ({ peso: s.peso, reps: s.reps, hecha: !!s.hecha }))
-                    : filasVacias(b.objetivo ? b.objetivo.series : 3)
+                    : filasVacias(numeroDeSeries(b))
             }))
         };
         campoNombre.value = datos.nombre || "";
@@ -64,6 +65,13 @@ document.addEventListener("DOMContentLoaded", () => {
     iniciarCronometro();
 
     // ---------- Dibujar ----------
+
+    /** Cuántas series vacías poner: las de la rutina, las del entreno que repites o 3. */
+    function numeroDeSeries(b) {
+        if (b.objetivo) return b.objetivo.series;
+        if (b.referencia) return b.referencia.series.length;
+        return 3;
+    }
 
     function filasVacias(n) {
         return Array.from({ length: n }, () => ({ peso: "", reps: "", hecha: false }));
@@ -100,6 +108,8 @@ document.addEventListener("DOMContentLoaded", () => {
     function dibujarBloque(bloque, indiceBloque) {
         const seccion = el("section", "bloque");
         const ultima = datos.ultimaVez[String(bloque.ejercicioId)];
+        // De dónde salen los valores sugeridos: el entreno que repites o la última vez
+        const sugerencias = bloque.referencia || ultima;
 
         // Cabecera del ejercicio
         const cabecera = el("div", "bloque-head");
@@ -117,7 +127,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         if (info.length) textos.append(el("p", "bloque-info", info.join(" · ")));
 
-        if (ultima) {
+        if (bloque.referencia) {
+            const p = el("p", "bloque-info");
+            p.append(el("b", null, `Repites el del ${bloque.referencia.fecha}: `));
+            p.append(bloque.referencia.series.map((s) => `${num(s.peso)}×${s.reps}`).join(" · "));
+            textos.append(p);
+        }
+        // "Última vez" solo si es otro entreno distinto del que repites
+        if (ultima && !(bloque.referencia && ultima.entrenamientoId === datos.repetirId)) {
             const p = el("p", "bloque-info");
             p.append(el("b", null, `Última vez (${ultima.fecha}): `));
             p.append(ultima.series.map((s) => `${num(s.peso)}×${s.reps}`).join(" · "));
@@ -141,11 +158,12 @@ document.addEventListener("DOMContentLoaded", () => {
         // Tabla de series
         const tabla = el("div", "series-tabla");
         const encabezado = el("div", "serie-fila cabecera");
-        ["Serie", "Kg", "Reps", "Hecha", ""].forEach((t) => encabezado.append(el("span", t === "Serie" ? "serie-num" : null, t)));
+        // "Nº" y no "Serie": en móvil la primera columna mide 28px y no cabía
+        ["Nº", "Kg", "Reps", "Hecha", ""].forEach((t) => encabezado.append(el("span", t === "Nº" ? "serie-num" : null, t)));
         tabla.append(encabezado);
 
         bloque.series.forEach((serie, indiceSerie) => {
-            tabla.append(dibujarSerie(bloque, serie, indiceSerie, ultima));
+            tabla.append(dibujarSerie(bloque, serie, indiceSerie, sugerencias));
         });
         seccion.append(tabla);
 
@@ -162,12 +180,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return seccion;
     }
 
-    function dibujarSerie(bloque, serie, indiceSerie, ultima) {
+    function dibujarSerie(bloque, serie, indiceSerie, sugerencias) {
         const fila = el("div", "serie-fila" + (serie.hecha ? " hecha" : ""));
         fila.append(el("span", "serie-num", String(indiceSerie + 1)));
 
-        // Valores sugeridos: lo que hiciste la última vez o el objetivo de la rutina
-        const anteriorMismaSerie = ultima ? (ultima.series[indiceSerie] || ultima.series[ultima.series.length - 1]) : null;
+        // Valores sugeridos: el entreno que repites, la última vez o el objetivo de la rutina
+        const anteriorMismaSerie = sugerencias ? (sugerencias.series[indiceSerie] || sugerencias.series[sugerencias.series.length - 1]) : null;
         const pesoSugerido = anteriorMismaSerie ? anteriorMismaSerie.peso : (bloque.objetivo && bloque.objetivo.peso ? bloque.objetivo.peso : "");
         const repsSugeridas = bloque.objetivo ? bloque.objetivo.reps : (anteriorMismaSerie ? anteriorMismaSerie.reps : "");
 
@@ -439,6 +457,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         oculto("id", datos.id);
         oculto("rutinaId", datos.rutinaId);
+        oculto("repetir", datos.repetirId); // solo para volver aquí si algo falla al guardar
         seriesApuntadas().forEach((s, i) => {
             oculto(`series[${i}].bloque`, s.bloque);
             oculto(`series[${i}].ejercicioId`, s.ejercicioId);

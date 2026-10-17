@@ -297,12 +297,13 @@ RESPONSIVE
 
     .landing-hero {
         min-height: auto;
-        padding: 50px 30px;
+        padding: 45px 22px;
         margin-bottom: 70px;
     }
 
     .landing-hero h1 {
-        font-size: 55px;
+        /* "EVOLUCIONA." es la palabra más larga: el tamaño se ajusta al ancho de pantalla para que no se corte */
+        font-size: clamp(30px, 9vw, 55px);
     }
 
     .hero-side {

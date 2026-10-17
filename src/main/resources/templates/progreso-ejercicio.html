@@ -36,12 +36,25 @@
         </section>
 
         <section class="seccion">
-            <div class="panel">
-                <span class="eyebrow">1RM ESTIMADO POR SESIÓN (KG)</span>
-                <p class="texto-suave" th:if="${#lists.size(progreso.sesiones()) < 2}">Registra este ejercicio en al menos dos sesiones para ver la gráfica.</p>
-                <div class="grafica" id="grafica" th:if="${#lists.size(progreso.sesiones()) >= 2}"
-                     th:attr="data-puntos=${puntosJson}" role="img"
-                     aria-label="Gráfica de la evolución del 1RM estimado. Los datos están en la tabla de abajo."></div>
+            <!-- EVOLUCIÓN (líneas con Chart.js: js/grafica-evolucion.js) -->
+            <div class="panel grafica-panel">
+                <div class="grafica-cabecera">
+                    <span class="eyebrow">EVOLUCIÓN (KG)</span>
+                    <div class="rango" role="group" aria-label="Periodo de la gráfica"
+                         th:if="${#lists.size(progreso.sesiones()) >= 2}">
+                        <button type="button" data-rango="30" aria-pressed="false">1M</button>
+                        <button type="button" data-rango="90" aria-pressed="false">3M</button>
+                        <button type="button" data-rango="180" aria-pressed="false">6M</button>
+                        <button type="button" data-rango="0" aria-pressed="true">Todo</button>
+                    </div>
+                </div>
+                <p class="grafica-vacia" th:if="${#lists.size(progreso.sesiones()) < 2}">Registra este ejercicio en al menos dos sesiones para ver su evolución.</p>
+                <div class="grafica-caja" th:if="${#lists.size(progreso.sesiones()) >= 2}">
+                    <canvas id="grafica-evolucion" role="img" th:attr="data-datos=${puntosJson}"
+                            aria-label="Evolución del 1RM estimado y del mejor peso por sesión. Los datos están en la tabla de abajo.">
+                        <p>Los datos de cada sesión están en la tabla de abajo.</p>
+                    </canvas>
+                </div>
             </div>
         </section>
 
@@ -74,6 +87,9 @@
     <footer th:replace="~{fragments/app :: pie}"></footer>
     <nav th:replace="~{fragments/app :: tabbar}"></nav>
     <th:block th:replace="~{fragments/app :: scripts}"></th:block>
-    <script th:src="@{/js/progreso.js}"></script>
+    <!-- Gráficas: la librería, nuestra configuración común y la gráfica de evolución -->
+    <script th:src="@{/js/vendor/chart-4.5.0.umd.min.js}"></script>
+    <script th:src="@{/js/graficas.js}"></script>
+    <script th:src="@{/js/grafica-evolucion.js}"></script>
 </body>
 </html>

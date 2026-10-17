@@ -62,10 +62,11 @@ public class SupabaseCookieFilter extends OncePerRequestFilter {
         chain.doFilter(request, response);
     }
 
-    /** Los archivos estáticos no necesitan usuario: nos ahorramos verificar el token. */
+    /** Los archivos estáticos (y los de la app instalable) no necesitan usuario: nos ahorramos verificar el token. */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String uri = request.getRequestURI();
-        return uri.startsWith("/css/") || uri.startsWith("/js/") || uri.startsWith("/img/") || uri.equals("/favicon.ico");
+        return uri.startsWith("/css/") || uri.startsWith("/js/") || uri.startsWith("/img/") || uri.equals("/favicon.ico")
+            || uri.equals("/sw.js") || uri.equals("/manifest.webmanifest") || uri.equals("/offline.html");
     }
 }

@@ -23,6 +23,7 @@ import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 
@@ -45,8 +46,12 @@ public class SecurityConfig {
 
     /** Páginas y recursos accesibles sin iniciar sesión. */
     static final String[] RUTAS_PUBLICAS = {
-        "/", "/login", "/registro", "/error",
-        "/css/**", "/js/**", "/img/**", "/favicon.ico"
+        "/", "/login", "/registro", "/recuperar", "/nueva-contrasena", "/enlace-error", "/error",
+        "/css/**", "/js/**", "/img/**", "/favicon.ico",
+        // App instalable (PWA): el navegador los pide sin sesión
+        "/manifest.webmanifest", "/sw.js", "/offline.html",
+        // Registro: comprobar si un nombre de usuario está libre
+        "/api/usuario-disponible"
     };
 
     @Bean
@@ -62,7 +67,15 @@ public class SecurityConfig {
             // Protección CSRF: cada formulario POST lleva un token oculto (_csrf) que
             // otra web no puede conocer. Se guarda en cookie (no en sesión) para que un
             // entrenamiento largo no falle al guardar por haber caducado la sesión.
-            .csrf(csrf -> csrf.csrfTokenRepository(new CookieCsrfTokenRepository()))
+            .csrf(csrf -> csrf
+                .csrfTokenRepository(new CookieCsrfTokenRepository())
+                // Por defecto Spring cambia el token CSRF en cada inicio de sesión. Como no
+                // usamos sesiones (STATELESS), Spring cree que CADA petición es un inicio de
+                // sesión y lo cambiaba sin parar: un formulario abierto (el de entrenar) se
+                // quedaba con un token viejo y al guardar daba 403 si mientras tanto el
+                // navegador pedía otra página (otra pestaña, /sw.js, el manifest...).
+                // El token sigue siendo secreto y propio de tu navegador; solo deja de rotar.
+                .sessionAuthenticationStrategy(new NullAuthenticatedSessionStrategy()))
             .headers(h -> h
                 // CSP: el navegador solo ejecuta scripts y estilos de nuestra propia web
                 // (más Google Fonts) y solo se conecta a nuestro servidor y a Supabase.

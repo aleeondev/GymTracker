@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+
+    <title>Enlace no válido | Gym Tracker</title>
+
+    <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+    <link rel="icon" href="/img/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/img/favicon-180.png">
+    <meta name="theme-color" content="#c92f4b">
+    <!-- App instalable (PWA): ficha de la app e icono/barra en iPhone -->
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Gym Tracker">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/auth.css?v=6">
+</head>
+
+<body>
+    <!--
+        Página a la que llegamos cuando el enlace de un email de Supabase
+        (recuperar contraseña, confirmar cuenta) ha caducado o no es válido.
+        enlace-error.js rellena el título y el texto según el error.
+    -->
+    <main class="auth-page">
+        <section class="auth-card">
+            <a href="/" class="auth-logo">Gym Tracker</a>
+            <div class="auth-icono-error" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    <line x1="4" y1="4" x2="20" y2="20"></line>
+                </svg>
+            </div>
+            <h1 id="titulo">Enlace no válido</h1>
+            <p class="auth-subtitle" id="texto">No hemos podido comprobar este enlace.</p>
+
+            <div class="auth-consejos">
+                <p class="auth-consejos-titulo">Para que funcione a la primera</p>
+                <ul>
+                    <li>Abre siempre el <strong>email más reciente</strong>: al pedir uno nuevo, los anteriores dejan de valer.</li>
+                    <li>Ábrelo <strong>una sola vez</strong> y antes de que pase 1 hora.</li>
+                    <li>Si no llega, revisa la carpeta de spam y espera unos minutos antes de pedir otro.</li>
+                </ul>
+            </div>
+
+            <a class="button auth-boton-ancho" href="/recuperar">Pedir un enlace nuevo de contraseña</a>
+            <div class="auth-footer">
+                ¿Era para confirmar tu cuenta?
+                <a href="/registro">Regístrate de nuevo con el mismo email</a> y te llegará otro.
+            </div>
+            <div class="auth-footer auth-footer-junto">
+                <a href="/login">Ir a iniciar sesión</a>
+            </div>
+        </section>
+    </main>
+    <script src="/js/enlace-error.js"></script>
+</body>
+</html>

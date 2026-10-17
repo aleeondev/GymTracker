@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/app :: head(${editando} ? 'Tus datos' : 'Bienvenida')}"></head>
+<body class="app">
+    <header th:replace="~{fragments/app :: cabecera}"></header>
+    <main>
+        <div class="form-card bienvenida">
+            <a class="volver" th:if="${editando}" th:href="@{/perfil}">← Mi perfil</a>
+            <th:block th:replace="~{fragments/app :: avisos}"></th:block>
+
+            <div class="page-head">
+                <div>
+                    <span class="eyebrow" th:text="${editando} ? 'TUS DATOS' : 'BIENVENIDA'">BIENVENIDA</span>
+                    <h1 th:text="${editando} ? 'Tu cuerpo y tu objetivo' : '¡Hola, ' + ${usuarioNombre} + '!'">¡Hola, Alex!</h1>
+                    <p th:unless="${editando}">Cuéntanos un poco sobre ti para adaptar Gym Tracker a tu objetivo. Son 3 pasos, menos de un minuto. Solo tú puedes ver estos datos.</p>
+                </div>
+            </div>
+
+            <!-- Barra de progreso de los pasos (la mueve js/bienvenida.js) -->
+            <div class="pasos-progreso">
+                <span id="texto-paso">Paso 1 de 3</span>
+                <progress id="barra-pasos" max="3" value="1">Paso 1 de 3</progress>
+            </div>
+
+            <!--
+                Un solo formulario con 3 pasos. bienvenida.js enseña uno cada vez y
+                comprueba cada paso antes de avanzar. Sin JavaScript se ven los 3 a la vez.
+                Al enviar: BienvenidaController.guardar -> PerfilService.guardarCuestionario.
+            -->
+            <form id="form-bienvenida" class="panel" method="post" novalidate
+                  th:action="${editando} ? @{/bienvenida/guardar(editar='')} : @{/bienvenida/guardar}">
+
+                <!-- PASO 1 -->
+                <section class="paso" data-paso="1">
+                    <h2 class="paso-titulo"><span>1</span> Sobre ti</h2>
+
+                    <fieldset class="pregunta">
+                        <legend>Sexo</legend>
+                        <div class="opciones-chips">
+                            <label class="opcion" th:each="op : ${opcionesPerfil.sexo}">
+                                <input type="radio" name="sexo" th:value="${op.key}" th:checked="${'' + form.sexo == op.key}" required>
+                                <span th:text="${op.value}">Opción</span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <label for="fechaNacimiento">Fecha de nacimiento</label>
+                    <input type="date" id="fechaNacimiento" name="fechaNacimiento" required
+                           th:value="${form.fechaNacimiento}">
+
+                    <div class="campos-2">
+                        <div>
+                            <label for="alturaCm">Altura (cm)</label>
+                            <input type="number" id="alturaCm" name="alturaCm" min="100" max="250" step="1"
+                                   inputmode="numeric" placeholder="Ej. 178" required th:value="${form.alturaCm}">
+                        </div>
+                        <div>
+                            <label for="pesoKg">Peso actual (kg)</label>
+                            <input type="number" id="pesoKg" name="pesoKg" min="30" max="300" step="0.1"
+                                   inputmode="decimal" placeholder="Ej. 76,5" required th:value="${form.pesoKg}">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PASO 2 -->
+                <section class="paso" data-paso="2">
+                    <h2 class="paso-titulo"><span>2</span> Tu objetivo</h2>
+
+                    <fieldset class="pregunta">
+                        <legend>¿Qué quieres conseguir?</legend>
+                        <div class="opciones-tarjetas">
+                            <label class="opcion" th:each="op : ${opcionesPerfil.objetivo}">
+                                <input type="radio" name="objetivo" th:value="${op.key}" th:checked="${form.objetivo == op.key}" required>
+                                <span>
+                                    <b th:text="${op.value}">💪 Ganar músculo</b>
+                                    <small th:text="${opcionesPerfil.objetivoDescripcion[op.key]}">Volumen</small>
+                                </span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <!-- Solo se muestra con objetivos de cambiar de peso (bienvenida.js) -->
+                    <div id="bloque-peso-objetivo" data-objetivos="perder_grasa,definir,ganar_musculo">
+                        <label for="pesoObjetivoKg">Peso objetivo (kg) <span class="opcional">opcional</span></label>
+                        <input type="number" id="pesoObjetivoKg" name="pesoObjetivoKg" min="30" max="300" step="0.1"
+                               inputmode="decimal" placeholder="Ej. 72" th:value="${form.pesoObjetivoKg}">
+                    </div>
+
+                    <fieldset class="pregunta">
+                        <legend>Experiencia en el gimnasio</legend>
+                        <div class="opciones-chips">
+                            <label class="opcion" th:each="op : ${opcionesPerfil.experiencia}">
+                                <input type="radio" name="experiencia" th:value="${op.key}" th:checked="${'' + form.experiencia == op.key}" required>
+                                <span th:text="${op.value}">Opción</span>
+                            </label>
+                        </div>
+                    </fieldset>
+                </section>
+
+                <!-- PASO 3 -->
+                <section class="paso" data-paso="3">
+                    <h2 class="paso-titulo"><span>3</span> Tu rutina</h2>
+
+                    <fieldset class="pregunta">
+                        <legend>Días por semana que puedes entrenar</legend>
+                        <div class="opciones-chips">
+                            <label class="opcion" th:each="op : ${opcionesPerfil.dias}">
+                                <input type="radio" name="diasSemana" th:value="${op.key}" th:checked="${'' + form.diasSemana == op.key}" required>
+                                <span th:text="${op.value}">Opción</span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="pregunta">
+                        <legend>Cuánto suele durar tu entreno <span class="opcional">opcional</span></legend>
+                        <div class="opciones-chips">
+                            <label class="opcion" th:each="op : ${opcionesPerfil.duracion}">
+                                <input type="radio" name="duracionSesion" th:value="${op.key}" th:checked="${'' + form.duracionSesion == op.key}">
+                                <span th:text="${op.value}">Opción</span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="pregunta">
+                        <legend>Dónde entrenas</legend>
+                        <div class="opciones-chips">
+                            <label class="opcion" th:each="op : ${opcionesPerfil.lugar}">
+                                <input type="radio" name="lugarEntreno" th:value="${op.key}" th:checked="${'' + form.lugarEntreno == op.key}" required>
+                                <span th:text="${op.value}">Opción</span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="pregunta">
+                        <legend>Tu actividad fuera del gimnasio <span class="opcional">opcional</span></legend>
+                        <div class="opciones-lista">
+                            <label class="opcion" th:each="op : ${opcionesPerfil.actividad}">
+                                <input type="radio" name="actividadDiaria" th:value="${op.key}" th:checked="${'' + form.actividadDiaria == op.key}">
+                                <span th:text="${op.value}">Opción</span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <label for="lesiones">Lesiones o limitaciones <span class="opcional">opcional</span></label>
+                    <textarea id="lesiones" name="lesiones" rows="3" maxlength="500"
+                              placeholder="Ej. molestias en el hombro derecho" th:text="${form.lesiones}"></textarea>
+
+                    <!-- Consentimiento: solo si no lo dio ya al registrarse -->
+                    <label class="check-consentimiento" th:if="${pideConsentimiento}">
+                        <input type="checkbox" name="aceptoDatos" value="true" required th:checked="${form.aceptoDatos}">
+                        <span>Acepto que Gym Tracker guarde estos datos (peso, altura, objetivo...) para mostrarme mi progreso. Solo los veo yo y no se comparten con nadie.</span>
+                    </label>
+                </section>
+
+                <div class="bienvenida-nav">
+                    <button type="button" class="button button-secundario" id="paso-atras" hidden>← Atrás</button>
+                    <button type="button" class="button" id="paso-siguiente" hidden>Siguiente →</button>
+                    <button type="submit" class="button" id="paso-guardar" th:text="${editando} ? 'Guardar cambios' : 'Terminar'">Terminar</button>
+                </div>
+            </form>
+
+            <!-- Saltar: no volveremos a traerle aquí (podrá rellenarlo desde Mi perfil) -->
+            <form class="bienvenida-saltar" th:unless="${editando}" th:action="@{/bienvenida/saltar}" method="post">
+                <button type="submit" class="enlace-boton">Saltar por ahora</button>
+            </form>
+        </div>
+    </main>
+    <footer th:replace="~{fragments/app :: pie}"></footer>
+    <nav th:replace="~{fragments/app :: tabbar}"></nav>
+    <th:block th:replace="~{fragments/app :: scripts}"></th:block>
+    <script th:src="@{/js/bienvenida.js}"></script>
+</body>
+</html>

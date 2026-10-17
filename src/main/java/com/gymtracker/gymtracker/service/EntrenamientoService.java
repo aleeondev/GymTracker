@@ -23,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.gymtracker.gymtracker.dto.EntrenamientoForm;
 import com.gymtracker.gymtracker.dto.ProgresoEjercicio;
 import com.gymtracker.gymtracker.dto.ResumenDashboard;
+import com.gymtracker.gymtracker.dto.SemanaVolumen;
 import com.gymtracker.gymtracker.model.Ejercicio;
 import com.gymtracker.gymtracker.model.Entrenamiento;
 import com.gymtracker.gymtracker.model.Rutina;
@@ -146,6 +147,69 @@ public class EntrenamientoService {
     // ---------- Estadísticas ----------
 
     @Transactional(readOnly = true)
+    /**
+     * Volumen de cada una de las últimas {@code semanas} semanas, de la más antigua
+     * a la actual. Las semanas sin entrenos también aparecen (con 0), para que la
+     * gráfica muestre los huecos.
+     */
+    public List<SemanaVolumen> volumenSemanal(UUID usuarioId, int semanas) {
+        LocalDate lunesActual = hoy().with(DayOfWeek.MONDAY);
+        LocalDate desde = lunesActual.minusWeeks(semanas - 1L);
+
+        // Una "hucha" por semana: [volumen, nº de entrenos]
+        Map<LocalDate, double[]> porSemana = new LinkedHashMap<>();
+        for (int i = 0; i < semanas; i++) {
+            porSemana.put(desde.plusWeeks(i), new double[2]);
+        }
+        for (Entrenamiento e : entrenamientoRepository.findByUsuarioIdAndFechaGreaterThanEqualOrderByFechaDesc(usuarioId, desde)) {
+            double[] hucha = porSemana.get(e.getFecha().with(DayOfWeek.MONDAY));
+            if (hucha != null) { // null = fecha futura, fuera de la gráfica
+                hucha[0] += e.getVolumen();
+                hucha[1]++;
+            }
+        }
+
+        List<SemanaVolumen> resultado = new ArrayList<>();
+        porSemana.forEach((lunes, hucha) -> resultado.add(new SemanaVolumen(lunes, hucha[0], (int) hucha[1])));
+        return resultado;
+    }
+
+    /**
+     * Cuántas series has hecho de cada grupo muscular en los últimos {@code dias} días,
+     * de más a menos. Incluye los grupos con 0 series (es justo lo que interesa ver),
+     * salvo Cardio, que solo aparece si lo has hecho. Ejercicios sin grupo: "Otros".
+     */
+    public Map<String, Integer> seriesPorGrupo(UUID usuarioId, int dias) {
+        LocalDate hoy = hoy();
+        LocalDate desde = hoy.minusDays(dias - 1L);
+
+        Map<String, Integer> cuenta = new HashMap<>();
+        for (String grupo : EjercicioService.GRUPOS_MUSCULARES) {
+            if (!grupo.equals("Cardio")) {
+                cuenta.put(grupo, 0);
+            }
+        }
+        for (Entrenamiento e : entrenamientoRepository.findByUsuarioIdAndFechaGreaterThanEqualOrderByFechaDesc(usuarioId, desde)) {
+            if (e.getFecha().isAfter(hoy)) {
+                continue;
+            }
+            for (SerieEntrenamiento s : e.getSeries()) {
+                String grupo = s.getEjercicio().getGrupoMuscular();
+                cuenta.merge(grupo == null || grupo.isBlank() ? "Otros" : grupo, 1, Integer::sum);
+            }
+        }
+
+        // De más series a menos; a igualdad, en el orden habitual de los grupos
+        List<String> orden = new ArrayList<>(EjercicioService.GRUPOS_MUSCULARES);
+        orden.add("Otros");
+        Map<String, Integer> resultado = new LinkedHashMap<>();
+        cuenta.entrySet().stream()
+            .sorted(Comparator.comparing((Map.Entry<String, Integer> g) -> -g.getValue())
+                .thenComparing(g -> orden.indexOf(g.getKey()) < 0 ? Integer.MAX_VALUE : orden.indexOf(g.getKey())))
+            .forEach(g -> resultado.put(g.getKey(), g.getValue()));
+        return resultado;
+    }
+
     public ResumenDashboard resumen(UUID usuarioId) {
         List<Entrenamiento> todos = historial(usuarioId);
         LocalDate hoy = hoy();

@@ -19,6 +19,7 @@ public class Formato {
     private static final DateTimeFormatter CORTA = DateTimeFormatter.ofPattern("EEE d MMM", ES);
     private static final DateTimeFormatter LARGA = DateTimeFormatter.ofPattern("EEEE, d 'de' MMMM 'de' yyyy", ES);
     private static final DateTimeFormatter MES = DateTimeFormatter.ofPattern("MMMM yyyy", ES);
+    private static final DateTimeFormatter DIA_MES = DateTimeFormatter.ofPattern("d MMM", ES);
 
     /** 60.0 -> "60", 62.5 -> "62,5" */
     public String num(Double valor) {
@@ -46,6 +47,11 @@ public class Formato {
 
     public String fecha(LocalDate fecha) {
         return capitalizar(CORTA.format(fecha).replace(".", ""));
+    }
+
+    /** "13 oct" (para etiquetas cortas, como las de las gráficas) */
+    public String diaMes(LocalDate fecha) {
+        return DIA_MES.format(fecha).replace(".", "");
     }
 
     public String fechaLarga(LocalDate fecha) {

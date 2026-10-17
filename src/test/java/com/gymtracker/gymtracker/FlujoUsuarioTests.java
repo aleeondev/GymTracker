@@ -6,6 +6,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
@@ -36,7 +37,8 @@ import com.gymtracker.gymtracker.repository.EjercicioRepository;
  *
  * El login se simula con un token falso (jwt()), sin pasar por Supabase.
  */
-@SpringBootTest
+// Pocas conexiones: Supabase gratis admite 15 a la vez y la app abierta ya usa hasta 10
+@SpringBootTest(properties = "spring.datasource.hikari.maximum-pool-size=2")
 @AutoConfigureMockMvc
 @ActiveProfiles("local")
 @Transactional
@@ -82,8 +84,30 @@ class FlujoUsuarioTests {
         UUID yo = UUID.randomUUID();
         RequestPostProcessor auth = usuario(yo, "Prueba");
 
+        // Primera vez: el panel lleva al cuestionario de bienvenida
+        mvc.perform(get("/dashboard").with(auth)).andExpect(redirectedUrl("/bienvenida"));
+        mvc.perform(get("/bienvenida").with(auth)).andExpect(status().isOk());
+
+        // Cuestionario incompleto: se queda en la página con el aviso (sin perder lo escrito)
+        mvc.perform(post("/bienvenida/guardar").with(auth).with(csrf()).param("sexo", "hombre"))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("fecha de nacimiento")));
+
+        // Completo: al panel, que ya muestra la tarjeta "Tu objetivo" (IMC 76,5 / 1,78² = 24,1)
+        mvc.perform(post("/bienvenida/guardar").with(auth).with(csrf())
+                .param("sexo", "hombre").param("fechaNacimiento", "1995-05-10")
+                .param("alturaCm", "178").param("pesoKg", "76.5")
+                .param("objetivo", "ganar_musculo").param("pesoObjetivoKg", "80").param("experiencia", "de_1_a_3")
+                .param("diasSemana", "4").param("duracionSesion", "60").param("lugarEntreno", "gimnasio")
+                .param("aceptoDatos", "true"))
+            .andExpect(redirectedUrl("/dashboard"));
         mvc.perform(get("/dashboard").with(auth)).andExpect(status().isOk())
-            .andExpect(content().string(containsString("Hola, Prueba.")));
+            .andExpect(content().string(containsString("Hola, Prueba.")))
+            .andExpect(content().string(containsString("Ganar músculo")))
+            .andExpect(content().string(containsString("24,1")));
+        mvc.perform(get("/perfil").with(auth))
+            .andExpect(content().string(containsString("TU CUERPO Y TU OBJETIVO")));
+        mvc.perform(get("/bienvenida?editar").with(auth)).andExpect(status().isOk());
 
         // Crear rutina
         String urlRutina = mvc.perform(post("/rutinas/guardar").with(auth).with(csrf()).param("nombre", "Día de prueba"))
@@ -110,11 +134,39 @@ class FlujoUsuarioTests {
 
         mvc.perform(get(segundo).with(auth)).andExpect(status().isOk())
             .andExpect(content().string(containsString("Récord")));
+
+        // Con entrenos, el panel muestra la gráfica de volumen semanal
+        mvc.perform(get("/dashboard").with(auth)).andExpect(status().isOk())
+            .andExpect(content().string(containsString("id=\"grafica-volumen\"")));
+
+        // Y en Progreso, la de series por grupo muscular
+        mvc.perform(get("/progreso").with(auth)).andExpect(status().isOk())
+            .andExpect(content().string(containsString("id=\"grafica-grupos\"")))
+            .andExpect(content().string(containsString("class=\"mini-grafica\" data-puntos=\"")));
+        mvc.perform(get("/progreso/" + ejercicioId).with(auth)).andExpect(status().isOk())
+            .andExpect(content().string(containsString("id=\"grafica-evolucion\"")));
         String idSegundo = segundo.replaceAll("\\D+(\\d+).*", "$1");
         for (String url : new String[] { primero, "/historial", "/historial/" + idSegundo + "/editar",
                 "/progreso", "/progreso/" + ejercicioId, "/dashboard" }) {
             mvc.perform(get(url).with(auth)).andExpect(status().isOk());
         }
+
+        // Perfil: nombre de usuario válido, inválido y repetido por otra persona
+        mvc.perform(get("/perfil").with(auth)).andExpect(status().isOk())
+            .andExpect(content().string(containsString("Cambiar contraseña")));
+        mvc.perform(post("/perfil/usuario").with(auth).with(csrf()).param("nombreUsuario", "@Prueba_Gym"))
+            .andExpect(redirectedUrl("/perfil"))
+            .andExpect(flash().attribute("exito", "Nombre de usuario guardado."));
+        mvc.perform(get("/perfil").with(auth)).andExpect(content().string(containsString("@prueba_gym")));
+        mvc.perform(post("/perfil/usuario").with(auth).with(csrf()).param("nombreUsuario", "a b"))
+            .andExpect(flash().attribute("error", containsString("entre 3 y 20")));
+        mvc.perform(post("/perfil/usuario").with(usuario(UUID.randomUUID(), "Otro")).with(csrf()).param("nombreUsuario", "prueba_gym"))
+            .andExpect(flash().attribute("error", containsString("ya está cogido")));
+
+        // API del registro (pública): formato no válido, cogido y libre
+        mvc.perform(get("/api/usuario-disponible").param("u", "ab")).andExpect(content().string(containsString("formato")));
+        mvc.perform(get("/api/usuario-disponible").param("u", "prueba_gym")).andExpect(content().string(containsString("cogido")));
+        mvc.perform(get("/api/usuario-disponible").param("u", "nadie_tiene_este")).andExpect(content().string(containsString("libre")));
 
         // Otro usuario no puede ver ni tocar lo mío
         RequestPostProcessor otro = usuario(UUID.randomUUID(), "Otro");
@@ -122,9 +174,17 @@ class FlujoUsuarioTests {
         mvc.perform(get("/historial/" + idSegundo).with(otro)).andExpect(status().isNotFound());
         mvc.perform(post("/rutinas/eliminar/" + rutinaId).with(otro).with(csrf())).andExpect(status().isNotFound());
 
-        // Borrar la rutina conserva el historial
+        // Repetir un entreno: mismos ejercicios, con lo que hiciste ese día como sugerencia
+        mvc.perform(get("/entrenamiento").with(auth))
+            .andExpect(content().string(containsString("Repite uno reciente")));
+        mvc.perform(get("/entrenamiento/nuevo?repetir=" + idSegundo).with(auth)).andExpect(status().isOk())
+            .andExpect(content().string(containsString("referencia")));
+        mvc.perform(get("/entrenamiento/nuevo?repetir=" + idSegundo).with(otro)).andExpect(status().isNotFound());
+
+        // Borrar la rutina conserva el historial (y se puede seguir repitiendo)
         mvc.perform(post("/rutinas/eliminar/" + rutinaId).with(auth).with(csrf())).andExpect(redirectedUrl("/rutinas"));
         mvc.perform(get("/historial/" + idSegundo).with(auth)).andExpect(status().isOk());
+        mvc.perform(get("/entrenamiento/nuevo?repetir=" + idSegundo).with(auth)).andExpect(status().isOk());
     }
 
     private String guardarEntreno(RequestPostProcessor auth, long rutinaId, long ejercicioId, LocalDate fecha,

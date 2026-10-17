@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/app :: head('Mi perfil')}"></head>
+<body class="app">
+    <header th:replace="~{fragments/app :: cabecera}"></header>
+    <main>
+        <div class="form-card perfil">
+            <th:block th:replace="~{fragments/app :: avisos}"></th:block>
+            <div class="aviso aviso-exito" th:if="${param.nombre != null}" role="status">Nombre actualizado.</div>
+
+            <!-- CABECERA: inicial, nombre, @usuario y email -->
+            <div class="perfil-cabecera">
+                <span class="perfil-avatar" aria-hidden="true"
+                      th:text="${!#strings.isEmpty(usuarioNombre)} ? ${#strings.toUpperCase(#strings.substring(usuarioNombre, 0, 1))} : 'G'">A</span>
+                <div>
+                    <span class="eyebrow">MI PERFIL</span>
+                    <h1 th:text="${usuarioNombre}">Alex</h1>
+                    <p class="texto-suave">
+                        <th:block th:if="${perfil.nombreUsuario != null}" th:text="'@' + ${perfil.nombreUsuario} + ' · '">@alex · </th:block>
+                        <th:block th:text="${email}">alex@email.com</th:block>
+                        <th:block th:text="' · ' + ${totalEntrenos} + (${totalEntrenos == 1} ? ' entrenamiento' : ' entrenamientos')"> · 12 entrenamientos</th:block>
+                    </p>
+                </div>
+            </div>
+
+            <!-- 01 · TUS DATOS -->
+            <section class="seccion perfil-seccion">
+                <span class="eyebrow">01 · TUS DATOS</span>
+                <div class="panel">
+                    <!-- Nombre visible: se guarda en Supabase (js/perfil.js), por eso no lleva action -->
+                    <form id="form-nombre" novalidate>
+                        <label for="nombre">Nombre</label>
+                        <div class="campo-con-boton">
+                            <input type="text" id="nombre" maxlength="60" required autocomplete="name"
+                                   th:value="${usuarioNombre}">
+                            <button type="submit" class="button button-secundario">Guardar</button>
+                        </div>
+                        <p class="ayuda">Es el nombre con el que te saluda la app.</p>
+                        <p class="mensaje-form" id="mensaje-nombre" role="status" aria-live="polite"></p>
+                    </form>
+
+                    <!-- Nombre de usuario: se guarda en nuestra base de datos (PerfilController) -->
+                    <form th:action="@{/perfil/usuario}" method="post" class="perfil-separado">
+                        <label for="nombreUsuario">Nombre de usuario</label>
+                        <div class="campo-con-boton">
+                            <div class="campo-arroba">
+                                <span aria-hidden="true">@</span>
+                                <input type="text" id="nombreUsuario" name="nombreUsuario" maxlength="21"
+                                       pattern="@?[a-zA-Z0-9_]{3,20}" autocomplete="username" spellcheck="false"
+                                       placeholder="tu_usuario" th:value="${perfil.nombreUsuario}">
+                            </div>
+                            <button type="submit" class="button button-secundario">Guardar</button>
+                        </div>
+                        <p class="ayuda">Único: de 3 a 20 caracteres, solo letras, números y "_". Servirá para identificarte en la app.</p>
+                    </form>
+
+                    <div class="perfil-separado campo-lectura">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" th:value="${email}" readonly>
+                        <p class="ayuda">Es tu cuenta para iniciar sesión. De momento no se puede cambiar.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 02 · TU CUERPO Y TU OBJETIVO (cuestionario de bienvenida; se edita en /bienvenida?editar) -->
+            <section class="seccion perfil-seccion">
+                <span class="eyebrow">02 · TU CUERPO Y TU OBJETIVO</span>
+                <div class="panel">
+                    <th:block th:if="${perfil.cuestionarioCompleto}">
+                        <dl class="datos-perfil">
+                            <div class="ancho">
+                                <dt>Objetivo</dt>
+                                <dd th:text="${opcionesPerfil.objetivo[perfil.objetivo]}">💪 Ganar músculo</dd>
+                            </div>
+                            <div>
+                                <dt>Peso</dt>
+                                <dd th:text="${@fmt.num(perfil.pesoKg)} + ' kg' + (${perfil.pesoObjetivoKg != null} ? ' → ' + ${@fmt.num(perfil.pesoObjetivoKg)} + ' kg' : '')">76 kg → 80 kg</dd>
+                            </div>
+                            <div>
+                                <dt>Altura</dt>
+                                <dd th:text="${perfil.alturaCm} + ' cm'">178 cm</dd>
+                            </div>
+                            <div>
+                                <dt>IMC</dt>
+                                <dd th:text="${@fmt.num(perfil.imc)} + ' · ' + ${perfil.imcCategoria}">24 · Peso normal</dd>
+                            </div>
+                            <div th:if="${perfil.edad != null}">
+                                <dt>Edad</dt>
+                                <dd th:text="${perfil.edad} + ' años'">28 años</dd>
+                            </div>
+                            <div>
+                                <dt>Experiencia</dt>
+                                <dd th:text="${opcionesPerfil.experiencia[perfil.experiencia]}">1 - 3 años</dd>
+                            </div>
+                            <div>
+                                <dt>Días por semana</dt>
+                                <dd th:text="${perfil.diasSemana}">4</dd>
+                            </div>
+                            <div th:if="${perfil.duracionSesion != null}">
+                                <dt>Duración del entreno</dt>
+                                <dd th:text="${opcionesPerfil.duracion['' + perfil.duracionSesion]}">1 hora</dd>
+                            </div>
+                            <div>
+                                <dt>Dónde entrenas</dt>
+                                <dd th:text="${opcionesPerfil.lugar[perfil.lugarEntreno]}">Gimnasio completo</dd>
+                            </div>
+                            <div class="ancho" th:if="${perfil.actividadDiaria != null}">
+                                <dt>Actividad fuera del gimnasio</dt>
+                                <dd th:text="${opcionesPerfil.actividad[perfil.actividadDiaria]}">Ligera</dd>
+                            </div>
+                            <div class="ancho" th:if="${perfil.lesiones != null}">
+                                <dt>Lesiones o limitaciones</dt>
+                                <dd th:text="${perfil.lesiones}">Hombro derecho</dd>
+                            </div>
+                        </dl>
+                        <p class="ayuda">El IMC es solo orientativo: no distingue músculo de grasa.</p>
+                        <a class="button button-secundario" th:href="@{/bienvenida(editar='')}">Editar mis datos</a>
+                    </th:block>
+                    <th:block th:unless="${perfil.cuestionarioCompleto}">
+                        <p class="texto-suave">Aún no nos has contado tu objetivo, peso ni cuántos días puedes entrenar. Con esos datos el panel se adapta a ti.</p>
+                        <a class="button" th:href="@{/bienvenida(editar='')}">Completar ahora</a>
+                    </th:block>
+                </div>
+            </section>
+
+            <!-- 03 · SEGURIDAD -->
+            <section class="seccion perfil-seccion">
+                <span class="eyebrow">03 · SEGURIDAD</span>
+                <div class="panel">
+                    <!-- Cambiar contraseña: con Supabase (js/perfil.js). Pide la actual por seguridad. -->
+                    <form id="form-contrasena" th:attr="data-email=${email}" novalidate>
+                        <h3 class="perfil-subtitulo">Cambiar contraseña</h3>
+                        <label for="actual">Contraseña actual</label>
+                        <input type="password" id="actual" autocomplete="current-password" required>
+                        <div class="campos-2">
+                            <div>
+                                <label for="nueva">Nueva contraseña</label>
+                                <input type="password" id="nueva" autocomplete="new-password" minlength="6" required placeholder="Mínimo 6 caracteres">
+                            </div>
+                            <div>
+                                <label for="repetida">Repite la nueva</label>
+                                <input type="password" id="repetida" autocomplete="new-password" minlength="6" required>
+                            </div>
+                        </div>
+                        <div class="form-acciones">
+                            <button type="submit" class="button">Cambiar contraseña</button>
+                        </div>
+                        <p class="mensaje-form" id="mensaje-contrasena" role="status" aria-live="polite"></p>
+                    </form>
+
+                    <div class="perfil-separado">
+                        <h3 class="perfil-subtitulo">Sesiones</h3>
+                        <p class="ayuda">¿Has iniciado sesión en un móvil u ordenador que no es tuyo? Cierra la sesión en todos los dispositivos a la vez.</p>
+                        <button type="button" class="button button-secundario" id="cerrar-todas">Cerrar sesión en todos los dispositivos</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    <footer th:replace="~{fragments/app :: pie}"></footer>
+    <nav th:replace="~{fragments/app :: tabbar}"></nav>
+    <th:block th:replace="~{fragments/app :: scripts}"></th:block>
+    <script th:src="@{/js/perfil.js}"></script>
+</body>
+</html>

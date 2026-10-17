@@ -9,11 +9,18 @@
 
     <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
     <link rel="icon" href="/img/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/img/favicon-180.png">
+    <meta name="theme-color" content="#c92f4b">
+    <!-- App instalable (PWA): ficha de la app e icono/barra en iPhone -->
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Gym Tracker">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="/css/auth.css?v=3">
+    <link rel="stylesheet" href="/css/auth.css?v=6">
 </head>
 
 <body>
@@ -40,6 +47,7 @@
                         </svg>
                     </button>
                 </div>
+                <a class="auth-olvido" href="/recuperar">¿Has olvidado tu contraseña?</a>
 
                 <button type="submit" class="button" id="submitBtn">Iniciar sesión</button>
             </form>
@@ -50,10 +58,12 @@
             </div>
         </section>
     </main>
+    <script src="/js/enlace-error-redirect.js"></script>
     <script src="/js/vendor/supabase-2.117.2.min.js"></script>
     <script src="/js/supabase.js"></script>
     <script src="/js/auth-session.js"></script>
     <script src="/js/auth-ui.js"></script>
+    <script src="/js/pwa.js"></script>
     <script src="/js/login.js"></script>
 </body>
 </html>

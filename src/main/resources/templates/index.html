@@ -9,6 +9,12 @@
     <link rel="icon" type="image/svg+xml" th:href="@{/img/favicon.svg}">
     <link rel="icon" href="/img/favicon.ico" sizes="any">
     <link rel="apple-touch-icon" th:href="@{/img/favicon-180.png}">
+    <!-- App instalable (PWA): ficha de la app e icono/barra en iPhone -->
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#c92f4b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Gym Tracker">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" th:href="@{/css/inicio.css}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -93,6 +99,8 @@
         <span>© 2026 Gym Tracker</span>
         <span>Entrena · Registra · Evoluciona</span>
     </footer>
+    <script th:src="@{/js/enlace-error-redirect.js}"></script>
     <script th:src="@{/js/landing.js}"></script>
+    <script th:src="@{/js/pwa.js}"></script>
 </body>
 </html>

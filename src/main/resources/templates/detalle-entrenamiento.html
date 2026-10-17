@@ -17,6 +17,7 @@
                 <h1 th:text="${entrenamiento.nombre}">Pecho y tríceps</h1>
             </div>
             <div class="page-head-acciones">
+                <a class="button" th:href="@{/entrenamiento/nuevo(repetir=${entrenamiento.id})}">↻ Repetir</a>
                 <a class="button button-secundario" th:href="@{/historial/{id}/editar(id=${entrenamiento.id})}">Editar</a>
                 <form class="en-linea" th:action="@{/historial/{id}/eliminar(id=${entrenamiento.id})}" method="post"
                       data-confirmar="¿Eliminar este entrenamiento del historial? No se puede deshacer.">
@@ -37,7 +38,7 @@
             <div class="stat">
                 <span class="stat-label">VOLUMEN</span>
                 <span class="stat-valor" th:text="${@fmt.entero(entrenamiento.volumen)}">4.200</span>
-                <span class="stat-unidad">kg</span>
+                <span class="stat-unidad">kg movidos (peso × reps)</span>
             </div>
             <div class="stat">
                 <span class="stat-label">DURACIÓN</span>

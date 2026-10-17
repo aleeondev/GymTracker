@@ -34,7 +34,7 @@ public class InicializacionBaseDatos implements ApplicationRunner {
     private static final Logger log = LoggerFactory.getLogger(InicializacionBaseDatos.class);
 
     private static final List<String> TABLAS = List.of(
-        "ejercicios", "rutinas", "rutina_ejercicios", "entrenamientos", "series_entrenamiento");
+        "ejercicios", "rutinas", "rutina_ejercicios", "entrenamientos", "series_entrenamiento", "perfiles");
 
     private final JdbcTemplate jdbc;
     private final EjercicioRepository ejercicioRepository;

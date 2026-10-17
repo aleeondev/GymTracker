@@ -1037,72 +1037,6 @@ form .serie-fila input {
     line-height: 1.6;
 }
 
-/* =========================
-   PROGRESO (gráfica)
-========================= */
-
-.grafica {
-    position: relative;
-    width: 100%;
-}
-
-.grafica svg {
-    display: block;
-    width: 100%;
-    height: auto;
-    overflow: visible;
-}
-
-.grafica .eje {
-    stroke: var(--color-borde);
-    stroke-width: 1;
-}
-
-.grafica .eje-texto {
-    fill: var(--color-texto-secundario);
-    font: 600 11px "Plus Jakarta Sans", sans-serif;
-}
-
-.grafica .linea {
-    fill: none;
-    stroke: var(--color-principal);
-    stroke-width: 2.5;
-    stroke-linejoin: round;
-    stroke-linecap: round;
-}
-
-.grafica .area {
-    fill: var(--color-principal);
-    opacity: 0.08;
-}
-
-.grafica .punto {
-    fill: var(--color-blanco);
-    stroke: var(--color-principal);
-    stroke-width: 2;
-}
-
-.grafica .punto.activo {
-    fill: var(--color-principal);
-}
-
-.grafica-tooltip {
-    position: absolute;
-    pointer-events: none;
-    transform: translate(-50%, calc(-100% - 12px));
-    padding: 8px 12px;
-    border-radius: 10px;
-    background: var(--color-texto);
-    color: #fff;
-    font-size: 13px;
-    font-weight: 700;
-    white-space: nowrap;
-}
-
-.grafica-tooltip[hidden] {
-    display: none;
-}
-
 .tabla {
     width: 100%;
     border-collapse: collapse;
@@ -1420,3 +1354,619 @@ form .serie-fila input {
 .enlace-titulo:hover {
     color: var(--color-principal);
 }
+
+/* =========================
+   PÁGINA SIN CONEXIÓN (offline.html)
+========================= */
+
+.offline-icono {
+    display: block;
+    margin: 0 auto 20px;
+    border-radius: 18px;
+}
+
+/* =========================
+   GRÁFICAS (Chart.js)
+   La configuración de colores, fuentes y tooltips está en js/graficas.js.
+   Aquí solo el contenedor: Chart.js ocupa todo el ancho y el alto de .grafica-caja.
+========================= */
+
+.seccion-nota {
+    color: var(--color-texto-secundario);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.grafica-panel {
+    padding: 24px 24px 18px;
+}
+
+.grafica-caja {
+    position: relative; /* Chart.js lo necesita para ajustar el tamaño */
+    height: 260px;
+}
+
+.grafica-resumen {
+    margin: 14px 0 0;
+    color: var(--color-texto-secundario);
+    font-size: 14px;
+}
+
+.grafica-resumen strong {
+    color: var(--color-texto);
+    font-weight: 800;
+}
+
+.grafica-vacia {
+    margin: 0;
+    padding: 30px 0;
+    text-align: center;
+    color: var(--color-texto-secundario);
+}
+
+.grafica-aviso {
+    margin: 10px 0 0;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: var(--color-suave);
+    color: var(--color-texto);
+    font-size: 14px;
+}
+
+.grafica-aviso b {
+    color: var(--color-principal);
+}
+
+/* Cabecera de la gráfica de evolución: título a la izquierda, periodo a la derecha */
+.grafica-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.grafica-cabecera .eyebrow {
+    margin: 0;
+}
+
+/* Botones 1M / 3M / 6M / Todo (mismo aspecto de "pastilla" que .filtros) */
+.rango {
+    display: flex;
+    gap: 6px;
+}
+
+.rango button {
+    padding: 6px 12px;
+    border: 1px solid var(--color-borde);
+    border-radius: 999px;
+    background: var(--color-blanco);
+    color: var(--color-texto-secundario);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.rango button:hover,
+.rango button[aria-pressed="true"] {
+    border-color: var(--color-principal);
+    background: var(--color-principal);
+    color: #fff;
+}
+
+/* Mini-gráfica de cada ejercicio en la lista de Progreso */
+.fila-mini {
+    position: relative;
+    flex-shrink: 0;
+    width: 88px;
+    height: 34px;
+}
+
+/* Altura según el número de barras: la calcula grafica-grupos.js */
+.grafica-caja-auto {
+    height: auto;
+    min-height: 200px;
+}
+
+/* En Progreso, la gráfica va justo bajo el título de la página */
+.seccion-primera {
+    margin-top: 10px;
+}
+
+.seccion-head-lista {
+    margin-top: 56px;
+}
+
+@media (max-width: 600px) {
+    .grafica-panel {
+        padding: 18px 14px 14px;
+    }
+
+    .grafica-caja {
+        height: 210px;
+    }
+
+    .fila-mini {
+        width: 56px;
+        height: 28px;
+    }
+
+    .seccion-head:has(.seccion-nota) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+}
+
+
+/* =========================
+   PERFIL (perfil.html)
+========================= */
+
+/* Enlace al perfil en la cabecera (avatar + nombre) */
+.app-perfil {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 3px 10px 3px 3px;
+    border-radius: 999px;
+    color: inherit;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.app-perfil:hover,
+.app-perfil.activo {
+    background: var(--color-suave);
+}
+
+/* Texto solo para lectores de pantalla */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.perfil-cabecera {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 10px;
+}
+
+.perfil-cabecera h1 {
+    margin: 4px 0;
+}
+
+.perfil-cabecera p {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.perfil-avatar {
+    flex-shrink: 0;
+    width: 76px;
+    height: 76px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--color-suave);
+    color: var(--color-principal);
+    font-family: "Nunito", sans-serif;
+    font-size: 34px;
+    font-weight: 900;
+}
+
+.perfil-seccion {
+    margin-top: 36px;
+}
+
+.perfil-seccion > .eyebrow {
+    display: block;
+    margin-bottom: 12px;
+}
+
+.perfil-subtitulo {
+    margin: 0 0 6px;
+    font-size: 18px;
+}
+
+/* Separa cada bloque dentro del mismo panel con una línea fina */
+.perfil-separado {
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid var(--color-borde);
+}
+
+/* Campo + botón "Guardar" en la misma línea */
+.campo-con-boton {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+.campo-con-boton > input,
+.campo-con-boton > .campo-arroba {
+    flex: 1;
+    min-width: 0;
+}
+
+.campo-con-boton .button {
+    flex-shrink: 0;
+    margin: 0;
+}
+
+/* Campo de nombre de usuario con la "@" delante */
+.campo-arroba {
+    display: flex;
+    align-items: center;
+    border: 1px solid #dddddd;
+    border-radius: 9px;
+    background: var(--color-blanco);
+}
+
+.campo-arroba:focus-within {
+    border-color: var(--color-principal);
+    box-shadow: 0 0 0 3px var(--color-suave);
+}
+
+.campo-arroba span {
+    padding-left: 12px;
+    color: var(--color-texto-secundario);
+    font-weight: 800;
+}
+
+form .campo-arroba input,
+form .campo-arroba input:focus {
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    padding-left: 4px;
+}
+
+input[readonly] {
+    background: var(--color-fondo);
+    color: var(--color-texto-secundario);
+}
+
+.mensaje-form {
+    min-height: 0;
+    margin: 10px 0 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-texto-secundario);
+}
+
+.mensaje-form:empty {
+    display: none;
+}
+
+.mensaje-form.is-error {
+    color: var(--color-principal);
+}
+
+.mensaje-form.is-success {
+    color: var(--color-exito);
+}
+
+@media (max-width: 600px) {
+    .perfil-avatar {
+        width: 60px;
+        height: 60px;
+        font-size: 26px;
+    }
+
+    .app-perfil {
+        padding: 0;
+    }
+}
+
+/* =========================
+   BIENVENIDA (cuestionario) Y TARJETA "TU OBJETIVO"
+========================= */
+
+/* Barras de progreso (<progress>): pasos del cuestionario y días de la semana */
+progress {
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    border: none;
+    border-radius: 999px;
+    background: var(--color-borde);
+    overflow: hidden;
+}
+
+progress::-webkit-progress-bar {
+    background: var(--color-borde);
+    border-radius: 999px;
+}
+
+progress::-webkit-progress-value {
+    background: var(--color-principal);
+    border-radius: 999px;
+    transition: width 0.3s;
+}
+
+progress::-moz-progress-bar {
+    background: var(--color-principal);
+    border-radius: 999px;
+}
+
+.pasos-progreso {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 18px;
+    color: var(--color-texto-secundario);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.paso-titulo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 4px;
+    font-size: 22px;
+    text-transform: uppercase;
+}
+
+.paso-titulo span {
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--color-principal);
+    color: #fff;
+    font-size: 15px;
+}
+
+/* Cada pregunta de opciones es un <fieldset> con su <legend> como título */
+.pregunta {
+    margin: 22px 0 0;
+    padding: 0;
+    border: none;
+}
+
+.pregunta legend {
+    margin-bottom: 9px;
+    padding: 0;
+    font-weight: 700;
+}
+
+.opcional {
+    margin-left: 4px;
+    color: var(--color-texto-secundario);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Opciones: el radio real queda oculto (pero accesible con teclado) y se pinta el <span> */
+form .opcion {
+    position: relative;
+    display: block;
+    margin: 0;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+form .opcion input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    opacity: 0;
+}
+
+.opcion > span {
+    display: block;
+    padding: 9px 16px;
+    border: 1px solid #dddddd;
+    border-radius: 999px;
+    background: var(--color-blanco);
+    font-size: 14px;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.opcion:hover > span {
+    border-color: var(--color-principal);
+}
+
+.opcion input:checked + span {
+    border-color: var(--color-principal);
+    background: var(--color-principal);
+    color: #fff;
+}
+
+.opcion input:focus-visible + span {
+    box-shadow: 0 0 0 3px var(--color-suave);
+}
+
+/* Chips en línea (sexo, experiencia, días...) */
+.opciones-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Lista vertical (actividad diaria, textos largos) */
+.opciones-lista {
+    display: grid;
+    gap: 8px;
+}
+
+.opciones-lista .opcion > span {
+    border-radius: 12px;
+}
+
+/* Tarjetas grandes (objetivo) */
+.opciones-tarjetas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.opciones-tarjetas .opcion > span {
+    height: 100%;
+    padding: 14px 16px;
+    border-radius: 14px;
+}
+
+.opciones-tarjetas b {
+    display: block;
+    font-size: 15px;
+}
+
+.opciones-tarjetas small {
+    display: block;
+    margin-top: 4px;
+    color: var(--color-texto-secundario);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* La tarjeta elegida: fondo rosa suave (con fondo rojo el texto pequeño no se leería) */
+.opciones-tarjetas .opcion input:checked + span {
+    background: var(--color-suave);
+    color: var(--color-texto);
+    box-shadow: inset 0 0 0 1px var(--color-principal);
+}
+
+.check-consentimiento {
+    display: flex !important;
+    gap: 10px;
+    align-items: flex-start;
+    margin-top: 24px !important;
+    padding: 14px;
+    border-radius: 12px;
+    background: var(--color-fondo);
+    font-size: 14px;
+    font-weight: 500 !important;
+    line-height: 1.5;
+}
+
+form .check-consentimiento input {
+    width: auto;
+    margin-top: 3px;
+    accent-color: var(--color-principal);
+}
+
+.bienvenida-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 28px;
+}
+
+.bienvenida-nav .button {
+    margin: 0;
+}
+
+.bienvenida-nav #paso-siguiente,
+.bienvenida-nav #paso-guardar {
+    margin-left: auto;
+}
+
+.bienvenida-saltar {
+    margin-top: 16px;
+    text-align: center;
+}
+
+/* Tarjeta "Tu objetivo" del panel */
+.objetivo-card {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 22px 40px;
+    margin-top: 24px;
+}
+
+.objetivo-dato {
+    display: grid;
+    gap: 3px;
+    min-width: 150px;
+}
+
+.objetivo-dato strong {
+    font-family: "Nunito", sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.objetivo-sub {
+    color: var(--color-texto-secundario);
+    font-size: 14px;
+}
+
+.barra-dias {
+    margin-top: 4px;
+}
+
+.objetivo-editar {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+}
+
+.objetivo-pendiente {
+    justify-content: space-between;
+    background: var(--color-suave);
+}
+
+.objetivo-pendiente p {
+    margin: 4px 0 0;
+    color: var(--color-texto-secundario);
+}
+
+.objetivo-pendiente .button {
+    margin: 0;
+}
+
+/* Datos del cuestionario en "Mi perfil" */
+.datos-perfil {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px 24px;
+    margin: 0 0 16px;
+}
+
+.datos-perfil .ancho {
+    grid-column: 1 / -1;
+}
+
+.datos-perfil dt {
+    color: var(--color-texto-secundario);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.datos-perfil dd {
+    margin: 3px 0 0;
+    font-weight: 700;
+}
+
+@media (max-width: 600px) {
+    .objetivo-card {
+        gap: 18px;
+    }
+
+    .objetivo-dato {
+        min-width: 0;
+        flex: 1 1 40%;
+    }
+
+    .opciones-tarjetas {
+        grid-template-columns: 1fr;
+    }
+}
+

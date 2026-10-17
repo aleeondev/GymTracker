@@ -12,6 +12,38 @@
             </div>
         </div>
 
+        <!-- SERIES POR GRUPO MUSCULAR (barras horizontales con Chart.js: js/grafica-grupos.js) -->
+        <section class="seccion seccion-primera" th:if="${hayGrupos}">
+            <div class="seccion-head">
+                <div>
+                    <span class="eyebrow">01 · EQUILIBRIO</span>
+                    <h2>Series por grupo muscular</h2>
+                </div>
+                <span class="seccion-nota">Últimas 4 semanas</span>
+            </div>
+            <div class="panel grafica-panel">
+                <div class="grafica-caja grafica-caja-auto" id="caja-grupos">
+                    <canvas id="grafica-grupos" role="img"
+                            th:attr="data-datos=${gruposJson},aria-label=${gruposDescripcion}">
+                        <p th:text="${gruposDescripcion}">Series por grupo muscular.</p>
+                    </canvas>
+                </div>
+                <p class="grafica-resumen">
+                    Total: <strong th:text="${gruposTotal} + ' series'">72 series</strong> en 4 semanas
+                </p>
+                <p class="grafica-aviso" th:if="${!#strings.isEmpty(gruposSinTrabajar)}">
+                    <b>Sin trabajar en 4 semanas:</b> <th:block th:text="${gruposSinTrabajar}">Femoral, Gemelos</th:block>
+                </p>
+            </div>
+        </section>
+
+        <div class="seccion-head seccion-head-lista" th:unless="${#lists.isEmpty(progresos)}">
+            <div>
+                <span class="eyebrow">02 · EJERCICIOS</span>
+                <h2>Ejercicio a ejercicio</h2>
+            </div>
+        </div>
+
         <div class="vacio" th:if="${#lists.isEmpty(progresos)}">
             <h3>Aún no hay datos</h3>
             <p>En cuanto registres entrenamientos, aquí verás cómo evoluciona cada ejercicio.</p>
@@ -23,6 +55,12 @@
                 <div class="fila-cuerpo">
                     <h3 th:text="${p.ejercicio().nombre}">Press banca</h3>
                     <p th:text="'Última vez: ' + ${@fmt.relativa(p.ultima.fecha())} + ' · ' + ${@fmt.num(p.ultima.mejorPeso())} + ' kg × ' + ${p.ultima.repsMejorPeso()} + ' · ' + ${#lists.size(p.sesiones())} + (${#lists.size(p.sesiones()) == 1} ? ' sesión' : ' sesiones')">Última vez: Ayer · 60 kg × 10 · 6 sesiones</p>
+                </div>
+                <!-- Mini-gráfica: forma de la evolución del 1RM (js/grafica-mini.js).
+                     ".![unoRm()]" saca el 1RM de cada sesión; listJoin los une con comas. -->
+                <div class="fila-mini" th:if="${#lists.size(p.sesiones()) >= 2}" aria-hidden="true">
+                    <canvas class="mini-grafica"
+                            th:attr="data-puntos=${#strings.listJoin(p.sesiones().![unoRm()], ',')}"></canvas>
                 </div>
                 <div class="fila-dato">
                     <strong th:text="${@fmt.kg(p.mejorPeso)}">80 kg</strong>
@@ -37,5 +75,10 @@
     <footer th:replace="~{fragments/app :: pie}"></footer>
     <nav th:replace="~{fragments/app :: tabbar}"></nav>
     <th:block th:replace="~{fragments/app :: scripts}"></th:block>
+    <!-- Gráficas: la librería, nuestra configuración común y la gráfica de grupos -->
+    <script th:src="@{/js/vendor/chart-4.5.0.umd.min.js}"></script>
+    <script th:src="@{/js/graficas.js}"></script>
+    <script th:src="@{/js/grafica-grupos.js}"></script>
+    <script th:src="@{/js/grafica-mini.js}"></script>
 </body>
 </html>
