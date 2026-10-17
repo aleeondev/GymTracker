@@ -1,28 +1,44 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrenamiento - Gym Tracker</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
-</head>
-<body>
-    <header>
-        <a class="logo" th:href="@{/}">Gym Tracker</a>
-        <nav>
-            <a th:href="@{/}">Inicio</a>
-            <a th:href="@{/rutinas}">Rutinas</a>
-            <a th:href="@{/ejercicios}">Ejercicios</a>
-            <a th:href="@{/entrenamiento}">Entrenamiento</a>
-            <a th:href="@{/historial}">Historial</a>
-        </nav>
-    </header>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/app :: head('Entrenar')}"></head>
+<body class="app">
+    <header th:replace="~{fragments/app :: cabecera}"></header>
     <main>
-        <h2>Entrenamiento</h2>
-        <p>Aquí podrás registrar tus entrenamientos.</p>
+        <th:block th:replace="~{fragments/app :: avisos}"></th:block>
+        <div class="page-head">
+            <div>
+                <span class="eyebrow">ENTRENAR</span>
+                <h1>¿Qué toca hoy?</h1>
+                <p>Elige una de tus rutinas o haz un entrenamiento libre y ve añadiendo ejercicios sobre la marcha.</p>
+            </div>
+        </div>
+
+        <div class="rejilla">
+            <a class="tarjeta" th:each="rutina, it : ${rutinas}" th:if="${!#lists.isEmpty(rutina.ejercicios)}"
+               th:href="@{/entrenamiento/nuevo(rutina=${rutina.id})}">
+                <span class="tarjeta-num" th:text="${#numbers.formatInteger(it.count, 2)}">01</span>
+                <h3 th:text="${rutina.nombre}">Pecho y tríceps</h3>
+                <p>
+                    <th:block th:each="re, i : ${rutina.ejercicios}" th:if="${i.index < 4}"
+                              th:text="${re.ejercicio.nombre} + (${i.last or i.index == 3} ? '' : ' · ')">Press banca · </th:block>
+                    <th:block th:if="${#lists.size(rutina.ejercicios) > 4}" th:text="' y ' + ${#lists.size(rutina.ejercicios) - 4} + ' más'"></th:block>
+                </p>
+                <div class="tarjeta-pie"><span class="enlace">Empezar →</span></div>
+            </a>
+            <a class="tarjeta" th:href="@{/entrenamiento/nuevo}">
+                <span class="tarjeta-num">LIBRE</span>
+                <h3>Entrenamiento libre</h3>
+                <p>Sin rutina: añade los ejercicios que vayas haciendo.</p>
+                <div class="tarjeta-pie"><span class="enlace">Empezar →</span></div>
+            </a>
+        </div>
+
+        <p class="ayuda consejo" th:if="${#lists.isEmpty(rutinas)}">
+            Consejo: <a class="enlace" th:href="@{/rutinas/nuevo}">crea una rutina</a> y así tendrás tus ejercicios preparados cada día.
+        </p>
     </main>
+    <footer th:replace="~{fragments/app :: pie}"></footer>
+    <nav th:replace="~{fragments/app :: tabbar}"></nav>
+    <th:block th:replace="~{fragments/app :: scripts}"></th:block>
 </body>
 </html>

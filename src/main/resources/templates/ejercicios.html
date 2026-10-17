@@ -1,54 +1,65 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ejercicios - Gym Tracker</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
-</head>
-<body>
-    <header>
-        <a class="logo" th:href="@{/}">Gym Tracker</a>
-        <nav>
-            <a th:href="@{/}">Inicio</a>
-            <a th:href="@{/rutinas}">Rutinas</a>
-            <a th:href="@{/entrenamiento}">Entrenamiento</a>
-            <a th:href="@{/historial}">Historial</a>
-            <a th:href="@{/ejercicios}">Ejercicios</a>
-        </nav>
-    </header>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/app :: head('Ejercicios')}"></head>
+<body class="app">
+    <header th:replace="~{fragments/app :: cabecera}"></header>
     <main>
-        <div class="page-header">
+        <th:block th:replace="~{fragments/app :: avisos}"></th:block>
+        <div class="page-head">
             <div>
-                <h2>Mis ejercicios</h2>
-                <p>Gestiona tus ejercicios y equipamiento.</p>
+                <span class="eyebrow">BIBLIOTECA</span>
+                <h1>Ejercicios</h1>
+                <p>Los ejercicios comunes están disponibles para todos. Si te falta alguno, créalo: solo lo verás tú.</p>
             </div>
-            <a class="button" th:href="@{/ejercicios/nuevo}">+ Añadir ejercicio</a>
+            <div class="page-head-acciones">
+                <a class="button" th:href="@{/ejercicios/nuevo}">+ Crear ejercicio</a>
+            </div>
         </div>
 
-        <div class="cards">
-            <div class="card" th:each="ejercicio : ${ejercicios}">
-                <h3 th:text="${ejercicio.nombre}">Press banca</h3>
-                <div class="exercise-info">
-                    <p>
-                        <strong>Grupo muscular</strong>
-                        <span th:text="${ejercicio.grupoMuscular}">Pecho</span>
-                    </p>
-                    <p>
-                        <strong>Equipamiento</strong>
-                        <span th:text="${ejercicio.equipamiento}">Máquina</span>
-                    </p>
-                </div>
-                <p class="exercise-description" th:text="${ejercicio.descripcion}">Descripción del ejercicio.</p>
-                <div class="card-buttons">
-                    <a class="button" th:href="@{/ejercicios/editar/{id}(id=${ejercicio.id})}">Editar</a>
-                    <a class="button button-delete" th:href="@{/ejercicios/eliminar/{id}(id=${ejercicio.id})}">Eliminar</a>
+        <nav class="filtros" aria-label="Filtrar por grupo muscular">
+            <a th:href="@{/ejercicios}" th:classappend="${grupoSeleccionado == null or #strings.isEmpty(grupoSeleccionado)} ? 'activo'">Todos</a>
+            <a th:each="g : ${grupos}" th:href="@{/ejercicios(grupo=${g})}" th:text="${g}"
+               th:classappend="${g == grupoSeleccionado} ? 'activo'">Pecho</a>
+        </nav>
+
+        <section th:if="${!#lists.isEmpty(propios)}">
+            <div class="seccion-head"><div><span class="eyebrow">01 · MIS EJERCICIOS</span></div></div>
+            <div class="rejilla">
+                <article class="tarjeta" th:each="e : ${propios}">
+                    <span class="chip" th:text="${e.grupoMuscular != null} ? ${e.grupoMuscular} : 'Sin grupo'">Pecho</span>
+                    <h3 th:text="${e.nombre}">Press banca</h3>
+                    <p th:text="${e.equipamiento != null} ? ${e.equipamiento} : 'Sin equipamiento indicado'">Barra</p>
+                    <p th:if="${e.descripcion}" th:text="${e.descripcion}">Descripción.</p>
+                    <div class="tarjeta-pie">
+                        <a class="enlace" th:href="@{/ejercicios/editar/{id}(id=${e.id})}">Editar</a>
+                        <form class="en-linea" th:action="@{/ejercicios/eliminar/{id}(id=${e.id})}" method="post"
+                              th:attr="data-confirmar=|¿Eliminar el ejercicio ${e.nombre}?|">
+                            <button type="submit" class="button button-peligro button-pequeno">Eliminar</button>
+                        </form>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="seccion" th:classappend="${#lists.isEmpty(propios)} ? 'sin-margen'">
+            <div class="seccion-head"><div><span class="eyebrow" th:text="${#lists.isEmpty(propios)} ? 'BIBLIOTECA COMÚN' : '02 · BIBLIOTECA COMÚN'">BIBLIOTECA COMÚN</span></div></div>
+            <div class="vacio" th:if="${#lists.isEmpty(comunes)}">
+                <h3>No hay ejercicios en este grupo</h3>
+                <p>Prueba con otro filtro o crea tu propio ejercicio.</p>
+            </div>
+            <div class="lista" th:unless="${#lists.isEmpty(comunes)}">
+                <div class="fila" th:each="e : ${comunes}">
+                    <div class="fila-cuerpo">
+                        <h3 th:text="${e.nombre}">Press banca</h3>
+                        <p th:text="${e.equipamiento}">Barra</p>
+                    </div>
+                    <span class="chip chip-gris" th:text="${e.grupoMuscular}">Pecho</span>
                 </div>
             </div>
-        </div>
+        </section>
     </main>
+    <footer th:replace="~{fragments/app :: pie}"></footer>
+    <nav th:replace="~{fragments/app :: tabbar}"></nav>
+    <th:block th:replace="~{fragments/app :: scripts}"></th:block>
 </body>
 </html>

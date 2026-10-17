@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/app :: head(${editando} ? 'Editar entrenamiento' : 'Entrenando')}"></head>
+<body class="app">
+    <header th:replace="~{fragments/app :: cabecera}"></header>
+    <main>
+        <a class="volver" th:if="${!editando}" th:href="@{/entrenamiento}" id="descartar-entreno">← Descartar y elegir otro</a>
+        <a class="volver" th:if="${editando}" th:href="@{/historial}">← Volver al historial</a>
+        <th:block th:replace="~{fragments/app :: avisos}"></th:block>
+
+        <div class="aviso aviso-exito aviso-borrador" id="aviso-borrador" hidden>
+            Hemos recuperado tu entrenamiento sin guardar.
+            <button type="button" class="enlace-boton" id="empezar-de-cero">Empezar de cero</button>
+        </div>
+
+        <!--
+            El formulario se dibuja con JavaScript (js/entrenar.js) a partir de
+            los datos que prepara EntrenamientoController en data-datos.
+        -->
+        <form id="form-entreno" th:action="@{/entrenamiento/guardar}" method="post" th:attr="data-datos=${datosJson}">
+            <div class="entreno-cabecera">
+                <div class="entreno-cabecera-texto">
+                    <span class="eyebrow" th:text="${editando} ? 'EDITANDO' : 'ENTRENANDO'">ENTRENANDO</span>
+                    <h1 class="entreno-titulo" id="titulo-entreno" th:text="${titulo}">Pecho y tríceps</h1>
+                </div>
+                <div class="cronometro" id="cronometro" th:unless="${editando}">
+                    <small>TIEMPO</small>
+                    <span id="cronometro-valor">00:00</span>
+                </div>
+            </div>
+
+            <div id="bloques"></div>
+
+            <div class="anadir-ejercicio">
+                <select id="selector-ejercicio" aria-label="Ejercicio para añadir"></select>
+                <button type="button" class="button button-secundario" id="btn-anadir-ejercicio">+ Añadir ejercicio</button>
+            </div>
+
+            <div class="panel">
+                <span class="eyebrow">DETALLES</span>
+                <div class="campos-2">
+                    <div>
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" maxlength="120">
+                    </div>
+                    <div>
+                        <label for="fecha">Fecha</label>
+                        <input type="date" id="fecha" name="fecha" required>
+                    </div>
+                </div>
+                <label for="duracionMinutos">Duración (minutos)</label>
+                <input type="number" id="duracionMinutos" name="duracionMinutos" min="1" max="600" inputmode="numeric"
+                       th:placeholder="${editando} ? 'Opcional' : 'Se calcula sola con el cronómetro'">
+                <label for="notas">Notas (opcional)</label>
+                <textarea id="notas" name="notas" rows="3" maxlength="1000" placeholder="Cómo te has sentido, molestias, ajustes de máquinas..."></textarea>
+            </div>
+
+            <div id="campos-ocultos"></div>
+
+            <div class="form-acciones">
+                <button type="submit" class="button button-grande button-bloque" th:text="${editando} ? 'Guardar cambios' : 'Terminar y guardar entrenamiento'">Terminar y guardar</button>
+            </div>
+        </form>
+
+        <!-- Temporizador de descanso (se muestra al marcar una serie como hecha) -->
+        <div class="descanso" id="descanso" role="timer" aria-live="polite" hidden>
+            <div>
+                <small id="descanso-etiqueta">DESCANSO</small>
+                <span class="descanso-tiempo" id="descanso-tiempo">1:30</span>
+            </div>
+            <button type="button" id="descanso-mas">+15 s</button>
+            <button type="button" id="descanso-saltar">Saltar</button>
+        </div>
+    </main>
+    <nav th:replace="~{fragments/app :: tabbar}"></nav>
+    <th:block th:replace="~{fragments/app :: scripts}"></th:block>
+    <script th:src="@{/js/entrenar.js}"></script>
+</body>
+</html>

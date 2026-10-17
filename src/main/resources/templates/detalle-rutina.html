@@ -1,87 +1,75 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${rutina.nombre} + ' - Gym Tracker'">Rutina - Gym Tracker</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <link rel="stylesheet" th:href="@{/css/rutinas.css}">
-</head>
-<body>
-    <header>
-        <a class="logo" th:href="@{/}">Gym Tracker</a>
-        <nav>
-            <a th:href="@{/}">Inicio</a>
-            <a th:href="@{/rutinas}">Rutinas</a>
-            <a th:href="@{/ejercicios}">Ejercicios</a>
-        </nav>
-    </header>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/app :: head(${rutina.nombre})}"></head>
+<body class="app">
+    <header th:replace="~{fragments/app :: cabecera}"></header>
     <main>
-        <div class="routine-detail-header">
+        <a class="volver" th:href="@{/rutinas}">← Mis rutinas</a>
+        <th:block th:replace="~{fragments/app :: avisos}"></th:block>
+
+        <div class="page-head">
             <div>
-                <p class="routine-label">MI RUTINA</p>
-                <h2 th:text="${rutina.nombre}">Pecho y tríceps</h2>
-                <p class="routine-detail-description" th:text="${rutina.descripcion}">Descripción de la rutina.</p>
+                <span class="eyebrow">MI RUTINA</span>
+                <h1 th:text="${rutina.nombre}">Pecho y tríceps</h1>
+                <p th:if="${rutina.descripcion}" th:text="${rutina.descripcion}">Descripción de la rutina.</p>
             </div>
-            <div class="routine-detail-actions">
-                <a class="button" th:href="@{/rutinas/editar/{id}(id=${rutina.id})}">Editar rutina</a>
-                <a class="button button-delete" th:href="@{/rutinas}">Volver</a>
+            <div class="page-head-acciones">
+                <a class="button" th:if="${!#lists.isEmpty(rutina.ejercicios)}"
+                   th:href="@{/entrenamiento/nuevo(rutina=${rutina.id})}">Entrenar esta rutina →</a>
+                <a class="button button-secundario" th:href="@{/rutinas/editar/{id}(id=${rutina.id})}">Editar</a>
+                <form class="en-linea" th:action="@{/rutinas/eliminar/{id}(id=${rutina.id})}" method="post"
+                      data-confirmar="¿Eliminar esta rutina? Tu historial de entrenamientos se conservará.">
+                    <button type="submit" class="button button-peligro">Eliminar</button>
+                </form>
             </div>
         </div>
-        <div class="routine-exercises">
-            <div class="section-title">
-                <div>
-                    <h3>Ejercicios</h3>
-                    <p>Organiza tus ejercicios de esta rutina.</p>
-                </div>
-                <a class="button" th:href="@{/rutinas/{id}/ejercicios/nuevo(id=${rutina.id})}">+ Añadir ejercicio</a>
-            </div>
-            <!--<div class="empty-routine">
-                <div class="empty-routine-icon">🏋️</div>
-                <h3>Aún no hay ejercicios.</h3>
-                <p>Añade ejercicios a esta rutina para configurar series, repeticiones, peso y descanso de cada una de ellas.</p>
-                <a class="button" th:href="@{/rutinas/{id}/ejercicios/nuevo(id=${rutina.id})}">+ Añadir primer ejercicio</a>
-            </div>-->
 
-            <!-- SIN EJERCICIOS -->
-            <div class="empty-routine" th:if="${#lists.isEmpty(rutinaEjercicios)}">
-                <div class="empty-routine-icon">🏋️</div>
-                <h3>Aún no hay ejercicios.</h3>
-                <p>Añade ejercicios a esta rutina para configurar series, repeticiones, peso y descanso de cada una de ellas.</p>
-                <a class="button" th:href="@{/rutinas/{id}/ejercicios/nuevo(id=${rutina.id})}">+ Añadir primer ejercicio</a>
+        <div class="seccion-head">
+            <div>
+                <span class="eyebrow">EJERCICIOS</span>
+                <h2 th:text="${#lists.size(rutina.ejercicios)} + (${#lists.size(rutina.ejercicios) == 1} ? ' ejercicio' : ' ejercicios')">4 ejercicios</h2>
             </div>
-            <!-- CON EJERCICIOS -->
-            <div class="routine-exercise-list" th:if="${!#lists.isEmpty(rutinaEjercicios)}">
-                <div class="routine-exercise-card" th:each="rutinaEjercicio : ${rutinaEjercicios}">
-                    <div class="routine-exercise-order" th:text="${rutinaEjercicio.orden}">1</div>
-                    <div class="routine-exercise-content">
-                        <h3 th:text="${rutinaEjercicio.ejercicio.nombre}">Press banca</h3>
-                        <p class="routine-exercise-description" th:text="${rutinaEjercicio.ejercicio.descripcion}">Descripción del ejercicio.</p>
-                        <div class="routine-exercise-data">
-                            <div>
-                                <strong>Series</strong>
-                                <span th:text="${rutinaEjercicio.series}">4</span>
-                            </div>
-                            <div>
-                                <strong>Repeticiones</strong>
-                                <span th:text="${rutinaEjercicio.repeticiones}">10</span>
-                            </div>
-                            <div>
-                                <strong>Peso objetivo</strong>
-                                <span th:text="${rutinaEjercicio.pesoObjetivo} + ' kg'">20 kg</span>
-                            </div>
-                            <div>
-                                <strong>Descanso</strong>
-                                <span th:text="${rutinaEjercicio.descanso} + ' s'">90 s</span>
-                            </div>
-                        </div>
+            <a class="button" th:href="@{/rutinas/{id}/ejercicios/nuevo(id=${rutina.id})}">+ Añadir ejercicio</a>
+        </div>
+
+        <div class="vacio" th:if="${#lists.isEmpty(rutina.ejercicios)}">
+            <h3>Aún no hay ejercicios</h3>
+            <p>Añade ejercicios para configurar las series, repeticiones, peso objetivo y descanso de cada uno.</p>
+            <a class="button" th:href="@{/rutinas/{id}/ejercicios/nuevo(id=${rutina.id})}">+ Añadir primer ejercicio</a>
+        </div>
+
+        <div class="lista" th:unless="${#lists.isEmpty(rutina.ejercicios)}">
+            <div class="ejercicio-rutina" th:each="re, it : ${rutina.ejercicios}">
+                <div class="orden" th:text="${re.orden}">1</div>
+                <div class="fila-cuerpo">
+                    <h3 th:text="${re.ejercicio.nombre}">Press banca</h3>
+                    <div class="datos-ejercicio">
+                        <span><strong th:text="${re.series} + ' × ' + ${re.repeticiones}">4 × 10</strong></span>
+                        <span th:if="${re.pesoObjetivo != null and re.pesoObjetivo > 0}">Objetivo <strong th:text="${@fmt.kg(re.pesoObjetivo)}">60 kg</strong></span>
+                        <span th:if="${re.descanso != null}">Descanso <strong th:text="${re.descanso} + ' s'">90 s</strong></span>
+                        <span class="chip chip-gris" th:if="${re.ejercicio.grupoMuscular}" th:text="${re.ejercicio.grupoMuscular}">Pecho</span>
                     </div>
+                </div>
+                <div class="acciones-fila">
+                    <form class="en-linea" th:action="@{/rutinas/{id}/ejercicios/{re}/mover(id=${rutina.id}, re=${re.id})}" method="post">
+                        <input type="hidden" name="direccion" value="-1">
+                        <button type="submit" class="icono-btn" th:disabled="${it.first}" aria-label="Subir">↑</button>
+                    </form>
+                    <form class="en-linea" th:action="@{/rutinas/{id}/ejercicios/{re}/mover(id=${rutina.id}, re=${re.id})}" method="post">
+                        <input type="hidden" name="direccion" value="1">
+                        <button type="submit" class="icono-btn" th:disabled="${it.last}" aria-label="Bajar">↓</button>
+                    </form>
+                    <a class="icono-btn" th:href="@{/rutinas/{id}/ejercicios/{re}/editar(id=${rutina.id}, re=${re.id})}" aria-label="Editar">✎</a>
+                    <form class="en-linea" th:action="@{/rutinas/{id}/ejercicios/{re}/eliminar(id=${rutina.id}, re=${re.id})}" method="post"
+                          th:attr="data-confirmar=|¿Quitar ${re.ejercicio.nombre} de la rutina?|">
+                        <button type="submit" class="icono-btn" aria-label="Quitar de la rutina">✕</button>
+                    </form>
                 </div>
             </div>
         </div>
     </main>
+    <footer th:replace="~{fragments/app :: pie}"></footer>
+    <nav th:replace="~{fragments/app :: tabbar}"></nav>
+    <th:block th:replace="~{fragments/app :: scripts}"></th:block>
 </body>
 </html>

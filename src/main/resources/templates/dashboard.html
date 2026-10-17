@@ -1,65 +1,125 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Gym Tracker</title>
-    <link rel="icon" type="image/svg+xml" th:href="@{/img/favicon.svg}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <link rel="stylesheet" th:href="@{/css/dashboard.css}">  
-</head>
-<body class="dashboard-page">
-    <header class="dashboard-header">
-        <a th:href="@{/dashboard}" class="dashboard-brand">Gym Tracker</a>
-        <button id="cerrarSesion" class="btn-logout" type="button">Cerrar sesión</button>
-    </header>
-    <main class="dashboard-main">
-        <section class="dashboard-welcome">
-            <p class="dashboard-eyebrow">MI ESPACIO PERSONAL</p>
-            <h1 id="saludo">Cargando tu espacio...</h1>
-            <p class="dashboard-description">Tu entrenamiento. Bajo control.</p>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/app :: head('Mi panel')}"></head>
+<body class="app">
+    <header th:replace="~{fragments/app :: cabecera}"></header>
+    <main>
+        <th:block th:replace="~{fragments/app :: avisos}"></th:block>
+
+        <!-- BIENVENIDA -->
+        <section class="dash-hero">
+            <div>
+                <span class="eyebrow" th:text="'Mi espacio · ' + ${@fmt.fechaLarga(hoy)}">Mi espacio · Sábado, 17 de octubre</span>
+                <h1 th:text="'Hola, ' + ${usuarioNombre} + '.'">Hola, Alex.</h1>
+                <p th:if="${resumen.entrenosSemana() == 0}">Aún no has entrenado esta semana. ¿Empezamos hoy?</p>
+                <p th:unless="${resumen.entrenosSemana() == 0}"
+                   th:text="'Llevas ' + ${resumen.entrenosSemana()} + (${resumen.entrenosSemana() == 1} ? ' entreno' : ' entrenos') + ' esta semana. Sigue así.'">Llevas 2 entrenos esta semana.</p>
+            </div>
+            <a class="button button-grande" th:href="@{/entrenamiento}">Empezar entrenamiento →</a>
         </section>
-        <section class="dashboard-section">
-            <div class="section-heading">
+
+        <!-- ESTADÍSTICAS -->
+        <section class="stats" aria-label="Resumen">
+            <div class="stat">
+                <span class="stat-label">01 · ESTA SEMANA</span>
+                <span class="stat-valor" th:text="${resumen.entrenosSemana()}">0</span>
+                <span class="stat-unidad">entrenamientos</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">02 · ESTE MES</span>
+                <span class="stat-valor" th:text="${resumen.entrenosMes()}">0</span>
+                <span class="stat-unidad">entrenamientos</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">03 · VOLUMEN SEMANAL</span>
+                <span class="stat-valor" th:text="${@fmt.entero(resumen.volumenSemana())}">0</span>
+                <span class="stat-unidad">kg levantados</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">04 · RACHA</span>
+                <span class="stat-valor" th:text="${resumen.rachaSemanas()}">0</span>
+                <span class="stat-unidad" th:text="${resumen.rachaSemanas() == 1} ? 'semana seguida' : 'semanas seguidas'">semanas seguidas</span>
+            </div>
+        </section>
+
+        <!-- ENTRENAR HOY -->
+        <section class="seccion">
+            <div class="seccion-head">
                 <div>
-                    <p class="dashboard-eyebrow">MI ACTIVIDAD</p>
-                    <h2>Todo empieza aquí</h2>
+                    <span class="eyebrow">01 · ENTRENAR HOY</span>
+                    <h2>Tus rutinas</h2>
                 </div>
+                <a class="enlace" th:href="@{/rutinas}">Gestionar rutinas →</a>
             </div>
-            <div class="dashboard-grid">
-                <a th:href="@{/rutinas}" class="dashboard-card">
-                    <span class="dashboard-card-icon">01</span>
-                    <h3>Mis rutinas</h3>
-                    <p>Organiza tus entrenamientos y ejercicios.</p>
-                    <span class="dashboard-card-link">Ver mis rutinas →</span>
-                </a>
-                <a th:href="@{/ejercicios}" class="dashboard-card">
-                    <span class="dashboard-card-icon">02</span>
-                    <h3>Mis ejercicios</h3>
-                    <p>Explora nuestra biblioteca de ejercicios.</p>
-                    <span class="dashboard-card-link">Ver mis ejercicios →</span>
-                </a>
-                <a th:href="@{/entrenamiento}" class="dashboard-card">
-                    <span class="dashboard-card-icon">03</span>
-                    <h3>Mi entrenamiento</h3>
-                    <p>Accede a tu espacio de entrenamiento.</p>
-                    <span class="dashboard-card-link">Entrenar →</span>
-                </a>
-                <a th:href="@{/historial}" class="dashboard-card">
-                    <span class="dashboard-card-icon">04</span>
-                    <h3>Mi historial</h3>
-                    <p>Consulta tu actividad y sigue tu evolución.</p>
-                    <span class="dashboard-card-link">Ver historial →</span>
+
+            <div class="vacio" th:if="${#lists.isEmpty(rutinas)}">
+                <h3>Crea tu primera rutina</h3>
+                <p>Una rutina es tu plan: qué ejercicios haces, cuántas series, repeticiones y peso. Después podrás entrenarla con un toque.</p>
+                <a class="button" th:href="@{/rutinas/nuevo}">+ Crear rutina</a>
+            </div>
+
+            <div class="rejilla" th:unless="${#lists.isEmpty(rutinas)}">
+                <a class="tarjeta" th:each="rutina, it : ${rutinas}" th:href="@{/entrenamiento/nuevo(rutina=${rutina.id})}">
+                    <span class="tarjeta-num" th:text="${#numbers.formatInteger(it.count, 2)}">01</span>
+                    <h3 th:text="${rutina.nombre}">Pecho y tríceps</h3>
+                    <p th:text="${#lists.size(rutina.ejercicios)} + (${#lists.size(rutina.ejercicios) == 1} ? ' ejercicio' : ' ejercicios')">5 ejercicios</p>
+                    <div class="tarjeta-pie"><span class="enlace">Entrenar ahora →</span></div>
                 </a>
             </div>
         </section>
-        <p id="mensajeDashboard" class="dashboard-message" role="status" aria-live="polite"></p>
+
+        <!-- ÚLTIMOS ENTRENAMIENTOS -->
+        <section class="seccion">
+            <div class="seccion-head">
+                <div>
+                    <span class="eyebrow">02 · ACTIVIDAD</span>
+                    <h2>Últimos entrenamientos</h2>
+                </div>
+                <a class="enlace" th:href="@{/historial}" th:if="${resumen.totalEntrenos() > 0}">Ver historial →</a>
+            </div>
+
+            <div class="vacio" th:if="${#lists.isEmpty(resumen.ultimos())}">
+                <h3>Todavía no hay nada</h3>
+                <p>Cuando registres tu primer entrenamiento aparecerá aquí, y empezaremos a medir tu progreso.</p>
+            </div>
+
+            <div class="lista" th:unless="${#lists.isEmpty(resumen.ultimos())}">
+                <a class="fila" th:each="e : ${resumen.ultimos()}" th:href="@{/historial/{id}(id=${e.id})}">
+                    <div class="fila-fecha">
+                        <strong th:text="${e.fecha.dayOfMonth}">12</strong>
+                        <span th:text="${#strings.substring(@fmt.mes(e.fecha), 0, 3)}">Oct</span>
+                    </div>
+                    <div class="fila-cuerpo">
+                        <h3 th:text="${e.nombre}">Pecho y tríceps</h3>
+                        <p th:text="${@fmt.relativa(e.fecha)} + ' · ' + ${#lists.size(e.bloques)} + ' ejercicios · ' + ${#lists.size(e.series)} + ' series'">Ayer · 5 ejercicios</p>
+                    </div>
+                    <div class="fila-dato">
+                        <strong th:text="${@fmt.entero(e.volumen)}">4.200</strong>
+                        <span>kg volumen</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <section class="seccion">
+            <div class="rejilla">
+                <a class="tarjeta" th:href="@{/progreso}">
+                    <span class="tarjeta-num">03 · PROGRESO</span>
+                    <h3>Tu evolución</h3>
+                    <p>Mira cómo suben tus pesos y tu 1RM estimado ejercicio a ejercicio.</p>
+                    <div class="tarjeta-pie"><span class="enlace">Ver progreso →</span></div>
+                </a>
+                <a class="tarjeta" th:href="@{/ejercicios}">
+                    <span class="tarjeta-num">04 · BIBLIOTECA</span>
+                    <h3>Ejercicios</h3>
+                    <p>Consulta la biblioteca común o crea tus propios ejercicios.</p>
+                    <div class="tarjeta-pie"><span class="enlace">Ver ejercicios →</span></div>
+                </a>
+            </div>
+        </section>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script th:src="@{/js/supabase.js}"></script>
-    <script th:src="@{/js/dashboard.js}"></script>
+    <footer th:replace="~{fragments/app :: pie}"></footer>
+    <nav th:replace="~{fragments/app :: tabbar}"></nav>
+    <th:block th:replace="~{fragments/app :: scripts}"></th:block>
 </body>
 </html>

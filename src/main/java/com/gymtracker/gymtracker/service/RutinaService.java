@@ -47,7 +47,9 @@ public class RutinaService {
     @Transactional
     public void eliminar(Long id, UUID usuarioId) {
         Rutina rutina = obtener(id, usuarioId);
-        entrenamientoRepository.desvincularRutina(rutina);
+        // El historial se conserva: los entrenamientos de esta rutina se quedan sin rutina
+        // (guardan su propio nombre, así que se siguen viendo igual).
+        entrenamientoRepository.findByRutina(rutina).forEach(e -> e.setRutina(null));
         rutinaRepository.delete(rutina);
     }
 
@@ -74,10 +76,11 @@ public class RutinaService {
             rutina.getEjercicios().add(re);
         }
         re.setEjercicio(ejercicioService.obtenerVisible(ejercicioId, usuarioId));
-        re.setSeries(datos.getSeries());
-        re.setRepeticiones(datos.getRepeticiones());
-        re.setPesoObjetivo(datos.getPesoObjetivo());
-        re.setDescanso(datos.getDescanso());
+        re.setSeries(entre(datos.getSeries(), 1, 20, 3));
+        re.setRepeticiones(entre(datos.getRepeticiones(), 1, 100, 10));
+        Double peso = datos.getPesoObjetivo();
+        re.setPesoObjetivo(peso != null && peso >= 0 && peso <= 1500 ? peso : null);
+        re.setDescanso(entre(datos.getDescanso(), 0, 900, 90));
         rutinaRepository.save(rutina);
     }
 
@@ -102,6 +105,11 @@ public class RutinaService {
                 return;
             }
         }
+    }
+
+    /** Valor dentro de [min, max]; si falta o se sale, el valor por defecto. */
+    private static Integer entre(Integer valor, int min, int max, int porDefecto) {
+        return valor != null && valor >= min && valor <= max ? valor : porDefecto;
     }
 
     private static void renumerar(List<RutinaEjercicio> lista) {

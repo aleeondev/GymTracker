@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/app :: head(${progreso.ejercicio().nombre})}"></head>
+<body class="app">
+    <header th:replace="~{fragments/app :: cabecera}"></header>
+    <main>
+        <a class="volver" th:href="@{/progreso}">← Progreso</a>
+        <div class="page-head">
+            <div>
+                <span class="eyebrow" th:text="'PROGRESO · ' + ${progreso.ejercicio().grupoMuscular}">PROGRESO · PECHO</span>
+                <h1 th:text="${progreso.ejercicio().nombre}">Press banca</h1>
+            </div>
+        </div>
+
+        <section class="stats" aria-label="Resumen del ejercicio">
+            <div class="stat">
+                <span class="stat-label">MEJOR PESO</span>
+                <span class="stat-valor" th:text="${@fmt.num(progreso.mejorPeso)}">80</span>
+                <span class="stat-unidad">kg</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">MEJOR 1RM EST.</span>
+                <span class="stat-valor" th:text="${@fmt.num(T(java.lang.Math).round(progreso.mejorUnoRm * 10) / 10.0)}">95</span>
+                <span class="stat-unidad">kg</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">SESIONES</span>
+                <span class="stat-valor" th:text="${#lists.size(progreso.sesiones())}">6</span>
+                <span class="stat-unidad">registradas</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">EVOLUCIÓN</span>
+                <span class="stat-valor" th:text="${progreso.mejoraPorcentaje != null} ? ((${progreso.mejoraPorcentaje >= 0} ? '+' : '') + ${#numbers.formatDecimal(progreso.mejoraPorcentaje, 1, 0, 'COMMA')} + '%') : '-'">+12%</span>
+                <span class="stat-unidad">1RM desde la primera sesión</span>
+            </div>
+        </section>
+
+        <section class="seccion">
+            <div class="panel">
+                <span class="eyebrow">1RM ESTIMADO POR SESIÓN (KG)</span>
+                <p class="texto-suave" th:if="${#lists.size(progreso.sesiones()) < 2}">Registra este ejercicio en al menos dos sesiones para ver la gráfica.</p>
+                <div class="grafica" id="grafica" th:if="${#lists.size(progreso.sesiones()) >= 2}"
+                     th:attr="data-puntos=${puntosJson}" role="img"
+                     aria-label="Gráfica de la evolución del 1RM estimado. Los datos están en la tabla de abajo."></div>
+            </div>
+        </section>
+
+        <section class="seccion">
+            <div class="seccion-head"><div><span class="eyebrow">TODAS LAS SESIONES</span></div></div>
+            <div class="panel tabla-scroll">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th class="num">Mejor serie</th>
+                            <th class="num">Series</th>
+                            <th class="num">1RM est.</th>
+                            <th class="num">Volumen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="s : ${progreso.sesionesRecientes}">
+                            <td><a class="enlace" th:href="@{/historial/{id}(id=${s.entrenamientoId()})}" th:text="${@fmt.fecha(s.fecha())}">Sáb 17 oct</a></td>
+                            <td class="num" th:text="${@fmt.num(s.mejorPeso())} + ' kg × ' + ${s.repsMejorPeso()}">60 kg × 10</td>
+                            <td class="num" th:text="${s.series()}">4</td>
+                            <td class="num" th:text="${@fmt.num(T(java.lang.Math).round(s.unoRm() * 10) / 10.0)} + ' kg'">80 kg</td>
+                            <td class="num" th:text="${@fmt.entero(s.volumen())} + ' kg'">2.400 kg</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <footer th:replace="~{fragments/app :: pie}"></footer>
+    <nav th:replace="~{fragments/app :: tabbar}"></nav>
+    <th:block th:replace="~{fragments/app :: scripts}"></th:block>
+    <script th:src="@{/js/progreso.js}"></script>
+</body>
+</html>

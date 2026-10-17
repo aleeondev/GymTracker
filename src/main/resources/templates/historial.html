@@ -1,28 +1,49 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historial - Gym Tracker</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
-</head>
-<body>
-    <header>
-        <a class="logo" th:href="@{/}">Gym Tracker</a>
-        <nav>
-            <a th:href="@{/}">Inicio</a>
-            <a th:href="@{/rutinas}">Rutinas</a>
-            <a th:href="@{/ejercicios}">Ejercicios</a>
-            <a th:href="@{/entrenamiento}">Entrenamiento</a>
-            <a th:href="@{/historial}">Historial</a>
-        </nav>
-    </header>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/app :: head('Historial')}"></head>
+<body class="app">
+    <header th:replace="~{fragments/app :: cabecera}"></header>
     <main>
-        <h2>Historial</h2>
-        <p>Aquí podrás consultar tus entrenamientos anteriores.</p>
+        <th:block th:replace="~{fragments/app :: avisos}"></th:block>
+        <div class="page-head">
+            <div>
+                <span class="eyebrow">MI HISTORIAL</span>
+                <h1>Historial</h1>
+                <p>Todos tus entrenamientos, del más reciente al más antiguo.</p>
+            </div>
+            <div class="page-head-acciones">
+                <a class="button" th:href="@{/entrenamiento}">+ Registrar entrenamiento</a>
+            </div>
+        </div>
+
+        <div class="vacio" th:if="${#maps.isEmpty(porMes)}">
+            <h3>Tu historial está vacío</h3>
+            <p>Registra tu primer entrenamiento y aquí irás viendo todo lo que haces semana a semana.</p>
+            <a class="button" th:href="@{/entrenamiento}">Empezar a entrenar →</a>
+        </div>
+
+        <th:block th:each="mes : ${porMes}">
+            <h2 class="mes" th:text="${mes.key}">Octubre 2026</h2>
+            <div class="lista">
+                <a class="fila" th:each="e : ${mes.value}" th:href="@{/historial/{id}(id=${e.id})}">
+                    <div class="fila-fecha">
+                        <strong th:text="${e.fecha.dayOfMonth}">12</strong>
+                        <span th:text="${#strings.substring(@fmt.fecha(e.fecha), 0, 3)}">Sáb</span>
+                    </div>
+                    <div class="fila-cuerpo">
+                        <h3 th:text="${e.nombre}">Pecho y tríceps</h3>
+                        <p th:text="${#lists.size(e.bloques)} + ' ejercicios · ' + ${#lists.size(e.series)} + ' series' + (${e.duracionMinutos != null} ? ' · ' + ${e.duracionMinutos} + ' min' : '')">5 ejercicios · 18 series · 62 min</p>
+                    </div>
+                    <div class="fila-dato">
+                        <strong th:text="${@fmt.entero(e.volumen)}">4.200</strong>
+                        <span>kg volumen</span>
+                    </div>
+                </a>
+            </div>
+        </th:block>
     </main>
+    <footer th:replace="~{fragments/app :: pie}"></footer>
+    <nav th:replace="~{fragments/app :: tabbar}"></nav>
+    <th:block th:replace="~{fragments/app :: scripts}"></th:block>
 </body>
 </html>

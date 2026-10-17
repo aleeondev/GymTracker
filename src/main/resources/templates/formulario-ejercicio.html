@@ -1,39 +1,53 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ejercicio - Gym Tracker</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
-</head>
-<body>
-    <header>
-        <a class="logo" th:href="@{/}">Gym Tracker</a>
-        <nav>
-            <a th:href="@{/}">Inicio</a>
-            <a th:href="@{/ejercicios}">Ejercicios</a>
-        </nav>
-    </header>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/app :: head(${ejercicio.id == null} ? 'Nuevo ejercicio' : 'Editar ejercicio')}"></head>
+<body class="app">
+    <header th:replace="~{fragments/app :: cabecera}"></header>
     <main>
-        <section class="hero">
-            <h2>Nuevo ejercicio</h2>
-            <form th:action="@{/ejercicios/guardar}" th:object="${ejercicio}" method="post">
-                <input type="hidden" th:field="*{id}">
-                <label>Nombre</label>
-                <input type="text" th:field="*{nombre}" required>
-                <label>Grupo Muscular</label>
-                <input type="text" th:field="*{grupoMuscular}" placeholder="Pecho, espalda, pierna...">
-                <label>Descripción</label>
-                <textarea th:field="*{descripcion}" rows="5"></textarea>
-                <label>Máquina / equipamiento</label>
-                <input type="text" th:field="*{equipamiento}" placeholder="Polea, máquina, barra, mancuernas...">
+        <div class="form-card">
+            <a class="volver" th:href="${volver != null} ? ${volver} : @{/ejercicios}">← Volver</a>
+            <th:block th:replace="~{fragments/app :: avisos}"></th:block>
+            <div class="page-head">
+                <div>
+                    <span class="eyebrow" th:text="${ejercicio.id == null} ? 'NUEVO EJERCICIO' : 'EDITAR EJERCICIO'">NUEVO EJERCICIO</span>
+                    <h1 th:text="${ejercicio.id == null} ? 'Crear ejercicio' : ${ejercicio.nombre}">Crear ejercicio</h1>
+                </div>
+            </div>
+            <div class="panel">
+                <form th:action="@{/ejercicios/guardar}" th:object="${ejercicio}" method="post">
+                    <input type="hidden" th:field="*{id}">
+                    <input type="hidden" name="volver" th:if="${volver != null}" th:value="${volver}">
 
-                <button class="button" type="submit">Guardar ejercicio</button>
-            </form>
-        </section>
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" th:field="*{nombre}" maxlength="100" placeholder="Ej. Press banca en multipower" required>
+
+                    <div class="campos-2">
+                        <div>
+                            <label for="grupoMuscular">Grupo muscular</label>
+                            <select id="grupoMuscular" th:field="*{grupoMuscular}" required>
+                                <option value="">Selecciona...</option>
+                                <option th:each="g : ${grupos}" th:value="${g}" th:text="${g}">Pecho</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="equipamiento">Máquina / equipamiento</label>
+                            <input type="text" id="equipamiento" th:field="*{equipamiento}" maxlength="100" placeholder="Barra, mancuernas, polea...">
+                        </div>
+                    </div>
+
+                    <label for="descripcion">Descripción (opcional)</label>
+                    <textarea id="descripcion" th:field="*{descripcion}" rows="4" maxlength="1000" placeholder="Técnica, ajustes de la máquina..."></textarea>
+
+                    <div class="form-acciones">
+                        <button class="button" type="submit">Guardar ejercicio</button>
+                        <a class="button button-secundario" th:href="${volver != null} ? ${volver} : @{/ejercicios}">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </main>
+    <footer th:replace="~{fragments/app :: pie}"></footer>
+    <nav th:replace="~{fragments/app :: tabbar}"></nav>
+    <th:block th:replace="~{fragments/app :: scripts}"></th:block>
 </body>
 </html>

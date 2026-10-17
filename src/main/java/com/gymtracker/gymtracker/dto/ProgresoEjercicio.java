@@ -13,6 +13,11 @@ public record ProgresoEjercicio(Ejercicio ejercicio, List<Sesion> sesiones) {
                          int repsMejorPeso, double unoRm, double volumen) {
     }
 
+    /** Las sesiones de la más reciente a la más antigua (para la tabla). */
+    public List<Sesion> getSesionesRecientes() {
+        return sesiones.reversed();
+    }
+
     public Sesion getUltima() {
         return sesiones.get(sesiones.size() - 1);
     }
