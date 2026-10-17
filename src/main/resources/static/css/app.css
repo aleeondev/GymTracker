@@ -1,0 +1,1422 @@
+/* ==========================================================
+   APP.CSS — Estilos de la parte privada (dashboard, rutinas,
+   ejercicios, entrenar, historial, progreso).
+   Se carga DESPUÉS de styles.css: reutiliza sus variables
+   (--color-principal...), botones (.button) e inputs, y añade
+   los componentes propios de la app con el mismo lenguaje
+   visual que la landing: Nunito 900 en mayúsculas para los
+   títulos, etiquetas numeradas "01 · ..." y bordes finos.
+========================================================== */
+
+:root {
+    --color-exito: #1f9254;
+    --color-exito-suave: #e8f6ee;
+    --color-error-suave: #fdecef;
+    --radio: 18px;
+    --sombra: 0 7px 22px rgba(0, 0, 0, 0.05);
+    --tabbar-alto: 64px;
+}
+
+body.app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+body.app main {
+    width: 100%;
+    flex: 1;
+    padding-top: 40px;
+}
+
+/* =========================
+   CABECERA
+========================= */
+
+.app-header {
+    gap: 30px;
+}
+
+.app-header .logo {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.app-nav {
+    gap: 22px;
+}
+
+.app-nav a {
+    font-size: 15px;
+}
+
+.app-nav a.activo {
+    color: var(--color-principal);
+}
+
+.app-nav a.activo::after {
+    left: 0;
+    width: 100%;
+}
+
+.app-usuario {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.app-avatar {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--color-suave);
+    color: var(--color-principal);
+    font-family: "Nunito", sans-serif;
+    font-weight: 900;
+}
+
+.app-usuario-nombre {
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.btn-salir {
+    padding: 8px 14px;
+    border: 1px solid var(--color-borde);
+    border-radius: 9px;
+    background: var(--color-blanco);
+    color: var(--color-texto-secundario);
+    font: 700 13px "Plus Jakarta Sans", sans-serif;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-salir:hover {
+    border-color: var(--color-principal);
+    color: var(--color-principal);
+}
+
+/* =========================
+   BARRA INFERIOR (solo móvil)
+========================= */
+
+.tabbar {
+    display: none;
+}
+
+.tabbar svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* =========================
+   CABECERA DE PÁGINA
+========================= */
+
+.eyebrow {
+    display: block;
+    margin: 0 0 14px;
+    color: var(--color-principal);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.page-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    margin-bottom: 40px;
+    animation: fadeInDown 0.5s ease-out both;
+}
+
+.page-head h1,
+.titulo-grande {
+    margin: 0;
+    font-family: "Nunito", sans-serif;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+}
+
+.page-head p {
+    max-width: 560px;
+    margin: 14px 0 0;
+    color: var(--color-texto-secundario);
+    line-height: 1.6;
+}
+
+.page-head-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.volver {
+    display: inline-block;
+    margin-bottom: 18px;
+    color: var(--color-texto-secundario);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.volver:hover {
+    color: var(--color-principal);
+}
+
+/* Sección con etiqueta numerada, como en la landing */
+.seccion {
+    margin-top: 56px;
+}
+
+.seccion-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.seccion-head h2 {
+    margin: 0;
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.enlace {
+    color: var(--color-principal);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.enlace:hover {
+    color: var(--color-principal-hover);
+}
+
+/* =========================
+   BOTONES (variantes)
+========================= */
+
+.button-secundario {
+    background: var(--color-blanco);
+    color: var(--color-texto);
+    border: 1px solid #dddddd;
+}
+
+.button-secundario:hover {
+    background: var(--color-blanco);
+    border-color: var(--color-principal);
+    color: var(--color-principal);
+}
+
+.button-secundario::before {
+    display: none;
+}
+
+.button-peligro {
+    background: var(--color-blanco);
+    color: var(--color-principal);
+    border: 1px solid #f1c4cd;
+}
+
+.button-peligro:hover {
+    background: var(--color-error-suave);
+}
+
+.button-peligro::before {
+    display: none;
+}
+
+.button-pequeno {
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+.button-grande {
+    padding: 15px 24px;
+    font-size: 16px;
+}
+
+.button-bloque {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.icono-btn {
+    width: 36px;
+    height: 36px;
+    display: inline-grid;
+    place-items: center;
+    padding: 0;
+    margin: 0;
+    border: 1px solid var(--color-borde);
+    border-radius: 10px;
+    background: var(--color-blanco);
+    color: var(--color-texto-secundario);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.icono-btn:hover {
+    border-color: var(--color-principal);
+    color: var(--color-principal);
+}
+
+.icono-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+/* Formulario que solo contiene un botón (eliminar, mover...) */
+form.en-linea {
+    display: inline;
+    max-width: none;
+    margin: 0;
+}
+
+form.en-linea button {
+    margin-top: 0;
+}
+
+/* =========================
+   AVISOS
+========================= */
+
+.aviso {
+    margin-bottom: 24px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    animation: fadeInDown 0.4s ease-out both;
+}
+
+.aviso-exito {
+    background: var(--color-exito-suave);
+    color: var(--color-exito);
+}
+
+.aviso-error {
+    background: var(--color-error-suave);
+    color: var(--color-principal);
+}
+
+/* =========================
+   PANELES Y TARJETAS
+========================= */
+
+.panel {
+    background: var(--color-blanco);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra);
+    padding: 28px;
+}
+
+.rejilla {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.tarjeta {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 26px;
+    background: var(--color-blanco);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    color: var(--color-texto);
+    text-decoration: none;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+a.tarjeta:hover,
+.tarjeta.interactiva:hover {
+    transform: translateY(-3px);
+    border-color: var(--color-principal);
+    box-shadow: var(--sombra);
+}
+
+.tarjeta-num {
+    color: var(--color-principal);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.tarjeta h3 {
+    margin: 18px 0 8px;
+    font-size: 22px;
+    font-weight: 900;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+}
+
+.tarjeta p {
+    margin: 0 0 18px;
+    color: var(--color-texto-secundario);
+    line-height: 1.55;
+}
+
+.tarjeta-pie {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--color-borde);
+}
+
+.tarjeta-pie .enlace {
+    margin-right: auto;
+}
+
+.chip {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--color-suave);
+    color: var(--color-principal);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.chip-gris {
+    background: #f1f1f1;
+    color: var(--color-texto-secundario);
+}
+
+.texto-suave {
+    color: var(--color-texto-secundario);
+}
+
+/* =========================
+   ESTADÍSTICAS (como la rejilla de "Funciones" de la landing)
+========================= */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--color-borde);
+    border-bottom: 1px solid var(--color-borde);
+    background: var(--color-blanco);
+}
+
+.stat {
+    padding: 26px;
+    border-right: 1px solid var(--color-borde);
+}
+
+.stat:first-child {
+    border-left: 1px solid var(--color-borde);
+}
+
+.stat-label {
+    display: block;
+    color: var(--color-principal);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.stat-valor {
+    display: block;
+    margin-top: 28px;
+    font-family: "Nunito", sans-serif;
+    font-size: clamp(34px, 4vw, 48px);
+    font-weight: 900;
+    line-height: 1;
+}
+
+.stat-unidad {
+    display: block;
+    margin-top: 6px;
+    color: var(--color-texto-secundario);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* =========================
+   HERO DEL DASHBOARD
+========================= */
+
+.dash-hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 30px;
+    padding: 50px;
+    margin-bottom: 40px;
+    background: var(--color-blanco);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    animation: fadeInUp 0.6s ease-out both;
+}
+
+.dash-hero h1 {
+    margin: 0;
+    font-family: "Nunito", sans-serif;
+    font-size: clamp(44px, 7vw, 88px);
+    font-weight: 900;
+    line-height: 0.9;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+}
+
+.dash-hero p {
+    margin: 20px 0 0;
+    color: var(--color-texto-secundario);
+    font-size: 17px;
+    line-height: 1.6;
+}
+
+/* =========================
+   LISTAS (filas)
+========================= */
+
+.lista {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-blanco);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    overflow: hidden;
+}
+
+.fila {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--color-borde);
+    color: var(--color-texto);
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.fila:last-child {
+    border-bottom: none;
+}
+
+a.fila:hover {
+    background: var(--color-suave);
+}
+
+.fila-fecha {
+    width: 58px;
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.fila-fecha strong {
+    display: block;
+    font-family: "Nunito", sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.fila-fecha span {
+    color: var(--color-principal);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.fila-cuerpo {
+    flex: 1;
+    min-width: 0;
+}
+
+.fila-cuerpo h3 {
+    margin: 0 0 4px;
+    font-size: 18px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+
+.fila-cuerpo p {
+    margin: 0;
+    color: var(--color-texto-secundario);
+    font-size: 14px;
+}
+
+.fila-dato {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.fila-dato strong {
+    display: block;
+    font-family: "Nunito", sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.fila-dato span {
+    color: var(--color-texto-secundario);
+    font-size: 12px;
+}
+
+.mes {
+    margin: 36px 0 14px;
+    color: var(--color-principal);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.mes:first-of-type {
+    margin-top: 0;
+}
+
+/* =========================
+   ESTADO VACÍO
+========================= */
+
+.vacio {
+    padding: 50px 30px;
+    text-align: center;
+    background: var(--color-blanco);
+    border: 2px dashed var(--color-borde);
+    border-radius: var(--radio);
+}
+
+.vacio h3 {
+    margin: 0 0 10px;
+    font-size: 22px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.vacio p {
+    max-width: 460px;
+    margin: 0 auto 24px;
+    color: var(--color-texto-secundario);
+    line-height: 1.6;
+}
+
+/* =========================
+   FORMULARIOS
+========================= */
+
+.form-card {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.form-card form {
+    max-width: none;
+    margin: 0;
+}
+
+form label:first-of-type {
+    margin-top: 0;
+}
+
+.campos-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 18px;
+}
+
+.ayuda {
+    margin: 6px 0 0;
+    color: var(--color-texto-secundario);
+    font-size: 13px;
+}
+
+.form-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.form-acciones button {
+    margin-top: 0;
+}
+
+form select,
+.form-select {
+    width: 100%;
+    padding: 13px 42px 13px 14px;
+    background-color: var(--color-blanco);
+    color: var(--color-texto);
+    border: 1px solid #dddddd;
+    border-radius: 9px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, #777 50%),
+                      linear-gradient(135deg, #777 50%, transparent 50%);
+    background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+}
+
+form select:focus,
+.form-select:focus {
+    border-color: var(--color-principal);
+    box-shadow: 0 0 0 3px var(--color-suave);
+}
+
+/* Filtros por grupo muscular */
+.filtros {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    padding-bottom: 6px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.filtros a {
+    flex-shrink: 0;
+    padding: 8px 14px;
+    border: 1px solid var(--color-borde);
+    border-radius: 999px;
+    background: var(--color-blanco);
+    color: var(--color-texto-secundario);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.filtros a:hover,
+.filtros a.activo {
+    border-color: var(--color-principal);
+    background: var(--color-principal);
+    color: #fff;
+}
+
+/* =========================
+   RUTINA: ejercicios
+========================= */
+
+.ejercicio-rutina {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 20px 22px;
+    border-bottom: 1px solid var(--color-borde);
+}
+
+.ejercicio-rutina:last-child {
+    border-bottom: none;
+}
+
+.orden {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: var(--color-suave);
+    color: var(--color-principal);
+    font-family: "Nunito", sans-serif;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.datos-ejercicio {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin-top: 6px;
+    color: var(--color-texto-secundario);
+    font-size: 14px;
+}
+
+.datos-ejercicio strong {
+    color: var(--color-texto);
+}
+
+.acciones-fila {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+/* =========================
+   ENTRENAR (registro de series)
+========================= */
+
+.entreno-cabecera {
+    position: sticky;
+    top: 74px;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--color-borde);
+    border-radius: 14px;
+}
+
+.cronometro {
+    font-family: "Nunito", sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+}
+
+.cronometro small {
+    display: block;
+    color: var(--color-principal);
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.bloque {
+    margin-bottom: 18px;
+    padding: 22px;
+    background: var(--color-blanco);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    animation: fadeInUp 0.4s ease-out both;
+}
+
+.bloque-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.bloque-head h3 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 900;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+}
+
+.bloque-info {
+    margin: 4px 0 0;
+    color: var(--color-texto-secundario);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.bloque-info b {
+    color: var(--color-texto);
+}
+
+.series-tabla {
+    display: grid;
+    gap: 8px;
+}
+
+.serie-fila {
+    display: grid;
+    grid-template-columns: 34px 1fr 1fr 48px 36px;
+    align-items: center;
+    gap: 8px;
+    padding: 4px;
+    border-radius: 12px;
+    transition: background-color 0.2s;
+}
+
+.serie-fila.cabecera {
+    padding-top: 0;
+    padding-bottom: 0;
+    color: var(--color-texto-secundario);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.serie-fila.hecha {
+    background: var(--color-exito-suave);
+}
+
+.serie-num {
+    text-align: center;
+    font-family: "Nunito", sans-serif;
+    font-weight: 900;
+}
+
+form .serie-fila input {
+    padding: 11px 8px;
+    text-align: center;
+    font-size: 16px; /* 16px evita que iOS haga zoom al tocar el campo */
+    font-weight: 700;
+}
+
+.check-serie {
+    width: 48px;
+    height: 44px;
+    margin: 0;
+    display: grid;
+    place-items: center;
+    border: 2px solid var(--color-borde);
+    border-radius: 12px;
+    background: var(--color-blanco);
+    color: #bbbbbb;
+    font-size: 20px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.serie-fila.hecha .check-serie {
+    border-color: var(--color-exito);
+    background: var(--color-exito);
+    color: #fff;
+}
+
+.quitar-serie {
+    border: none;
+    background: none;
+}
+
+.anadir-serie {
+    margin-top: 10px;
+    padding: 10px;
+    width: 100%;
+    border: 1px dashed #dddddd;
+    border-radius: 12px;
+    background: none;
+    color: var(--color-texto-secundario);
+    font: 700 14px "Plus Jakarta Sans", sans-serif;
+    cursor: pointer;
+}
+
+.anadir-serie:hover {
+    border-color: var(--color-principal);
+    color: var(--color-principal);
+}
+
+.anadir-ejercicio {
+    display: flex;
+    gap: 10px;
+    margin: 6px 0 30px;
+}
+
+.anadir-ejercicio select {
+    flex: 1;
+}
+
+.anadir-ejercicio button {
+    margin-top: 0;
+    flex-shrink: 0;
+}
+
+/* Temporizador de descanso flotante */
+.descanso {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    z-index: 200;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px 12px 20px;
+    border-radius: 16px;
+    background: var(--color-texto);
+    color: #fff;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    animation: fadeInUp 0.3s ease-out both;
+}
+
+.descanso[hidden] {
+    display: none;
+}
+
+.descanso-tiempo {
+    min-width: 70px;
+    font-family: "Nunito", sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+}
+
+.descanso small {
+    display: block;
+    color: #ff9fb0;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.descanso button {
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    background: transparent;
+    color: #fff;
+    font: 700 13px "Plus Jakarta Sans", sans-serif;
+    cursor: pointer;
+}
+
+.descanso.terminado {
+    background: var(--color-principal);
+}
+
+/* =========================
+   DETALLE DE ENTRENAMIENTO
+========================= */
+
+.series-resumen {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.series-resumen span {
+    padding: 6px 10px;
+    border-radius: 10px;
+    background: var(--color-fondo);
+    font-size: 14px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.record {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: #fff4d6;
+    color: #9a6a00;
+    font-size: 12px;
+    font-weight: 800;
+    vertical-align: middle;
+}
+
+.notas {
+    margin-top: 24px;
+    white-space: pre-line;
+    line-height: 1.6;
+}
+
+/* =========================
+   PROGRESO (gráfica)
+========================= */
+
+.grafica {
+    position: relative;
+    width: 100%;
+}
+
+.grafica svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.grafica .eje {
+    stroke: var(--color-borde);
+    stroke-width: 1;
+}
+
+.grafica .eje-texto {
+    fill: var(--color-texto-secundario);
+    font: 600 11px "Plus Jakarta Sans", sans-serif;
+}
+
+.grafica .linea {
+    fill: none;
+    stroke: var(--color-principal);
+    stroke-width: 2.5;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+
+.grafica .area {
+    fill: var(--color-principal);
+    opacity: 0.08;
+}
+
+.grafica .punto {
+    fill: var(--color-blanco);
+    stroke: var(--color-principal);
+    stroke-width: 2;
+}
+
+.grafica .punto.activo {
+    fill: var(--color-principal);
+}
+
+.grafica-tooltip {
+    position: absolute;
+    pointer-events: none;
+    transform: translate(-50%, calc(-100% - 12px));
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: var(--color-texto);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.grafica-tooltip[hidden] {
+    display: none;
+}
+
+.tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.tabla th {
+    padding: 10px 12px;
+    color: var(--color-texto-secundario);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-align: left;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--color-borde);
+}
+
+.tabla td {
+    padding: 12px;
+    border-bottom: 1px solid var(--color-borde);
+    font-variant-numeric: tabular-nums;
+}
+
+.tabla tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla .num {
+    text-align: right;
+}
+
+.tabla-scroll {
+    overflow-x: auto;
+}
+
+.subida {
+    color: var(--color-exito);
+    font-weight: 800;
+}
+
+.bajada {
+    color: var(--color-principal);
+    font-weight: 800;
+}
+
+/* =========================
+   PIE
+========================= */
+
+.app-footer {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--color-borde);
+    color: var(--color-texto-secundario);
+    font-size: 12px;
+}
+
+/* =========================
+   PÁGINA DE ERROR
+========================= */
+
+.error-pagina {
+    max-width: 560px;
+    margin: 60px auto;
+    text-align: center;
+}
+
+.error-codigo {
+    font-family: "Nunito", sans-serif;
+    font-size: 110px;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--color-principal);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1050px) {
+    .app-usuario-nombre {
+        display: none;
+    }
+
+    .app-nav {
+        gap: 16px;
+    }
+}
+
+@media (max-width: 900px) {
+    /* En móvil la navegación pasa a la barra inferior */
+    .app-header {
+        flex-direction: row;
+        padding: 14px 20px;
+    }
+
+    .app-header.scrolled {
+        padding: 12px 20px;
+    }
+
+    .app-nav {
+        display: none;
+    }
+
+    body.app {
+        padding-bottom: calc(var(--tabbar-alto) + env(safe-area-inset-bottom));
+    }
+
+    .tabbar {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 150;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        height: calc(var(--tabbar-alto) + env(safe-area-inset-bottom));
+        padding-bottom: env(safe-area-inset-bottom);
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-top: 1px solid var(--color-borde);
+    }
+
+    .tabbar a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        color: var(--color-texto-secundario);
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .tabbar a.activo {
+        color: var(--color-principal);
+    }
+
+    .tabbar a.tabbar-principal svg {
+        width: 44px;
+        height: 30px;
+        padding: 4px 10px;
+        border-radius: 10px;
+        background: var(--color-principal);
+        color: #fff;
+        stroke: #fff;
+    }
+
+    .descanso {
+        bottom: calc(var(--tabbar-alto) + env(safe-area-inset-bottom) + 12px);
+    }
+
+    .entreno-cabecera {
+        top: 66px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .stat {
+        border-left: 1px solid var(--color-borde);
+        border-bottom: 1px solid var(--color-borde);
+    }
+
+    .stat:nth-child(2n) {
+        border-left: none;
+    }
+
+    .stat:nth-last-child(-n + 2) {
+        border-bottom: none;
+    }
+
+    .app-footer {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 640px) {
+    body.app main {
+        padding: 24px 16px;
+    }
+
+    .page-head,
+    .dash-hero {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .dash-hero {
+        padding: 30px 22px;
+    }
+
+    .page-head-acciones,
+    .page-head-acciones .button {
+        width: 100%;
+        text-align: center;
+    }
+
+    .panel {
+        padding: 20px;
+    }
+
+    .campos-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .stat {
+        padding: 18px;
+    }
+
+    .stat-valor {
+        margin-top: 16px;
+    }
+
+    .fila {
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .fila-dato {
+        display: none;
+    }
+
+    .ejercicio-rutina {
+        flex-wrap: wrap;
+        padding: 16px;
+    }
+
+    .ejercicio-rutina .acciones-fila {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .bloque {
+        padding: 16px 12px;
+    }
+
+    .serie-fila {
+        grid-template-columns: 28px 1fr 1fr 46px 30px;
+        gap: 6px;
+    }
+
+    .anadir-ejercicio {
+        flex-direction: column;
+    }
+}
+/* =========================
+   AJUSTES
+========================= */
+
+/* La barra inferior es un <nav>: quitamos el subrayado animado de styles.css */
+.tabbar a::after {
+    display: none;
+}
+
+.seccion.sin-margen {
+    margin-top: 0;
+}
+
+.consejo {
+    margin-top: 24px;
+}
+
+.entreno-cabecera-texto {
+    min-width: 0;
+}
+
+.entreno-cabecera .eyebrow {
+    margin-bottom: 4px;
+}
+
+.entreno-titulo {
+    margin: 0;
+    font-family: "Nunito", sans-serif;
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: 900;
+    line-height: 1.05;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+}
+
+.enlace-boton {
+    margin: 0 0 0 8px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.aviso-borrador[hidden] {
+    display: none;
+}
+
+.panel .eyebrow + .campos-2 label,
+.panel .eyebrow + label {
+    margin-top: 0;
+}
+
+.enlace-titulo {
+    color: inherit;
+    text-decoration: none;
+}
+
+.enlace-titulo:hover {
+    color: var(--color-principal);
+}

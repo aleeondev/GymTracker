@@ -160,20 +160,26 @@
     background-color: rgba(255, 255, 255, 0.75);
 }
 
-.auth-card form button {
+/* Solo el botón de enviar ocupa todo el ancho. Antes la regla era
+   ".auth-card form button" y también estiraba el botón del ojo de la
+   contraseña (width: 100% + margin-top: 25px), sacándolo de su sitio. */
+.auth-card form button[type="submit"] {
     width: 100%;
     margin-top: 25px;
 }
 
-/* CAMPO CONTRASEÑA */
+/* CAMPO CONTRASEÑA
+   El borde lo pinta el contenedor (.password-field) y dentro van el input,
+   sin borde ni fondo, y el botón del ojo pegado a la derecha.
+   Los selectores empiezan por ".auth-card" para ganar en especificidad a las
+   reglas genéricas "form input" / "form button" de styles.css. */
 
-.password-field {
+.auth-card .password-field {
     position: relative;
     display: flex;
     align-items: center;
     width: 100%;
     height: 48px;
-    box-sizing: border-box;
     background-color: rgba(255, 255, 255, 0.75);
     border: 1px solid #dddddd;
     border-radius: 9px;
@@ -181,42 +187,63 @@
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.password-field:focus-within {
+.auth-card .password-field:focus-within {
     border-color: var(--color-principal);
     box-shadow: 0 0 0 3px var(--color-suave);
 }
 
-.password-field input {
+.auth-card .password-field input,
+.auth-card .password-field input:focus {
+    flex: 1;
     width: 100%;
     height: 100%;
-    box-sizing: border-box;
-    padding: 0 45px 0 14px;
     margin: 0;
+    padding: 0 48px 0 14px;
     background: transparent;
     border: none;
     border-radius: 0;
+    box-shadow: none;
     outline: none;
 }
 
-.toggle-password {
+/* Edge añade su propio ojo dentro de los campos de contraseña:
+   lo ocultamos para que no aparezcan dos iconos. */
+.auth-card .password-field input::-ms-reveal,
+.auth-card .password-field input::-ms-clear {
+    display: none;
+}
+
+.auth-card .password-field .toggle-password {
     position: absolute;
-    right: 0;
     top: 0;
+    right: 0;
     bottom: 0;
-    
+
     display: flex;
     align-items: center;
     justify-content: center;
 
     width: 44px;
     height: 100%;
-    padding: 0;
     margin: 0;
+    padding: 0;
 
     background: transparent;
     border: none;
-    cursor: pointer;
+    border-radius: 0;
     color: var(--color-texto-secundario);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.auth-card .password-field .toggle-password:hover {
+    color: var(--color-principal);
+}
+
+.auth-card .password-field .toggle-password:focus-visible {
+    outline: 2px solid var(--color-principal);
+    outline-offset: -4px;
+    border-radius: 8px;
 }
 
 .toggle-password svg {

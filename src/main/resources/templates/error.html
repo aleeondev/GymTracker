@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algo ha fallado | Gym Tracker</title>
+    <link rel="icon" type="image/svg+xml" th:href="@{/img/favicon.svg}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css(v=1)}">
+</head>
+<body class="app">
+    <main>
+        <div class="error-pagina">
+            <div class="error-codigo" th:text="${status} ?: 'Ups'">404</div>
+            <h1 class="titulo-grande" th:text="${status == 404} ? 'No encontrado' : (${status == 403} ? 'Acceso denegado' : 'Algo ha fallado')">No encontrado</h1>
+            <p class="texto-suave" th:if="${status == 404}">Esta página no existe o no tienes acceso a ella.</p>
+            <p class="texto-suave" th:if="${status == 403}">Por seguridad no se ha podido completar la acción. Recarga la página e inténtalo de nuevo.</p>
+            <p class="texto-suave" th:unless="${status == 404 or status == 403}">Ha ocurrido un error inesperado. Inténtalo de nuevo en un momento.</p>
+            <p><a class="button" th:href="@{/dashboard}">Volver a mi panel</a></p>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/app :: head('Progreso')}"></head>
+<body class="app">
+    <header th:replace="~{fragments/app :: cabecera}"></header>
+    <main>
+        <div class="page-head">
+            <div>
+                <span class="eyebrow">MI PROGRESO</span>
+                <h1>Progreso</h1>
+                <p>Tu evolución en cada ejercicio. El <b>1RM estimado</b> es el peso que podrías levantar una sola vez, calculado a partir de tus series (fórmula de Epley): sirve para comparar sesiones aunque cambies peso y repeticiones.</p>
+            </div>
+        </div>
+
+        <div class="vacio" th:if="${#lists.isEmpty(progresos)}">
+            <h3>Aún no hay datos</h3>
+            <p>En cuanto registres entrenamientos, aquí verás cómo evoluciona cada ejercicio.</p>
+            <a class="button" th:href="@{/entrenamiento}">Empezar a entrenar →</a>
+        </div>
+
+        <div class="lista" th:unless="${#lists.isEmpty(progresos)}">
+            <a class="fila" th:each="p : ${progresos}" th:href="@{/progreso/{id}(id=${p.ejercicio().id})}">
+                <div class="fila-cuerpo">
+                    <h3 th:text="${p.ejercicio().nombre}">Press banca</h3>
+                    <p th:text="'Última vez: ' + ${@fmt.relativa(p.ultima.fecha())} + ' · ' + ${@fmt.num(p.ultima.mejorPeso())} + ' kg × ' + ${p.ultima.repsMejorPeso()} + ' · ' + ${#lists.size(p.sesiones())} + (${#lists.size(p.sesiones()) == 1} ? ' sesión' : ' sesiones')">Última vez: Ayer · 60 kg × 10 · 6 sesiones</p>
+                </div>
+                <div class="fila-dato">
+                    <strong th:text="${@fmt.kg(p.mejorPeso)}">80 kg</strong>
+                    <span th:if="${p.mejoraPorcentaje == null}">mejor peso</span>
+                    <span th:if="${p.mejoraPorcentaje != null}"
+                          th:class="${p.mejoraPorcentaje >= 0} ? 'subida' : 'bajada'"
+                          th:text="(${p.mejoraPorcentaje >= 0} ? '+' : '') + ${#numbers.formatDecimal(p.mejoraPorcentaje, 1, 1, 'COMMA')} + '% 1RM'">+12% 1RM</span>
+                </div>
+            </a>
+        </div>
+    </main>
+    <footer th:replace="~{fragments/app :: pie}"></footer>
+    <nav th:replace="~{fragments/app :: tabbar}"></nav>
+    <th:block th:replace="~{fragments/app :: scripts}"></th:block>
+</body>
+</html>

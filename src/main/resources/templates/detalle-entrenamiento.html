@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/app :: head(${entrenamiento.nombre})}"></head>
+<body class="app">
+    <header th:replace="~{fragments/app :: cabecera}"></header>
+    <main>
+        <a class="volver" th:href="@{/historial}">← Historial</a>
+        <th:block th:replace="~{fragments/app :: avisos}"></th:block>
+        <div class="aviso aviso-exito" th:if="${param.guardado != null}" role="status">
+            ¡Entrenamiento guardado! Buen trabajo.
+            <th:block th:if="${!#sets.isEmpty(records)}">Has batido tu récord en <th:block th:text="${#sets.size(records)}">2</th:block> <th:block th:text="${#sets.size(records) == 1} ? 'ejercicio' : 'ejercicios'">ejercicios</th:block> 🏆</th:block>
+        </div>
+
+        <div class="page-head">
+            <div>
+                <span class="eyebrow" th:text="${@fmt.fechaLarga(entrenamiento.fecha)}">Sábado, 17 de octubre de 2026</span>
+                <h1 th:text="${entrenamiento.nombre}">Pecho y tríceps</h1>
+            </div>
+            <div class="page-head-acciones">
+                <a class="button button-secundario" th:href="@{/historial/{id}/editar(id=${entrenamiento.id})}">Editar</a>
+                <form class="en-linea" th:action="@{/historial/{id}/eliminar(id=${entrenamiento.id})}" method="post"
+                      data-confirmar="¿Eliminar este entrenamiento del historial? No se puede deshacer.">
+                    <button type="submit" class="button button-peligro">Eliminar</button>
+                </form>
+            </div>
+        </div>
+
+        <section class="stats" aria-label="Resumen del entrenamiento">
+            <div class="stat">
+                <span class="stat-label">EJERCICIOS</span>
+                <span class="stat-valor" th:text="${#lists.size(entrenamiento.bloques)}">5</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">SERIES</span>
+                <span class="stat-valor" th:text="${#lists.size(entrenamiento.series)}">18</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">VOLUMEN</span>
+                <span class="stat-valor" th:text="${@fmt.entero(entrenamiento.volumen)}">4.200</span>
+                <span class="stat-unidad">kg</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">DURACIÓN</span>
+                <span class="stat-valor" th:text="${entrenamiento.duracionMinutos != null} ? ${entrenamiento.duracionMinutos} : '-'">62</span>
+                <span class="stat-unidad">minutos</span>
+            </div>
+        </section>
+
+        <section class="seccion">
+            <div class="lista">
+                <div class="ejercicio-rutina" th:each="bloque, it : ${entrenamiento.bloques}">
+                    <div class="orden" th:text="${it.count}">1</div>
+                    <div class="fila-cuerpo">
+                        <h3>
+                            <a class="enlace-titulo" th:href="@{/progreso/{id}(id=${bloque[0].ejercicio.id})}" th:text="${bloque[0].ejercicio.nombre}">Press banca</a>
+                            <span class="record" th:if="${#sets.contains(records, bloque[0].ejercicio.id)}">🏆 Récord</span>
+                        </h3>
+                        <div class="series-resumen">
+                            <span th:each="s : ${bloque}" th:text="${@fmt.num(s.peso)} + ' kg × ' + ${s.repeticiones}">60 kg × 10</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel notas" th:if="${entrenamiento.notas}">
+                <span class="eyebrow">NOTAS</span>
+                <th:block th:text="${entrenamiento.notas}">Notas</th:block>
+            </div>
+        </section>
+    </main>
+    <footer th:replace="~{fragments/app :: pie}"></footer>
+    <nav th:replace="~{fragments/app :: tabbar}"></nav>
+    <th:block th:replace="~{fragments/app :: scripts}"></th:block>
+</body>
+</html>
