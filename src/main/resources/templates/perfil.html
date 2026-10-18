@@ -115,6 +115,37 @@
                         </dl>
                         <p class="ayuda">El IMC es solo orientativo: no distingue músculo de grasa.</p>
                         <a class="button button-secundario" th:href="@{/bienvenida(editar='')}">Editar mis datos</a>
+
+                        <!-- TU PESO: evolución (js/grafica-peso.js) y registrar un día -->
+                        <div class="perfil-separado">
+                            <h3 class="perfil-subtitulo">Tu peso</h3>
+                            <div class="grafica-caja" th:if="${numPesos >= 2}">
+                                <canvas id="grafica-peso" role="img"
+                                        th:attr="data-datos=${pesosJson},data-objetivo=${perfil.pesoObjetivoKg}"
+                                        aria-label="Evolución de tu peso corporal y tu peso objetivo.">
+                                    <p>Evolución de tu peso corporal.</p>
+                                </canvas>
+                            </div>
+                            <p class="texto-suave" th:if="${numPesos < 2}">Registra tu peso otro día y aquí verás cómo evoluciona hacia tu objetivo.</p>
+
+                            <form class="peso-perfil" th:action="@{/peso/registrar}" method="post">
+                                <input type="hidden" name="volver" value="/perfil">
+                                <div class="campos-2">
+                                    <div>
+                                        <label for="pesoKg">Peso (kg)</label>
+                                        <input type="number" id="pesoKg" name="pesoKg" min="30" max="300" step="0.1" inputmode="decimal" required
+                                               th:placeholder="${@fmt.num(perfil.pesoKg)}">
+                                    </div>
+                                    <div>
+                                        <label for="fechaPeso">Día</label>
+                                        <input type="date" id="fechaPeso" name="fecha" required th:value="${hoy}" th:max="${hoy}">
+                                    </div>
+                                </div>
+                                <div class="form-acciones">
+                                    <button type="submit" class="button button-secundario">Registrar peso</button>
+                                </div>
+                            </form>
+                        </div>
                     </th:block>
                     <th:block th:unless="${perfil.cuestionarioCompleto}">
                         <p class="texto-suave">Aún no nos has contado tu objetivo, peso ni cuántos días puedes entrenar. Con esos datos el panel se adapta a ti.</p>
@@ -161,5 +192,9 @@
     <nav th:replace="~{fragments/app :: tabbar}"></nav>
     <th:block th:replace="~{fragments/app :: scripts}"></th:block>
     <script th:src="@{/js/perfil.js}"></script>
+    <!-- Gráfica de peso -->
+    <script th:src="@{/js/vendor/chart-4.5.0.umd.min.js}"></script>
+    <script th:src="@{/js/graficas.js}"></script>
+    <script th:src="@{/js/grafica-peso.js}"></script>
 </body>
 </html>

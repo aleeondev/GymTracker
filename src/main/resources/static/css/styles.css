@@ -24,6 +24,13 @@
     box-sizing: border-box;
 }
 
+/* El atributo hidden SIEMPRE oculta. Sin esto, una clase con "display"
+   (por ejemplo .button { display: inline-block }) lo anulaba y el elemento
+   seguía viéndose: pasó con los botones Siguiente/Atrás del cuestionario. */
+[hidden] {
+    display: none !important;
+}
+
 html {
     scroll-behavior: smooth;
 }

@@ -109,6 +109,20 @@ class FlujoUsuarioTests {
             .andExpect(content().string(containsString("TU CUERPO Y TU OBJETIVO")));
         mvc.perform(get("/bienvenida?editar").with(auth)).andExpect(status().isOk());
 
+        // Peso corporal: el cuestionario ya apuntó el de hoy (76,5). Añadimos el de ayer y corregimos hoy.
+        mvc.perform(post("/peso/registrar").with(auth).with(csrf())
+                .param("pesoKg", "77.2").param("fecha", LocalDate.now().minusDays(1).toString()).param("volver", "/perfil"))
+            .andExpect(redirectedUrl("/perfil"));
+        mvc.perform(post("/peso/registrar").with(auth).with(csrf()).param("pesoKg", "76"))
+            .andExpect(redirectedUrl("/dashboard"));
+        mvc.perform(post("/peso/registrar").with(auth).with(csrf()).param("pesoKg", "10"))
+            .andExpect(flash().attribute("error", containsString("entre 30 y 300")));
+        mvc.perform(get("/dashboard").with(auth))
+            .andExpect(content().string(containsString("PESO DE HOY ✓")))
+            .andExpect(content().string(containsString("76 kg → 80 kg")));
+        mvc.perform(get("/perfil").with(auth))
+            .andExpect(content().string(containsString("id=\"grafica-peso\"")));
+
         // Crear rutina
         String urlRutina = mvc.perform(post("/rutinas/guardar").with(auth).with(csrf()).param("nombre", "Día de prueba"))
             .andExpect(status().is3xxRedirection())
@@ -145,6 +159,11 @@ class FlujoUsuarioTests {
             .andExpect(content().string(containsString("class=\"mini-grafica\" data-puntos=\"")));
         mvc.perform(get("/progreso/" + ejercicioId).with(auth)).andExpect(status().isOk())
             .andExpect(content().string(containsString("id=\"grafica-evolucion\"")));
+
+        // Mis récords: pasó de 50 a 55 kg -> récord batido de +5 kg
+        mvc.perform(get("/records").with(auth)).andExpect(status().isOk())
+            .andExpect(content().string(containsString("Antes: 50 kg")))
+            .andExpect(content().string(containsString("+5 kg")));
         String idSegundo = segundo.replaceAll("\\D+(\\d+).*", "$1");
         for (String url : new String[] { primero, "/historial", "/historial/" + idSegundo + "/editar",
                 "/progreso", "/progreso/" + ejercicioId, "/dashboard" }) {

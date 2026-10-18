@@ -2,7 +2,6 @@
 // BIENVENIDA.JS  (página /bienvenida)
 // Convierte el formulario en 3 pasos: enseña uno cada vez, mueve la barra
 // de progreso y comprueba cada paso antes de dejar avanzar.
-// También muestra el "peso objetivo" solo con objetivos de cambiar de peso.
 // ==========================================================
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -18,6 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let actual = 0;
 
     function mostrarPaso(indice, desplazar = true) {
+        // Protección: nunca por debajo del paso 1 ni por encima del último
+        indice = Math.max(0, Math.min(indice, pasos.length - 1));
         actual = indice;
         pasos.forEach((paso, i) => { paso.hidden = i !== indice; });
         barra.value = indice + 1;
@@ -40,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     siguiente.addEventListener("click", () => {
-        if (pasoValido(actual)) mostrarPaso(actual + 1);
+        if (actual < pasos.length - 1 && pasoValido(actual)) mostrarPaso(actual + 1);
     });
     atras.addEventListener("click", () => mostrarPaso(actual - 1));
 
@@ -58,19 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     }, true);
-
-    // ---------- Peso objetivo: solo si el objetivo es cambiar de peso ----------
-    const bloquePeso = document.getElementById("bloque-peso-objetivo");
-    const objetivosConPeso = bloquePeso.dataset.objetivos.split(",");
-
-    function actualizarPesoObjetivo() {
-        const elegido = form.querySelector('input[name="objetivo"]:checked');
-        const visible = elegido != null && objetivosConPeso.includes(elegido.value);
-        bloquePeso.hidden = !visible;
-        if (!visible) document.getElementById("pesoObjetivoKg").value = "";
-    }
-    form.querySelectorAll('input[name="objetivo"]').forEach((radio) => radio.addEventListener("change", actualizarPesoObjetivo));
-    actualizarPesoObjetivo();
 
     // Fecha de nacimiento: como máximo hace 12 años (el servidor también lo comprueba)
     const fecha = document.getElementById("fechaNacimiento");

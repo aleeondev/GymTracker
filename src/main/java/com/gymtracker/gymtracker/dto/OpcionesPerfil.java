@@ -3,7 +3,6 @@ package com.gymtracker.gymtracker.dto;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Opciones de cada pregunta del cuestionario de bienvenida.
@@ -36,9 +35,6 @@ public final class OpcionesPerfil {
         "recomposicion", "Perder grasa y ganar músculo a la vez",
         "fuerza", "Levantar más peso en los básicos",
         "salud", "Estar en forma y sentirme bien");
-
-    /** Objetivos en los que tiene sentido preguntar un peso objetivo. */
-    public static final Set<String> CON_PESO_OBJETIVO = Set.of("perder_grasa", "definir", "ganar_musculo");
 
     public static final Map<String, String> EXPERIENCIA = mapa(
         "empiezo", "Empiezo ahora",

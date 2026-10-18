@@ -14,12 +14,12 @@
 // navegador descarte la caché antigua.
 // ==========================================================
 
-const CACHE = "gymtracker-v8";
+const CACHE = "gymtracker-v13";
 const PAGINA_OFFLINE = "/offline.html";
 const ARCHIVOS_OFFLINE = [
     PAGINA_OFFLINE,
     "/css/styles.css",
-    "/css/app.css?v=8",
+    "/css/app.css?v=13",
     "/img/favicon-192.png"
 ];
 

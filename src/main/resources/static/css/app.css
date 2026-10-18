@@ -1970,3 +1970,256 @@ form .check-consentimiento input {
     }
 }
 
+/* =========================
+   PESO CORPORAL (panel y Mi perfil)
+========================= */
+
+/* Formulario "Peso de hoy" dentro de la tarjeta Tu objetivo */
+form.peso-rapido,
+form.peso-perfil {
+    max-width: none;
+    margin: 0;
+}
+
+form.peso-rapido label {
+    margin: 0;
+}
+
+.peso-rapido input {
+    max-width: 110px;
+    padding: 9px 10px;
+}
+
+.peso-rapido .button {
+    padding: 9px 14px;
+}
+
+.peso-perfil {
+    margin-top: 10px;
+}
+
+/* =========================
+   MIS RÉCORDS (records.html)
+========================= */
+
+/* Título de cada grupo muscular en "Mejor marca por ejercicio" */
+.grupo-titulo {
+    margin: 26px 0 10px;
+    color: var(--color-texto-secundario);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.grupo-titulo:first-of-type {
+    margin-top: 0;
+}
+
+/* Estadística con texto en vez de número (p. ej. "Ayer") */
+.stat-valor-texto {
+    font-size: clamp(24px, 3vw, 32px);
+}
+
+/* =========================
+   CALCULADORA DE DISCOS (entrenar.html + js/discos.js)
+========================= */
+
+/* Botón que abre la calculadora (debajo de "Añadir ejercicio") */
+form .boton-discos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin: -14px 0 30px;
+    padding: 12px;
+    border: 1px solid #dddddd;
+    border-radius: 12px;
+    background: var(--color-blanco);
+    color: var(--color-texto);
+    font: 700 14px "Plus Jakarta Sans", sans-serif;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+form .boton-discos:hover {
+    border-color: var(--color-principal);
+    color: var(--color-principal);
+}
+
+/* <dialog>: ventana nativa del navegador */
+.discos {
+    width: min(480px, calc(100% - 24px));
+    padding: 22px;
+    border: none;
+    border-radius: var(--radio);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.discos::backdrop {
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.discos form {
+    max-width: none;
+    margin: 0;
+}
+
+.discos-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.discos-cabecera h2 {
+    margin: 0;
+    font-size: 20px;
+    text-transform: uppercase;
+}
+
+.discos form .icono-btn {
+    margin: 0;
+}
+
+/* Peso total con botones -5 / -2,5 / +2,5 / +5 a los lados */
+.discos-peso {
+    display: flex;
+    gap: 6px;
+}
+
+.discos-peso input {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    font-family: "Nunito", sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.discos form .discos-peso button {
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0 10px;
+    border: 1px solid #dddddd;
+    border-radius: 9px;
+    background: var(--color-blanco);
+    color: var(--color-texto);
+    font: 800 13px "Plus Jakarta Sans", sans-serif;
+    cursor: pointer;
+}
+
+.discos form .discos-peso button:hover {
+    border-color: var(--color-principal);
+    color: var(--color-principal);
+}
+
+#barra-otra label {
+    margin-top: 14px;
+}
+
+.discos-resultado {
+    margin-top: 18px;
+    padding: 14px 12px 16px;
+    border-radius: 14px;
+    background: var(--color-fondo);
+    text-align: center;
+}
+
+.discos-resultado p {
+    margin: 0;
+    color: var(--color-texto-secundario);
+}
+
+.discos-titulo-lado {
+    margin-top: 6px !important;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.discos-lista {
+    margin-top: 2px !important;
+    color: var(--color-texto) !important;
+    font-family: "Nunito", sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.discos-nota {
+    font-size: 14px;
+}
+
+.discos-aviso {
+    margin-top: 6px !important;
+    color: var(--color-principal) !important;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* ---- El dibujo de la barra (SVG) ---- */
+.barra-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 160px;
+    overflow: visible;
+}
+
+.barra-agarre {
+    fill: #9a9a9a;
+}
+
+.barra-tope {
+    fill: #5c5c5c;
+}
+
+.barra-manga {
+    fill: #b8b8b8;
+}
+
+/* Colores típicos de los discos de competición */
+.plato-cuerpo {
+    stroke: rgba(0, 0, 0, 0.18);
+    stroke-width: 1;
+}
+
+.p25 { fill: #c92f4b; }
+.p20 { fill: #2f6fc9; }
+.p15 { fill: #e0b21b; }
+.p10 { fill: #2f9a5b; }
+.p5 { fill: #f4f4f4; }
+.p2-5 { fill: #3a3a3a; }
+.p1-25 { fill: #9a9a9a; }
+
+.plato-texto {
+    fill: #fff;
+    font: 800 10px "Plus Jakarta Sans", sans-serif;
+    pointer-events: none;
+}
+
+.p5 + .plato-texto {
+    fill: var(--color-texto);
+}
+
+/* Los discos nuevos entran deslizándose por el extremo de la barra */
+.plato.nuevo {
+    transform-box: fill-box;
+    animation: disco-entra-der 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.15) both;
+}
+
+.lado-izq .plato.nuevo {
+    animation-name: disco-entra-izq;
+}
+
+@keyframes disco-entra-der {
+    from { transform: translateX(40px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes disco-entra-izq {
+    from { transform: translateX(-40px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+

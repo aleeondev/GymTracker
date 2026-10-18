@@ -63,6 +63,15 @@
                 <progress class="barra-dias" th:attr="max=${perfil.diasSemana},value=${resumen.entrenosSemana()}"
                           th:text="${resumen.entrenosSemana()} + ' de ' + ${perfil.diasSemana}">2 de 4</progress>
             </div>
+            <!-- Registrar el peso de hoy (PesoCorporalController). Si ya lo apuntaste, se puede corregir. -->
+            <form class="objetivo-dato peso-rapido" th:action="@{/peso/registrar}" method="post">
+                <label class="stat-label" for="pesoHoy" th:text="${pesoHoy != null} ? 'PESO DE HOY ✓' : 'PESO DE HOY'">PESO DE HOY</label>
+                <div class="campo-con-boton">
+                    <input type="number" id="pesoHoy" name="pesoKg" min="30" max="300" step="0.1" inputmode="decimal" required
+                           th:placeholder="${@fmt.num(perfil.pesoKg)}" th:value="${pesoHoy != null} ? ${pesoHoy.pesoKg} : ''">
+                    <button type="submit" class="button button-secundario" th:text="${pesoHoy != null} ? 'Corregir' : 'Guardar'">Guardar</button>
+                </div>
+            </form>
             <a class="enlace objetivo-editar" th:href="@{/bienvenida(editar='')}">Editar</a>
         </section>
         <section class="panel objetivo-card objetivo-pendiente" th:unless="${perfil.cuestionarioCompleto}">

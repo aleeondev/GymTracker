@@ -1,5 +1,7 @@
 package com.gymtracker.gymtracker.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -11,9 +13,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.gymtracker.gymtracker.config.Formato;
 import com.gymtracker.gymtracker.config.UsuarioActual;
+import com.gymtracker.gymtracker.model.PesoCorporal;
 import com.gymtracker.gymtracker.service.EntrenamientoService;
 import com.gymtracker.gymtracker.service.PerfilService;
+import com.gymtracker.gymtracker.service.PesoCorporalService;
+
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Página "Mi perfil".
@@ -27,12 +34,19 @@ import com.gymtracker.gymtracker.service.PerfilService;
 @Controller
 public class PerfilController {
 
+    private static final JsonMapper JSON = JsonMapper.builder().build();
+
     private final PerfilService perfilService;
     private final EntrenamientoService entrenamientoService;
+    private final PesoCorporalService pesoCorporalService;
+    private final Formato fmt;
 
-    public PerfilController(PerfilService perfilService, EntrenamientoService entrenamientoService) {
+    public PerfilController(PerfilService perfilService, EntrenamientoService entrenamientoService,
+                            PesoCorporalService pesoCorporalService, Formato fmt) {
         this.perfilService = perfilService;
         this.entrenamientoService = entrenamientoService;
+        this.pesoCorporalService = pesoCorporalService;
+        this.fmt = fmt;
     }
 
     @GetMapping("/perfil")
@@ -41,6 +55,16 @@ public class PerfilController {
         model.addAttribute("perfil", perfilService.obtener(usuarioId));
         model.addAttribute("email", UsuarioActual.email());
         model.addAttribute("totalEntrenos", entrenamientoService.resumen(usuarioId).totalEntrenos());
+
+        // Gráfica "Tu peso" (js/grafica-peso.js): un punto por registro
+        List<PesoCorporal> pesos = pesoCorporalService.historial(usuarioId);
+        List<Map<String, Object>> puntos = new ArrayList<>();
+        for (PesoCorporal p : pesos) {
+            puntos.add(Map.of("fecha", p.getFecha().toString(), "etiqueta", fmt.fecha(p.getFecha()), "peso", p.getPesoKg()));
+        }
+        model.addAttribute("numPesos", pesos.size());
+        model.addAttribute("pesosJson", JSON.writeValueAsString(puntos));
+        model.addAttribute("hoy", EntrenamientoService.hoy());
         return "perfil";
     }
 
