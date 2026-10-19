@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<!--
+    DISEÑO COMÚN DE LAS PÁGINAS DE ERROR (templates/error/404.html, 500.html...).
+    Spring Boot elige solo la página según el código: error/404.html, si no
+    existe error/4xx.html y, si tampoco, error.html.
+    Parámetros: codigo, titulo, texto, consejo (puede ser null) y recargar
+    (true = muestra el botón "Reintentar").
+    Nunca se muestran detalles técnicos: se quedan en el registro del servidor.
+-->
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:fragment="pagina(codigo, titulo, texto, consejo, recargar)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <meta name="theme-color" content="#c92f4b">
+    <title th:text="${titulo} + ' | Gym Tracker'">Error | Gym Tracker</title>
+    <link rel="icon" type="image/svg+xml" th:href="@{/img/favicon.svg}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="app">
+    <main>
+        <div class="error-pagina">
+            <a class="logo error-logo" th:href="@{/}">Gym Tracker</a>
+            <div class="error-codigo" th:text="${codigo}">404</div>
+            <h1 class="titulo-grande" th:text="${titulo}">No encontrado</h1>
+            <p class="texto-suave error-texto" th:text="${texto}">Explicación.</p>
+            <p class="error-consejo" th:if="${consejo != null}" th:text="${consejo}">Qué hacer.</p>
+
+            <div class="error-acciones">
+                <button type="button" class="button" data-recargar th:if="${recargar}">Reintentar</button>
+                <a class="button" th:classappend="${recargar} ? 'button-secundario'" th:href="@{/dashboard}">Volver al panel</a>
+                <!-- "Atrás" solo aparece si hay página anterior (js/error.js) -->
+                <button type="button" class="button button-secundario" data-atras hidden>← Atrás</button>
+            </div>
+            <p class="error-ref" th:if="${#strings.startsWith('' + codigo, '5')}"
+               th:text="'Si se repite, avísanos indicando la hora: ' + ${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}">Si se repite…</p>
+        </div>
+    </main>
+    <script th:src="@{/js/error.js}"></script>
+</body>
+</html>

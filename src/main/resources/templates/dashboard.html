@@ -46,7 +46,7 @@
         <section class="panel objetivo-card" th:if="${perfil.cuestionarioCompleto}" aria-label="Tu objetivo">
             <div class="objetivo-dato">
                 <span class="stat-label">TU OBJETIVO</span>
-                <strong th:text="${opcionesPerfil.objetivo[perfil.objetivo]}">💪 Ganar músculo</strong>
+                <strong th:text="${opcionesPerfil.objetivo[perfil.objetivo]}">Ganar músculo</strong>
                 <span class="objetivo-sub" th:if="${perfil.pesoObjetivoKg != null}"
                       th:text="${@fmt.num(perfil.pesoKg)} + ' kg → ' + ${@fmt.num(perfil.pesoObjetivoKg)} + ' kg'">76 kg → 80 kg</span>
                 <span class="objetivo-sub" th:unless="${perfil.pesoObjetivoKg != null}"
@@ -124,7 +124,8 @@
             <div class="vacio" th:if="${#lists.isEmpty(rutinas)}">
                 <h3>Crea tu primera rutina</h3>
                 <p>Una rutina es tu plan: qué ejercicios haces, cuántas series, repeticiones y peso. Después podrás entrenarla con un toque.</p>
-                <a class="button" th:href="@{/rutinas/nuevo}">+ Crear rutina</a>
+                <a class="button" th:href="@{/rutinas/recomendadas}"><svg th:replace="~{fragments/iconos :: icono('destello')}"></svg> Rutinas recomendadas</a>
+                <a class="button button-secundario" th:href="@{/rutinas/nuevo}">+ Crear rutina</a>
             </div>
 
             <div class="rejilla" th:unless="${#lists.isEmpty(rutinas)}">
@@ -183,6 +184,18 @@
                     <h3>Ejercicios</h3>
                     <p>Consulta la biblioteca común o crea tus propios ejercicios.</p>
                     <div class="tarjeta-pie"><span class="enlace">Ver ejercicios →</span></div>
+                </a>
+                <a class="tarjeta tarjeta-pronto" th:href="@{/nutricion}">
+                    <span class="tarjeta-num">06 · NUTRICIÓN <span class="chip">PRÓXIMAMENTE</span></span>
+                    <h3><svg th:replace="~{fragments/iconos :: icono('nutricion')}"></svg> Nutrición</h3>
+                    <p>Calorías, macros y comidas del día, conectados con tu objetivo.</p>
+                    <div class="tarjeta-pie"><span class="enlace">Echar un vistazo →</span></div>
+                </a>
+                <a class="tarjeta tarjeta-pronto" th:href="@{/coach}">
+                    <span class="tarjeta-num">07 · COACH IA <span class="chip">PRÓXIMAMENTE</span></span>
+                    <h3><svg th:replace="~{fragments/iconos :: icono('coach')}"></svg> Coach IA</h3>
+                    <p>Un entrenador con IA que conoce tus entrenos y te ayuda a progresar.</p>
+                    <div class="tarjeta-pie"><span class="enlace">Echar un vistazo →</span></div>
                 </a>
             </div>
         </section>

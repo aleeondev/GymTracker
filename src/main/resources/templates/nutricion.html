@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/app :: head('Nutrición')}"></head>
+<body class="app">
+    <header th:replace="~{fragments/app :: cabecera}"></header>
+    <main>
+        <div class="proximamente">
+            <!-- Vista previa con datos DE EJEMPLO, desenfocada. inert + aria-hidden:
+                 no se puede tocar ni la leen los lectores de pantalla. -->
+            <div class="proximamente-vista" aria-hidden="true" inert>
+                <span class="eyebrow">NUTRICIÓN · HOY</span>
+                <h2 class="vista-titulo">Tu alimentación</h2>
+                <div class="vista-nutricion">
+                    <div class="panel vista-anillo">
+                        <div class="anillo"><strong>1.840</strong><span>de 2.450 kcal</span></div>
+                    </div>
+                    <div class="panel vista-macros">
+                        <p><b>Proteína</b> 132 / 160 g</p><progress max="160" value="132"></progress>
+                        <p><b>Hidratos</b> 190 / 280 g</p><progress max="280" value="190"></progress>
+                        <p><b>Grasas</b> 52 / 75 g</p><progress max="75" value="52"></progress>
+                    </div>
+                </div>
+                <div class="lista">
+                    <div class="fila"><div class="fila-cuerpo"><h3>Desayuno</h3><p>Avena, plátano y huevos</p></div><div class="fila-dato"><strong>520</strong><span>kcal</span></div></div>
+                    <div class="fila"><div class="fila-cuerpo"><h3>Comida</h3><p>Arroz, pollo y verduras</p></div><div class="fila-dato"><strong>780</strong><span>kcal</span></div></div>
+                    <div class="fila"><div class="fila-cuerpo"><h3>Merienda</h3><p>Yogur griego y nueces</p></div><div class="fila-dato"><strong>310</strong><span>kcal</span></div></div>
+                </div>
+            </div>
+
+            <!-- Cartel "Próximamente" encima de la vista previa -->
+            <div class="proximamente-cartel">
+                <div class="panel">
+                    <span class="proximamente-icono"><svg th:replace="~{fragments/iconos :: icono('nutricion')}"></svg></span>
+                    <span class="chip">PRÓXIMAMENTE</span>
+                    <span class="eyebrow">NUTRICIÓN</span>
+                    <h1>Tu alimentación, en la misma app</h1>
+                    <p class="texto-suave">Estamos preparando la parte de nutrición para que entrenamiento y comida vayan de la mano.</p>
+                    <ul class="proximamente-lista">
+                        <li>Calorías y macros objetivo calculados con tus datos y tu objetivo</li>
+                        <li>Registro de comidas del día, con proteína, hidratos y grasas</li>
+                        <li>Foto del plato: la IA estimará los alimentos y sus calorías</li>
+                        <li>Seguimiento junto a tu peso y tus entrenos</li>
+                    </ul>
+                    <a class="button" th:href="@{/dashboard}">Volver al panel</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer th:replace="~{fragments/app :: pie}"></footer>
+    <nav th:replace="~{fragments/app :: tabbar}"></nav>
+    <th:block th:replace="~{fragments/app :: scripts}"></th:block>
+</body>
+</html>

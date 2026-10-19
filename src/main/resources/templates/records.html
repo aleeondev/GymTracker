@@ -8,7 +8,7 @@
         <div class="page-head">
             <div>
                 <span class="eyebrow">MIS RÉCORDS</span>
-                <h1>Mis récords 🏆</h1>
+                <h1>Mis récords</h1>
                 <p>Tu mejor marca en cada ejercicio (el mayor peso que has levantado) y las veces que has superado tu máximo.</p>
             </div>
         </div>
@@ -57,7 +57,7 @@
                             <span th:text="${#strings.substring(@fmt.mes(r.fecha()), 0, 3)}">Oct</span>
                         </div>
                         <div class="fila-cuerpo">
-                            <h3><span aria-hidden="true">🏆</span> <th:block th:text="${r.ejercicio().nombre}">Press banca</th:block></h3>
+                            <h3><span class="icono-record"><svg th:replace="~{fragments/iconos :: icono('trofeo')}"></svg></span> <th:block th:text="${r.ejercicio().nombre}">Press banca</th:block></h3>
                             <p th:text="'Antes: ' + ${@fmt.kg(r.anterior())} + ' · ' + ${@fmt.relativa(r.fecha())}">Antes: 75 kg · Ayer</p>
                         </div>
                         <div class="fila-dato">

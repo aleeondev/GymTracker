@@ -21,12 +21,12 @@ public final class OpcionesPerfil {
         "no_decir", "Prefiero no decirlo");
 
     public static final Map<String, String> OBJETIVO = mapa(
-        "perder_grasa", "🔥 Perder grasa",
-        "definir", "✂️ Definir",
-        "ganar_musculo", "💪 Ganar músculo",
-        "recomposicion", "⚖️ Recomposición",
-        "fuerza", "🏋️ Ganar fuerza",
-        "salud", "❤️ Mantenerme y salud");
+        "perder_grasa", "Perder grasa",
+        "definir", "Definir",
+        "ganar_musculo", "Ganar músculo",
+        "recomposicion", "Recomposición",
+        "fuerza", "Ganar fuerza",
+        "salud", "Mantenerme y salud");
 
     public static final Map<String, String> OBJETIVO_DESCRIPCION = mapa(
         "perder_grasa", "Bajar de peso perdiendo grasa",

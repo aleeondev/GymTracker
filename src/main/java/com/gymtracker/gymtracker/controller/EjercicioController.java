@@ -89,7 +89,12 @@ public class EjercicioController {
     }
 
     /** Solo se permite volver a rutas de nuestra propia web (evita redirecciones a otras webs). */
+    /**
+     * Solo rutas de NUESTRA web: "/" seguido de letras, números y / _ - ? = &.
+     * Así no cuela "//web-falsa.com" ni trucos como "/<tabulador>/web-falsa.com"
+     * (los navegadores borran tabuladores y saltos de línea de las direcciones).
+     */
     static boolean rutaInternaValida(String ruta) {
-        return ruta != null && ruta.startsWith("/") && !ruta.startsWith("//") && !ruta.contains("\\");
+        return ruta != null && ruta.matches("/(?!/)[A-Za-z0-9/_?=&-]*");
     }
 }

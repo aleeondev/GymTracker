@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/app :: head('Rutinas recomendadas')}"></head>
+<body class="app">
+    <header th:replace="~{fragments/app :: cabecera}"></header>
+    <main>
+        <a class="volver" th:href="@{/rutinas}">← Mis rutinas</a>
+        <th:block th:replace="~{fragments/app :: avisos}"></th:block>
+        <div class="page-head">
+            <div>
+                <span class="eyebrow">RUTINAS RECOMENDADAS</span>
+                <h1>Elige tu plan</h1>
+                <p>Planes ya montados con ejercicios de la biblioteca. Pulsa "Crear" y aparecerán en Mis rutinas, listos para entrenar. Después puedes cambiar lo que quieras.</p>
+            </div>
+        </div>
+
+        <!-- Esquema según el objetivo (RutinasRecomendadasService.esquema) -->
+        <div class="panel esquema-panel">
+            <span class="stat-label">TU ESQUEMA</span>
+            <strong th:text="${esquema.series()} + ' series × ' + ${esquema.repeticiones()} + ' repeticiones · ' + ${esquema.descanso()} + ' s de descanso'">4 series × 10 repeticiones · 90 s de descanso</strong>
+            <p th:if="${perfil.objetivo != null}"
+               th:text="'Según tu objetivo (' + ${opcionesPerfil.objetivo[perfil.objetivo]} + '): ' + ${esquema.explicacion()} + '.'">Según tu objetivo…</p>
+            <p th:if="${perfil.objetivo == null}">
+                <a class="enlace" th:href="@{/bienvenida(editar='')}">Completa tu perfil</a> y adaptaremos series, repeticiones y el plan recomendado a tu objetivo y tus días.
+            </p>
+        </div>
+
+        <div class="planes">
+            <article class="panel plan" th:each="plan : ${planes}" th:classappend="${plan.clave() == recomendado} ? 'plan-recomendado'">
+                <span class="chip" th:if="${plan.clave() == recomendado}"><svg th:replace="~{fragments/iconos :: icono('destello')}"></svg> Recomendado para ti</span>
+                <span class="stat-label" th:text="${plan.dias()}">4 días</span>
+                <h2 th:text="${plan.nombre()}">Torso / Pierna</h2>
+                <p class="texto-suave" th:text="${plan.descripcion()}">Descripción</p>
+                <div class="plan-rutina" th:each="r : ${plan.rutinas()}">
+                    <h3 th:text="${r.nombre()}">Torso</h3>
+                    <p th:text="${#strings.listJoin(r.ejercicios(), ' · ')}">Press banca · Remo con barra</p>
+                </div>
+                <form th:action="@{/rutinas/recomendadas/crear}" method="post"
+                      th:attr="data-confirmar='Se crearán ' + ${#lists.size(plan.rutinas())} + ' rutinas en tu cuenta. ¿Continuar?'">
+                    <input type="hidden" name="plan" th:value="${plan.clave()}">
+                    <button type="submit" class="button" th:classappend="${plan.clave() != recomendado} ? 'button-secundario'"
+                            th:text="'Crear ' + ${#lists.size(plan.rutinas())} + ' rutinas'">Crear 2 rutinas</button>
+                </form>
+            </article>
+        </div>
+    </main>
+    <footer th:replace="~{fragments/app :: pie}"></footer>
+    <nav th:replace="~{fragments/app :: tabbar}"></nav>
+    <th:block th:replace="~{fragments/app :: scripts}"></th:block>
+</body>
+</html>

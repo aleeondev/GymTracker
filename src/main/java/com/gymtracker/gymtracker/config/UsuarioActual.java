@@ -32,7 +32,10 @@ public final class UsuarioActual {
             for (String clave : new String[] { "nombre", "name", "full_name" }) {
                 Object valor = datos.get(clave);
                 if (valor instanceof String texto && !texto.isBlank()) {
-                    return texto.trim();
+                    // El usuario puede poner lo que quiera en user_metadata (API de Supabase):
+                    // lo recortamos para que un nombre enorme no rompa el diseño.
+                    String limpio = texto.trim();
+                    return limpio.length() > 60 ? limpio.substring(0, 60) : limpio;
                 }
             }
         }

@@ -72,7 +72,7 @@
                             <label class="opcion" th:each="op : ${opcionesPerfil.objetivo}">
                                 <input type="radio" name="objetivo" th:value="${op.key}" th:checked="${form.objetivo == op.key}" required>
                                 <span>
-                                    <b th:text="${op.value}">💪 Ganar músculo</b>
+                                    <b th:text="${op.value}">Ganar músculo</b>
                                     <small th:text="${opcionesPerfil.objetivoDescripcion[op.key]}">Volumen</small>
                                 </span>
                             </label>

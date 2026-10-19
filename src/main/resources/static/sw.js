@@ -10,16 +10,17 @@
 // no deben quedar copias guardadas. Solo cacheamos la página "sin conexión"
 // y los archivos que ella necesita.
 //
-// Si cambias algo de esta lista, sube la versión (v1 -> v2) para que el
-// navegador descarte la caché antigua.
+// Si cambias la lista ARCHIVOS_OFFLINE, sube la versión de CACHE (v16 -> v17)
+// para que el navegador descarte la copia antigua. (Es lo único que se versiona
+// a mano: el resto de CSS y JS lleva huella automática, ver application.properties.)
 // ==========================================================
 
-const CACHE = "gymtracker-v13";
+const CACHE = "gymtracker-v16";
 const PAGINA_OFFLINE = "/offline.html";
 const ARCHIVOS_OFFLINE = [
     PAGINA_OFFLINE,
     "/css/styles.css",
-    "/css/app.css?v=13",
+    "/css/app.css",
     "/img/favicon-192.png"
 ];
 
