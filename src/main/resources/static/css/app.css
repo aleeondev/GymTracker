@@ -1970,3 +1970,614 @@ form .check-consentimiento input {
     }
 }
 
+/* =========================
+   PESO CORPORAL (panel y Mi perfil)
+========================= */
+
+/* Formulario "Peso de hoy" dentro de la tarjeta Tu objetivo */
+form.peso-rapido,
+form.peso-perfil {
+    max-width: none;
+    margin: 0;
+}
+
+form.peso-rapido label {
+    margin: 0;
+}
+
+.peso-rapido input {
+    max-width: 110px;
+    padding: 9px 10px;
+}
+
+.peso-rapido .button {
+    padding: 9px 14px;
+}
+
+.peso-perfil {
+    margin-top: 10px;
+}
+
+/* =========================
+   MIS RÉCORDS (records.html)
+========================= */
+
+/* Título de cada grupo muscular en "Mejor marca por ejercicio" */
+.grupo-titulo {
+    margin: 26px 0 10px;
+    color: var(--color-texto-secundario);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.grupo-titulo:first-of-type {
+    margin-top: 0;
+}
+
+/* Estadística con texto en vez de número (p. ej. "Ayer") */
+.stat-valor-texto {
+    font-size: clamp(24px, 3vw, 32px);
+}
+
+/* =========================
+   CALCULADORA DE DISCOS (entrenar.html + js/discos.js)
+========================= */
+
+/* Botón que abre la calculadora (debajo de "Añadir ejercicio") */
+form .boton-discos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin: -14px 0 30px;
+    padding: 12px;
+    border: 1px solid #dddddd;
+    border-radius: 12px;
+    background: var(--color-blanco);
+    color: var(--color-texto);
+    font: 700 14px "Plus Jakarta Sans", sans-serif;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+form .boton-discos:hover {
+    border-color: var(--color-principal);
+    color: var(--color-principal);
+}
+
+/* <dialog>: ventana nativa del navegador */
+.discos {
+    width: min(480px, calc(100% - 24px));
+    padding: 22px;
+    border: none;
+    border-radius: var(--radio);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.discos::backdrop {
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.discos form {
+    max-width: none;
+    margin: 0;
+}
+
+.discos-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.discos-cabecera h2 {
+    margin: 0;
+    font-size: 20px;
+    text-transform: uppercase;
+}
+
+.discos form .icono-btn {
+    margin: 0;
+}
+
+/* Peso total con botones -5 / -2,5 / +2,5 / +5 a los lados */
+.discos-peso {
+    display: flex;
+    gap: 6px;
+}
+
+.discos-peso input {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    font-family: "Nunito", sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.discos form .discos-peso button {
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0 10px;
+    border: 1px solid #dddddd;
+    border-radius: 9px;
+    background: var(--color-blanco);
+    color: var(--color-texto);
+    font: 800 13px "Plus Jakarta Sans", sans-serif;
+    cursor: pointer;
+}
+
+.discos form .discos-peso button:hover {
+    border-color: var(--color-principal);
+    color: var(--color-principal);
+}
+
+#barra-otra label {
+    margin-top: 14px;
+}
+
+.discos-resultado {
+    margin-top: 18px;
+    padding: 14px 12px 16px;
+    border-radius: 14px;
+    background: var(--color-fondo);
+    text-align: center;
+}
+
+.discos-resultado p {
+    margin: 0;
+    color: var(--color-texto-secundario);
+}
+
+.discos-titulo-lado {
+    margin-top: 6px !important;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.discos-lista {
+    margin-top: 2px !important;
+    color: var(--color-texto) !important;
+    font-family: "Nunito", sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.discos-nota {
+    font-size: 14px;
+}
+
+.discos-aviso {
+    margin-top: 6px !important;
+    color: var(--color-principal) !important;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* ---- El dibujo de la barra (SVG) ---- */
+.barra-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 160px;
+    overflow: visible;
+}
+
+.barra-agarre {
+    fill: #9a9a9a;
+}
+
+.barra-tope {
+    fill: #5c5c5c;
+}
+
+.barra-manga {
+    fill: #b8b8b8;
+}
+
+/* Colores típicos de los discos de competición */
+.plato-cuerpo {
+    stroke: rgba(0, 0, 0, 0.18);
+    stroke-width: 1;
+}
+
+.p25 { fill: #c92f4b; }
+.p20 { fill: #2f6fc9; }
+.p15 { fill: #e0b21b; }
+.p10 { fill: #2f9a5b; }
+.p5 { fill: #f4f4f4; }
+.p2-5 { fill: #3a3a3a; }
+.p1-25 { fill: #9a9a9a; }
+
+.plato-texto {
+    fill: #fff;
+    font: 800 10px "Plus Jakarta Sans", sans-serif;
+    pointer-events: none;
+}
+
+.p5 + .plato-texto {
+    fill: var(--color-texto);
+}
+
+/* Los discos nuevos entran deslizándose por el extremo de la barra */
+.plato.nuevo {
+    transform-box: fill-box;
+    animation: disco-entra-der 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.15) both;
+}
+
+.lado-izq .plato.nuevo {
+    animation-name: disco-entra-izq;
+}
+
+@keyframes disco-entra-der {
+    from { transform: translateX(40px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes disco-entra-izq {
+    from { transform: translateX(-40px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* =========================
+   RUTINAS RECOMENDADAS (rutinas-recomendadas.html)
+========================= */
+
+.esquema-panel {
+    display: grid;
+    gap: 4px;
+    margin-bottom: 26px;
+}
+
+.esquema-panel strong {
+    font-family: "Nunito", sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.esquema-panel p {
+    margin: 0;
+    color: var(--color-texto-secundario);
+}
+
+.planes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    align-items: start;
+}
+
+.plan {
+    display: grid;
+    gap: 8px;
+}
+
+.plan h2 {
+    margin: 0;
+    font-size: 24px;
+    text-transform: uppercase;
+}
+
+.plan .chip {
+    justify-self: start;
+}
+
+.plan-recomendado {
+    border-color: var(--color-principal);
+    box-shadow: 0 0 0 1px var(--color-principal), var(--sombra);
+}
+
+.plan-rutina {
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: var(--color-fondo);
+}
+
+.plan-rutina h3 {
+    margin: 0 0 4px;
+    font-size: 15px;
+}
+
+.plan-rutina p {
+    margin: 0;
+    color: var(--color-texto-secundario);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.plan form {
+    max-width: none;
+    margin: 8px 0 0;
+}
+
+.plan form .button {
+    width: 100%;
+}
+
+/* =========================
+   PRÓXIMAMENTE (nutricion.html, coach.html)
+========================= */
+
+.proximamente {
+    position: relative;
+    min-height: 620px;
+}
+
+/* La vista previa: desenfocada, apagada y sin poder tocarla */
+.proximamente-vista {
+    filter: blur(5px);
+    opacity: 0.55;
+    pointer-events: none;
+    user-select: none;
+}
+
+.vista-titulo {
+    margin: 6px 0 20px;
+    font-size: 30px;
+    text-transform: uppercase;
+}
+
+/* El cartel, centrado encima */
+.proximamente-cartel {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+}
+
+.proximamente-cartel .panel {
+    max-width: 480px;
+    display: grid;
+    justify-items: start;
+    gap: 8px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+}
+
+.proximamente-cartel h1 {
+    margin: 0;
+    font-size: clamp(26px, 4vw, 34px);
+}
+
+.proximamente-cartel p {
+    margin: 0;
+}
+
+.proximamente-icono {
+    width: 56px;
+    height: 56px;
+    display: grid;
+    place-items: center;
+    border-radius: 16px;
+    background: var(--color-suave);
+    color: var(--color-principal);
+}
+
+.proximamente-icono .icono {
+    width: 30px;
+    height: 30px;
+}
+
+.proximamente-lista {
+    margin: 4px 0 10px;
+    padding-left: 20px;
+    line-height: 1.7;
+}
+
+/* Vista previa de nutrición */
+.vista-nutricion {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.vista-anillo {
+    display: grid;
+    place-items: center;
+}
+
+.anillo {
+    width: 160px;
+    height: 160px;
+    display: grid;
+    place-content: center;
+    text-align: center;
+    border-radius: 50%;
+    background:
+        radial-gradient(closest-side, var(--color-blanco) 78%, transparent 79%),
+        conic-gradient(var(--color-principal) 75%, var(--color-borde) 0);
+}
+
+.anillo strong {
+    font-family: "Nunito", sans-serif;
+    font-size: 30px;
+    font-weight: 900;
+}
+
+.anillo span {
+    color: var(--color-texto-secundario);
+    font-size: 13px;
+}
+
+.vista-macros p {
+    margin: 10px 0 6px;
+}
+
+/* Vista previa del coach: un chat */
+.vista-chat {
+    display: grid;
+    gap: 12px;
+}
+
+.burbuja {
+    max-width: 80%;
+    margin: 0;
+    padding: 12px 16px;
+    border-radius: 16px 16px 16px 4px;
+    background: var(--color-fondo);
+}
+
+.burbuja-usuario {
+    justify-self: end;
+    border-radius: 16px 16px 4px 16px;
+    background: var(--color-principal);
+    color: #fff;
+}
+
+.vista-chat-campo {
+    margin-top: 6px;
+    padding: 13px;
+    border: 1px solid #dddddd;
+    border-radius: 9px;
+    color: var(--color-texto-secundario);
+}
+
+/* Tarjetas del panel de funciones que llegarán pronto */
+.tarjeta-pronto {
+    border-style: dashed;
+}
+
+.tarjeta-num .chip {
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+@media (max-width: 600px) {
+    .vista-nutricion {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================
+   ICONOS PROPIOS (fragments/iconos.html)
+   Toman el tamaño y el color del texto que los rodea.
+========================= */
+
+.icono {
+    width: 1.15em;
+    height: 1.15em;
+    flex-shrink: 0;
+    vertical-align: -0.2em;
+}
+
+.icono-record {
+    color: #d8a414;
+}
+
+.tarjeta h3 .icono {
+    color: var(--color-principal);
+}
+
+/* =========================
+   NAVEGACIÓN POR ÁREAS: barra secundaria (fragments/app.html)
+   Va dentro de la cabecera como segunda fila: se queda fija al hacer scroll.
+========================= */
+
+.app-header {
+    flex-wrap: wrap;
+}
+
+.subnav {
+    order: 10;           /* siempre la última fila de la cabecera */
+    flex-basis: 100%;
+    display: flex;
+    gap: 6px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-borde);
+    overflow-x: auto;    /* en móvil se desliza de lado si no cabe */
+    scrollbar-width: none;
+}
+
+.subnav::-webkit-scrollbar {
+    display: none;
+}
+
+.subnav a {
+    flex-shrink: 0;
+    padding: 7px 14px;
+    border-radius: 999px;
+    color: var(--color-texto-secundario);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+/* Sin la rayita animada de la navegación principal */
+.subnav a::after {
+    display: none;
+}
+
+.subnav a:hover {
+    color: var(--color-texto);
+    background: var(--color-fondo);
+}
+
+.subnav a.activo {
+    color: var(--color-principal);
+    background: var(--color-suave);
+}
+
+@media (max-width: 900px) {
+    .subnav {
+        margin: 10px -20px 0;
+        padding: 10px 20px 0;
+    }
+}
+
+/* =========================
+   PÁGINAS DE ERROR (fragments/error.html)
+========================= */
+
+.error-logo {
+    display: inline-block;
+    margin-bottom: 26px;
+    color: var(--color-principal);
+    font-family: "Nunito", sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.error-texto {
+    margin: 16px 0 0;
+    font-size: 17px;
+}
+
+.error-consejo {
+    margin: 14px 0 0;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: var(--color-blanco);
+    border: 1px solid var(--color-borde);
+    color: var(--color-texto-secundario);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.error-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 26px;
+}
+
+.error-ref {
+    margin-top: 22px;
+    color: var(--color-texto-secundario);
+    font-size: 12px;
+}
+
+@media (max-width: 600px) {
+    .error-codigo {
+        font-size: 80px;
+    }
+}
+

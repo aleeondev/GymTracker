@@ -35,6 +35,9 @@
                 <select id="selector-ejercicio" aria-label="Ejercicio para añadir"></select>
                 <button type="button" class="button button-secundario" id="btn-anadir-ejercicio">+ Añadir ejercicio</button>
             </div>
+            <button type="button" class="boton-discos" id="abrir-discos">
+                <svg th:replace="~{fragments/iconos :: icono('pesa')}"></svg> Calculadora de discos
+            </button>
 
             <div class="panel">
                 <span class="eyebrow">DETALLES</span>
@@ -62,6 +65,40 @@
             </div>
         </form>
 
+        <!-- CALCULADORA DE DISCOS (js/discos.js). Va fuera del formulario del entreno:
+             un <form> no puede ir dentro de otro. -->
+        <dialog class="discos" id="dialogo-discos" aria-labelledby="discos-titulo">
+            <form method="dialog">
+                <div class="discos-cabecera">
+                    <h2 id="discos-titulo">Calculadora de discos</h2>
+                    <button type="submit" class="icono-btn" aria-label="Cerrar">✕</button>
+                </div>
+                <label for="discos-total">Peso total (kg)</label>
+                <div class="discos-peso">
+                    <button type="button" data-sumar="-5" aria-label="Quitar 5 kg">−5</button>
+                    <button type="button" data-sumar="-2.5" aria-label="Quitar 2,5 kg">−2,5</button>
+                    <input type="number" id="discos-total" min="0" max="500" step="0.5" inputmode="decimal" placeholder="80">
+                    <button type="button" data-sumar="2.5" aria-label="Añadir 2,5 kg">+2,5</button>
+                    <button type="button" data-sumar="5" aria-label="Añadir 5 kg">+5</button>
+                </div>
+                <fieldset class="pregunta">
+                    <legend>Barra</legend>
+                    <div class="opciones-chips">
+                        <label class="opcion"><input type="radio" name="barra" value="20" checked><span>Olímpica 20 kg</span></label>
+                        <label class="opcion"><input type="radio" name="barra" value="15"><span>15 kg</span></label>
+                        <label class="opcion"><input type="radio" name="barra" value="10"><span>Z / corta 10 kg</span></label>
+                        <label class="opcion"><input type="radio" name="barra" value="otra"><span>Otra…</span></label>
+                    </div>
+                </fieldset>
+                <!-- Barra con otro peso (p. ej. multipower de 11,25 kg). 0 = máquina sin barra. -->
+                <div id="barra-otra" hidden>
+                    <label for="barra-peso">Peso de tu barra (kg)</label>
+                    <input type="number" id="barra-peso" min="0" max="50" step="0.25" inputmode="decimal" placeholder="Ej. 11,25 (0 si es una máquina sin barra)">
+                </div>
+                <div class="discos-resultado" id="discos-resultado" aria-live="polite"></div>
+            </form>
+        </dialog>
+
         <!-- Temporizador de descanso (se muestra al marcar una serie como hecha) -->
         <div class="descanso" id="descanso" role="timer" aria-live="polite" hidden>
             <div>
@@ -75,5 +112,6 @@
     <nav th:replace="~{fragments/app :: tabbar}"></nav>
     <th:block th:replace="~{fragments/app :: scripts}"></th:block>
     <script th:src="@{/js/entrenar.js}"></script>
+    <script th:src="@{/js/discos.js}"></script>
 </body>
 </html>

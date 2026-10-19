@@ -16,6 +16,7 @@ import com.gymtracker.gymtracker.dto.SemanaVolumen;
 import com.gymtracker.gymtracker.model.Perfil;
 import com.gymtracker.gymtracker.service.EntrenamientoService;
 import com.gymtracker.gymtracker.service.PerfilService;
+import com.gymtracker.gymtracker.service.PesoCorporalService;
 import com.gymtracker.gymtracker.service.RutinaService;
 
 import tools.jackson.databind.json.JsonMapper;
@@ -30,13 +31,15 @@ public class DashboardController {
     private final EntrenamientoService entrenamientoService;
     private final RutinaService rutinaService;
     private final PerfilService perfilService;
+    private final PesoCorporalService pesoCorporalService;
     private final Formato fmt;
 
     public DashboardController(EntrenamientoService entrenamientoService, RutinaService rutinaService,
-                               PerfilService perfilService, Formato fmt) {
+                               PerfilService perfilService, PesoCorporalService pesoCorporalService, Formato fmt) {
         this.entrenamientoService = entrenamientoService;
         this.rutinaService = rutinaService;
         this.perfilService = perfilService;
+        this.pesoCorporalService = pesoCorporalService;
         this.fmt = fmt;
     }
 
@@ -52,6 +55,7 @@ public class DashboardController {
             return "redirect:/bienvenida";
         }
         model.addAttribute("perfil", perfil);
+        model.addAttribute("pesoHoy", pesoCorporalService.deHoy(usuarioId).orElse(null));
 
         model.addAttribute("resumen", entrenamientoService.resumen(usuarioId));
         model.addAttribute("rutinas", rutinaService.obtenerDelUsuario(usuarioId));

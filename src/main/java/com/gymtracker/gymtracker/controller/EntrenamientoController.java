@@ -207,6 +207,13 @@ public class EntrenamientoController {
 
     // ---------- Progreso ----------
 
+    /** Mis récords: mejor marca de cada ejercicio y los últimos récords batidos. */
+    @GetMapping("/records")
+    public String records(Model model) {
+        model.addAttribute("marcas", entrenamientoService.marcas(UsuarioActual.id()));
+        return "records";
+    }
+
     /** Días que cubre la gráfica "Series por grupo muscular". */
     private static final int DIAS_GRAFICA_GRUPOS = 28;
 

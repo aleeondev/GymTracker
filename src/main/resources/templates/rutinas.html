@@ -12,6 +12,7 @@
                 <p>Tus planes de entrenamiento: ejercicios, series, repeticiones y peso objetivo.</p>
             </div>
             <div class="page-head-acciones">
+                <a class="button button-secundario" th:href="@{/rutinas/recomendadas}"><svg th:replace="~{fragments/iconos :: icono('destello')}"></svg> Recomendadas</a>
                 <a class="button" th:href="@{/rutinas/nuevo}">+ Nueva rutina</a>
             </div>
         </div>
@@ -19,7 +20,8 @@
         <div class="vacio" th:if="${#lists.isEmpty(rutinas)}">
             <h3>Aún no tienes rutinas</h3>
             <p>Crea una rutina (por ejemplo "Pecho y tríceps" o "Día 1") y añádele ejercicios.</p>
-            <a class="button" th:href="@{/rutinas/nuevo}">+ Crear mi primera rutina</a>
+            <a class="button" th:href="@{/rutinas/recomendadas}"><svg th:replace="~{fragments/iconos :: icono('destello')}"></svg> Ver rutinas recomendadas</a>
+            <a class="button button-secundario" th:href="@{/rutinas/nuevo}">+ Crearla yo</a>
         </div>
 
         <div class="rejilla" th:unless="${#lists.isEmpty(rutinas)}">

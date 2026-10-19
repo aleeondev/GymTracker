@@ -8,7 +8,7 @@
         <th:block th:replace="~{fragments/app :: avisos}"></th:block>
         <div class="aviso aviso-exito" th:if="${param.guardado != null}" role="status">
             ¡Entrenamiento guardado! Buen trabajo.
-            <th:block th:if="${!#sets.isEmpty(records)}">Has batido tu récord en <th:block th:text="${#sets.size(records)}">2</th:block> <th:block th:text="${#sets.size(records) == 1} ? 'ejercicio' : 'ejercicios'">ejercicios</th:block> 🏆</th:block>
+            <th:block th:if="${!#sets.isEmpty(records)}">Has batido tu récord en <th:block th:text="${#sets.size(records)}">2</th:block> <th:block th:text="${#sets.size(records) == 1} ? 'ejercicio' : 'ejercicios'">ejercicios</th:block></th:block>
         </div>
 
         <div class="page-head">
@@ -17,7 +17,7 @@
                 <h1 th:text="${entrenamiento.nombre}">Pecho y tríceps</h1>
             </div>
             <div class="page-head-acciones">
-                <a class="button" th:href="@{/entrenamiento/nuevo(repetir=${entrenamiento.id})}">↻ Repetir</a>
+                <a class="button" th:href="@{/entrenamiento/nuevo(repetir=${entrenamiento.id})}"><svg th:replace="~{fragments/iconos :: icono('repetir')}"></svg> Repetir</a>
                 <a class="button button-secundario" th:href="@{/historial/{id}/editar(id=${entrenamiento.id})}">Editar</a>
                 <form class="en-linea" th:action="@{/historial/{id}/eliminar(id=${entrenamiento.id})}" method="post"
                       data-confirmar="¿Eliminar este entrenamiento del historial? No se puede deshacer.">
@@ -54,7 +54,7 @@
                     <div class="fila-cuerpo">
                         <h3>
                             <a class="enlace-titulo" th:href="@{/progreso/{id}(id=${bloque[0].ejercicio.id})}" th:text="${bloque[0].ejercicio.nombre}">Press banca</a>
-                            <span class="record" th:if="${#sets.contains(records, bloque[0].ejercicio.id)}">🏆 Récord</span>
+                            <span class="record" th:if="${#sets.contains(records, bloque[0].ejercicio.id)}"><svg th:replace="~{fragments/iconos :: icono('trofeo')}"></svg> Récord</span>
                         </h3>
                         <div class="series-resumen">
                             <span th:each="s : ${bloque}" th:text="${@fmt.num(s.peso)} + ' kg × ' + ${s.repeticiones}">60 kg × 10</span>

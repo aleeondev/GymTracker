@@ -70,6 +70,9 @@ class FlujoUsuarioTests {
             .andExpect(header().string("Content-Security-Policy", containsString("default-src 'self'")));
         mvc.perform(get("/registro")).andExpect(status().isOk());
 
+        // CSS y JS con "huella" automática en el nombre (app.css -> app-<hash>.css)
+        mvc.perform(get("/login")).andExpect(content().string(containsString("/css/auth-")));
+
         // Sin sesión: al login, recordando a dónde ibas
         mvc.perform(get("/rutinas")).andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/login?next=%2Frutinas"));
@@ -108,6 +111,39 @@ class FlujoUsuarioTests {
         mvc.perform(get("/perfil").with(auth))
             .andExpect(content().string(containsString("TU CUERPO Y TU OBJETIVO")));
         mvc.perform(get("/bienvenida?editar").with(auth)).andExpect(status().isOk());
+        // Navegación por áreas: la barra secundaria solo aparece dentro de Entrenamiento
+        mvc.perform(get("/rutinas").with(auth)).andExpect(content().string(containsString("class=\"subnav\"")));
+        mvc.perform(get("/perfil").with(auth)).andExpect(content().string(org.hamcrest.Matchers.not(containsString("class=\"subnav\""))));
+        mvc.perform(get("/nutricion").with(auth)).andExpect(status().isOk())
+            .andExpect(content().string(containsString("PRÓXIMAMENTE")));
+        mvc.perform(get("/coach").with(auth)).andExpect(status().isOk())
+            .andExpect(content().string(containsString("Coach IA")));
+
+        // Rutinas recomendadas: 4 días + ganar músculo -> Torso/Pierna con 4 x 10
+        mvc.perform(get("/rutinas/recomendadas").with(auth)).andExpect(status().isOk())
+            .andExpect(content().string(containsString("Recomendado para ti")))
+            .andExpect(content().string(containsString("4 series × 10 repeticiones")));
+        mvc.perform(post("/rutinas/recomendadas/crear").with(auth).with(csrf()).param("plan", "torso_pierna"))
+            .andExpect(redirectedUrl("/rutinas"))
+            .andExpect(flash().attribute("exito", containsString("Torso, Pierna")));
+        mvc.perform(post("/rutinas/recomendadas/crear").with(auth).with(csrf()).param("plan", "torso_pierna"))
+            .andExpect(flash().attribute("exito", containsString("Torso (2)")));
+        mvc.perform(post("/rutinas/recomendadas/crear").with(auth).with(csrf()).param("plan", "no_existe"))
+            .andExpect(flash().attribute("error", "Ese plan no existe."));
+
+        // Peso corporal: el cuestionario ya apuntó el de hoy (76,5). Añadimos el de ayer y corregimos hoy.
+        mvc.perform(post("/peso/registrar").with(auth).with(csrf())
+                .param("pesoKg", "77.2").param("fecha", LocalDate.now().minusDays(1).toString()).param("volver", "/perfil"))
+            .andExpect(redirectedUrl("/perfil"));
+        mvc.perform(post("/peso/registrar").with(auth).with(csrf()).param("pesoKg", "76"))
+            .andExpect(redirectedUrl("/dashboard"));
+        mvc.perform(post("/peso/registrar").with(auth).with(csrf()).param("pesoKg", "10"))
+            .andExpect(flash().attribute("error", containsString("entre 30 y 300")));
+        mvc.perform(get("/dashboard").with(auth))
+            .andExpect(content().string(containsString("PESO DE HOY ✓")))
+            .andExpect(content().string(containsString("76 kg → 80 kg")));
+        mvc.perform(get("/perfil").with(auth))
+            .andExpect(content().string(containsString("id=\"grafica-peso\"")));
 
         // Crear rutina
         String urlRutina = mvc.perform(post("/rutinas/guardar").with(auth).with(csrf()).param("nombre", "Día de prueba"))
@@ -145,6 +181,11 @@ class FlujoUsuarioTests {
             .andExpect(content().string(containsString("class=\"mini-grafica\" data-puntos=\"")));
         mvc.perform(get("/progreso/" + ejercicioId).with(auth)).andExpect(status().isOk())
             .andExpect(content().string(containsString("id=\"grafica-evolucion\"")));
+
+        // Mis récords: pasó de 50 a 55 kg -> récord batido de +5 kg
+        mvc.perform(get("/records").with(auth)).andExpect(status().isOk())
+            .andExpect(content().string(containsString("Antes: 50 kg")))
+            .andExpect(content().string(containsString("+5 kg")));
         String idSegundo = segundo.replaceAll("\\D+(\\d+).*", "$1");
         for (String url : new String[] { primero, "/historial", "/historial/" + idSegundo + "/editar",
                 "/progreso", "/progreso/" + ejercicioId, "/dashboard" }) {
@@ -167,6 +208,15 @@ class FlujoUsuarioTests {
         mvc.perform(get("/api/usuario-disponible").param("u", "ab")).andExpect(content().string(containsString("formato")));
         mvc.perform(get("/api/usuario-disponible").param("u", "prueba_gym")).andExpect(content().string(containsString("cogido")));
         mvc.perform(get("/api/usuario-disponible").param("u", "nadie_tiene_este")).andExpect(content().string(containsString("libre")));
+
+        // Redirección abierta: "volver" solo acepta rutas de nuestra web
+        for (String trampa : new String[] { "//web-falsa.com", "/\t/web-falsa.com", "/" + (char) 92 + "web-falsa.com", "https://web-falsa.com" }) {
+            mvc.perform(post("/ejercicios/guardar").with(auth).with(csrf())
+                    .param("nombre", "Ejercicio trampa " + trampa.length()).param("grupoMuscular", "Pecho").param("volver", trampa))
+                .andExpect(redirectedUrl("/ejercicios"));
+        }
+        mvc.perform(get("/dashboard").with(auth))
+            .andExpect(header().string("Permissions-Policy", containsString("camera=()")));
 
         // Otro usuario no puede ver ni tocar lo mío
         RequestPostProcessor otro = usuario(UUID.randomUUID(), "Otro");

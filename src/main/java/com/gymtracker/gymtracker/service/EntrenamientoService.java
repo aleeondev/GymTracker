@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.gymtracker.gymtracker.dto.EntrenamientoForm;
+import com.gymtracker.gymtracker.dto.MarcasPersonales;
 import com.gymtracker.gymtracker.dto.ProgresoEjercicio;
 import com.gymtracker.gymtracker.dto.ResumenDashboard;
 import com.gymtracker.gymtracker.dto.SemanaVolumen;
@@ -258,6 +259,48 @@ public class EntrenamientoService {
     }
 
     @Transactional(readOnly = true)
+    /**
+     * Récords personales: la mejor marca de cada ejercicio y los últimos récords batidos.
+     * Reutiliza progreso() (un resumen por ejercicio y sesión, de la más antigua a la más nueva).
+     */
+    public MarcasPersonales marcas(UUID usuarioId) {
+        Map<String, List<MarcasPersonales.Marca>> porGrupo = new LinkedHashMap<>();
+        for (String grupo : EjercicioService.GRUPOS_MUSCULARES) {
+            porGrupo.put(grupo, new ArrayList<>()); // orden habitual de los grupos
+        }
+        List<MarcasPersonales.RecordBatido> batidos = new ArrayList<>();
+
+        for (ProgresoEjercicio p : progreso(usuarioId)) {
+            ProgresoEjercicio.Sesion mejor = null;
+            for (ProgresoEjercicio.Sesion s : p.sesiones()) {
+                // Supera el máximo que tenías hasta ese día: ¡récord! (la primera sesión no cuenta)
+                if (mejor != null && s.mejorPeso() > mejor.mejorPeso()) {
+                    batidos.add(new MarcasPersonales.RecordBatido(p.ejercicio(), s.mejorPeso(), s.repsMejorPeso(),
+                        mejor.mejorPeso(), s.fecha(), s.entrenamientoId()));
+                }
+                if (mejor == null || s.mejorPeso() > mejor.mejorPeso()) {
+                    mejor = s;
+                }
+            }
+            if (mejor == null || mejor.mejorPeso() <= 0) {
+                continue; // sin peso (p. ej. solo dominadas con el cuerpo): no hay marca de kg
+            }
+            String grupo = p.ejercicio().getGrupoMuscular();
+            porGrupo.computeIfAbsent(grupo == null || grupo.isBlank() ? "Otros" : grupo, k -> new ArrayList<>())
+                .add(new MarcasPersonales.Marca(p.ejercicio(), mejor.mejorPeso(), mejor.repsMejorPeso(), mejor.fecha(),
+                    mejor.entrenamientoId(), p.getMejorUnoRm(), p.sesiones().size()));
+        }
+
+        porGrupo.values().removeIf(List::isEmpty);
+        porGrupo.values().forEach(lista -> lista.sort(Comparator.comparing(
+            (MarcasPersonales.Marca m) -> m.ejercicio().getNombre(), String.CASE_INSENSITIVE_ORDER)));
+
+        batidos.sort(Comparator.comparing(MarcasPersonales.RecordBatido::fecha).reversed());
+        LocalDate inicioMes = hoy().withDayOfMonth(1);
+        int esteMes = (int) batidos.stream().filter(b -> !b.fecha().isBefore(inicioMes)).count();
+        return new MarcasPersonales(porGrupo, batidos.subList(0, Math.min(8, batidos.size())), esteMes);
+    }
+
     public ProgresoEjercicio progresoDe(Long ejercicioId, UUID usuarioId) {
         return progreso(usuarioId).stream()
             .filter(p -> p.ejercicio().getId().equals(ejercicioId))

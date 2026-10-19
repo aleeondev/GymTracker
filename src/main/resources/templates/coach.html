@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/app :: head('Coach IA')}"></head>
+<body class="app">
+    <header th:replace="~{fragments/app :: cabecera}"></header>
+    <main>
+        <div class="proximamente">
+            <!-- Vista previa con datos DE EJEMPLO, desenfocada. inert + aria-hidden:
+                 no se puede tocar ni la leen los lectores de pantalla. -->
+            <div class="proximamente-vista" aria-hidden="true" inert>
+                <span class="eyebrow">COACH IA</span>
+                <h2 class="vista-titulo">Tu entrenador personal</h2>
+                <div class="panel vista-chat">
+                    <p class="burbuja burbuja-usuario">¿Por qué llevo dos semanas sin subir en press banca?</p>
+                    <p class="burbuja">He mirado tus últimos 6 entrenos: haces siempre 4×10 con 70 kg y descansas 60 s. Prueba esta semana 5×5 con 75 kg y 2-3 min de descanso…</p>
+                    <p class="burbuja burbuja-usuario">¿Y qué ceno hoy para llegar a la proteína?</p>
+                    <p class="burbuja">Te faltan 28 g. Una opción: 150 g de salmón con…</p>
+                    <div class="vista-chat-campo">Escribe tu pregunta…</div>
+                </div>
+            </div>
+
+            <!-- Cartel "Próximamente" encima de la vista previa -->
+            <div class="proximamente-cartel">
+                <div class="panel">
+                    <span class="proximamente-icono"><svg th:replace="~{fragments/iconos :: icono('coach')}"></svg></span>
+                    <span class="chip">PRÓXIMAMENTE</span>
+                    <span class="eyebrow">COACH IA</span>
+                    <h1>Tu entrenador personal con IA</h1>
+                    <p class="texto-suave">Un asistente con el que hablar que conoce tus entrenos, tu progreso y (con tu permiso) tu alimentación.</p>
+                    <ul class="proximamente-lista">
+                        <li>Te propone la rutina que mejor encaja con tu objetivo y tus días</li>
+                        <li>Analiza tus estancamientos y te sugiere cómo seguir progresando</li>
+                        <li>Responde dudas de técnica, descanso y nutrición con TUS datos</li>
+                        <li>Solo accede a tus datos si tú lo autorizas</li>
+                    </ul>
+                    <a class="button" th:href="@{/dashboard}">Volver al panel</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer th:replace="~{fragments/app :: pie}"></footer>
+    <nav th:replace="~{fragments/app :: tabbar}"></nav>
+    <th:block th:replace="~{fragments/app :: scripts}"></th:block>
+</body>
+</html>

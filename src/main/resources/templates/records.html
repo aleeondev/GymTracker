@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/app :: head('Mis récords')}"></head>
+<body class="app">
+    <header th:replace="~{fragments/app :: cabecera}"></header>
+    <main>
+        <a class="volver" th:href="@{/progreso}">← Progreso</a>
+        <div class="page-head">
+            <div>
+                <span class="eyebrow">MIS RÉCORDS</span>
+                <h1>Mis récords</h1>
+                <p>Tu mejor marca en cada ejercicio (el mayor peso que has levantado) y las veces que has superado tu máximo.</p>
+            </div>
+        </div>
+
+        <div class="vacio" th:if="${marcas.vacio}">
+            <h3>Aún no hay récords</h3>
+            <p>Registra entrenamientos con peso y aquí aparecerán tus mejores marcas. Cada vez que superes una, lo verás en "Últimos récords".</p>
+            <a class="button" th:href="@{/entrenamiento}">Empezar a entrenar →</a>
+        </div>
+
+        <th:block th:unless="${marcas.vacio}">
+            <section class="stats" aria-label="Resumen de récords">
+                <div class="stat">
+                    <span class="stat-label">EJERCICIOS</span>
+                    <span class="stat-valor" th:text="${marcas.totalEjercicios}">12</span>
+                    <span class="stat-unidad">con marca</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">ESTE MES</span>
+                    <span class="stat-valor" th:text="${marcas.batidosEsteMes}">3</span>
+                    <span class="stat-unidad" th:text="${marcas.batidosEsteMes == 1} ? 'récord batido' : 'récords batidos'">récords batidos</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">ÚLTIMO RÉCORD</span>
+                    <span class="stat-valor stat-valor-texto"
+                          th:text="${#lists.isEmpty(marcas.recientes())} ? '-' : ${@fmt.relativa(marcas.recientes()[0].fecha())}">Ayer</span>
+                    <span class="stat-unidad" th:text="${#lists.isEmpty(marcas.recientes())} ? 'aún ninguno' : ${marcas.recientes()[0].ejercicio().nombre}">Press banca</span>
+                </div>
+            </section>
+
+            <!-- 01 · ÚLTIMOS RÉCORDS BATIDOS -->
+            <section class="seccion">
+                <div class="seccion-head">
+                    <div>
+                        <span class="eyebrow">01 · ÚLTIMOS RÉCORDS</span>
+                        <h2>Récords batidos</h2>
+                    </div>
+                </div>
+                <p class="texto-suave" th:if="${#lists.isEmpty(marcas.recientes())}">
+                    Todavía no has superado ninguna marca. ¡La próxima vez que subas de peso en un ejercicio aparecerá aquí!
+                </p>
+                <div class="lista" th:unless="${#lists.isEmpty(marcas.recientes())}">
+                    <a class="fila" th:each="r : ${marcas.recientes()}" th:href="@{/historial/{id}(id=${r.entrenamientoId()})}">
+                        <div class="fila-fecha">
+                            <strong th:text="${r.fecha().dayOfMonth}">12</strong>
+                            <span th:text="${#strings.substring(@fmt.mes(r.fecha()), 0, 3)}">Oct</span>
+                        </div>
+                        <div class="fila-cuerpo">
+                            <h3><span class="icono-record"><svg th:replace="~{fragments/iconos :: icono('trofeo')}"></svg></span> <th:block th:text="${r.ejercicio().nombre}">Press banca</th:block></h3>
+                            <p th:text="'Antes: ' + ${@fmt.kg(r.anterior())} + ' · ' + ${@fmt.relativa(r.fecha())}">Antes: 75 kg · Ayer</p>
+                        </div>
+                        <div class="fila-dato">
+                            <strong th:text="${@fmt.kg(r.peso())}">80 kg</strong>
+                            <span class="subida" th:text="'+' + ${@fmt.num(r.mejora)} + ' kg'">+5 kg</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 02 · TODAS TUS MARCAS, por grupo muscular -->
+            <section class="seccion">
+                <div class="seccion-head">
+                    <div>
+                        <span class="eyebrow">02 · TUS MARCAS</span>
+                        <h2>Mejor marca por ejercicio</h2>
+                    </div>
+                </div>
+                <th:block th:each="grupo : ${marcas.porGrupo()}">
+                    <h3 class="grupo-titulo" th:text="${grupo.key}">Pecho</h3>
+                    <div class="lista">
+                        <a class="fila" th:each="m : ${grupo.value}" th:href="@{/progreso/{id}(id=${m.ejercicio().id})}">
+                            <div class="fila-cuerpo">
+                                <h3 th:text="${m.ejercicio().nombre}">Press banca</h3>
+                                <p th:text="${@fmt.fecha(m.fecha())} + ' · 1RM est. ' + ${@fmt.kg(T(java.lang.Math).round(m.mejorUnoRm() * 10) / 10.0)} + ' · ' + ${m.sesiones()} + (${m.sesiones() == 1} ? ' sesión' : ' sesiones')">Sáb 17 oct · 1RM est. 93 kg · 6 sesiones</p>
+                            </div>
+                            <div class="fila-dato">
+                                <strong th:text="${@fmt.kg(m.peso())}">80 kg</strong>
+                                <span th:text="'× ' + ${m.reps()} + (${m.reps() == 1} ? ' rep' : ' reps')">× 5 reps</span>
+                            </div>
+                        </a>
+                    </div>
+                </th:block>
+            </section>
+        </th:block>
+    </main>
+    <footer th:replace="~{fragments/app :: pie}"></footer>
+    <nav th:replace="~{fragments/app :: tabbar}"></nav>
+    <th:block th:replace="~{fragments/app :: scripts}"></th:block>
+</body>
+</html>

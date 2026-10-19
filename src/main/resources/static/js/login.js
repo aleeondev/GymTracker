@@ -10,7 +10,9 @@ const parametros = new URLSearchParams(window.location.search);
 /** Página a la que volver tras iniciar sesión (solo rutas de nuestra web). */
 function destino() {
     const siguiente = parametros.get("next");
-    if (siguiente && siguiente.startsWith("/") && !siguiente.startsWith("//") && !siguiente.includes("\\")) {
+    // Solo rutas de nuestra web: "/" + letras, números y / _ - ? = & (sin "//").
+    // Así no cuela "/<tabulador>/web-falsa.com", que el navegador convertiría en "//web-falsa.com".
+    if (siguiente && /^\/(?!\/)[A-Za-z0-9\/_?=&-]*$/.test(siguiente)) {
         return siguiente;
     }
     return "/dashboard";

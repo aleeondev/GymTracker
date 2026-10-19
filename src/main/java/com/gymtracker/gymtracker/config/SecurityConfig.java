@@ -25,6 +25,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -90,7 +91,11 @@ public class SecurityConfig {
                     "form-action 'self'",
                     "base-uri 'self'",
                     "object-src 'none'")))
-                .referrerPolicy(r -> r.policy(ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)));
+                .referrerPolicy(r -> r.policy(ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
+                // La app no usa cámara, micrófono, ubicación ni pagos: los bloqueamos
+                // (si algún día hay "foto del plato", se permitirá la cámara aquí).
+                .addHeaderWriter(new StaticHeadersWriter("Permissions-Policy",
+                    "camera=(), microphone=(), geolocation=(), payment=(), usb=()")));
 
         return http.build();
     }

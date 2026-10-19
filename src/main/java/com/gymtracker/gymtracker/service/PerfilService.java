@@ -22,9 +22,11 @@ public class PerfilService {
     public static final Pattern FORMATO_USUARIO = Pattern.compile("^[a-z0-9_]{3,20}$");
 
     private final PerfilRepository perfilRepository;
+    private final PesoCorporalService pesoCorporalService;
 
-    public PerfilService(PerfilRepository perfilRepository) {
+    public PerfilService(PerfilRepository perfilRepository, PesoCorporalService pesoCorporalService) {
         this.perfilRepository = perfilRepository;
+        this.pesoCorporalService = pesoCorporalService;
     }
 
     /** El perfil del usuario o, si aún no tiene, uno vacío (sin guardar). */
@@ -121,7 +123,7 @@ public class PerfilService {
         if (!OpcionesPerfil.OBJETIVO.containsKey(f.getObjetivo())) {
             return "Elige tu objetivo principal.";
         }
-        Double pesoObjetivo = OpcionesPerfil.CON_PESO_OBJETIVO.contains(f.getObjetivo()) ? f.getPesoObjetivoKg() : null;
+        Double pesoObjetivo = f.getPesoObjetivoKg(); // opcional, para cualquier objetivo
         if (pesoObjetivo != null && !entre(pesoObjetivo, 30, 300)) {
             return "El peso objetivo debe estar entre 30 y 300 kg.";
         }
@@ -165,6 +167,8 @@ public class PerfilService {
             perfil.setBienvenidaEn(LocalDateTime.now());
         }
         perfilRepository.save(perfil);
+        // El peso del cuestionario cuenta como el registro de hoy (primer punto de la gráfica)
+        pesoCorporalService.registrar(usuarioId, perfil.getPesoKg(), null);
         return null;
     }
 
