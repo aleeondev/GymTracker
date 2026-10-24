@@ -1,142 +1,383 @@
 /* ==========================================================
-   AUTH — Páginas de login y registro
-   Estilos exclusivos de estas dos vistas. Todo lo genérico
-   (botones, inputs, variables de color) sigue viviendo en
-   styles.css; aquí solo va lo que las hace únicas.
+   AUTH — Pantallas de acceso: login, registro, recuperar,
+   nueva contraseña y enlace caducado.
+   Ordenador: panel rojo de marca a la izquierda (fragments/auth.html)
+   y el formulario a la derecha. Móvil: banda roja arriba y el
+   formulario montado encima.
+   Lo genérico (botones, inputs, colores) sigue en styles.css.
 ========================================================== */
 
 /* =========================
-   FONDO
+   ESTRUCTURA
 ========================= */
 
 .auth-page {
     /* La regla global "main { max-width:1200px; margin:0 auto; }" de styles.css
-       también afecta a este <main>. Sin este reset, el fondo se queda
-       encogido en una caja de 1200px centrada y deja bandas en blanco
-       a los lados en pantallas anchas. */
+       también afecta a este <main>: aquí ocupa toda la pantalla. */
     max-width: none;
     width: 100%;
     margin: 0;
-
-    position: relative;
-    overflow: hidden;
-
+    padding: 0;
     min-height: 100vh;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 30px 20px;
+    display: grid;
+    grid-template-columns: minmax(400px, 46%) 1fr;
 
-    background: linear-gradient(160deg, #fff6f8 0%, #fdf0f3 45%, #f9e3e8 100%);
+    background:
+        radial-gradient(700px 500px at 100% 0%, rgba(201, 47, 75, 0.07), transparent 60%),
+        var(--color-fondo);
 }
 
-/* Manchas de color difuminadas flotando de fondo: dan el aire "glass".
-   Se posicionan en % (no en px fijos) y son grandes a propósito para que
-   parte de ellas quede SIEMPRE detrás de la tarjeta central, sea cual
-   sea el ancho de la pantalla — si no, el blur no se llega a notar. */
-.auth-page::before,
-.auth-page::after {
-    content: "";
-
-    position: absolute;
-    z-index: 0;
-
-    border-radius: 50%;
-    filter: blur(70px);
-    opacity: 0.6;
-
-    animation: auth-float 16s ease-in-out infinite;
-}
-
-.auth-page::before {
-    width: 55vw;
-    height: 55vw;
-    max-width: 650px;
-    max-height: 650px;
-    top: -10%;
-    left: -5%;
-
-    background: var(--color-principal);
-}
-
-.auth-page::after {
-    width: 50vw;
-    height: 50vw;
-    max-width: 600px;
-    max-height: 600px;
-    right: -5%;
-    bottom: -12%;
-
-    background: #ff9a76;
-    animation-delay: -8s;
-}
-
-@keyframes auth-float {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50%      { transform: translate(30px, -25px) scale(1.08); }
+/* Iconos de fragments/iconos.html (estas páginas no cargan app.css) */
+.auth-page .icono {
+    width: 1.15em;
+    height: 1.15em;
+    flex-shrink: 0;
 }
 
 /* =========================
-   TARJETA (GLASSMORPHISM)
+   PANEL DE MARCA (fragments/auth.html)
+========================= */
+
+.auth-escena {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    padding: 40px 48px;
+
+    color: white;
+    /* Rejilla de puntitos encima del degradado rojo de la marca */
+    background:
+        radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1.5px) 0 0 / 22px 22px,
+        linear-gradient(150deg, #b8243f 0%, var(--color-principal) 45%, #e9604f 100%);
+}
+
+/* Brillo blanco que cruza el panel muy despacio */
+.auth-escena::before {
+    content: "";
+    position: absolute;
+    top: -30%;
+    left: -30%;
+    width: 90%;
+    height: 90%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent 60%);
+    animation: auth-brillo 14s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+@keyframes auth-brillo {
+    to { transform: translate(60%, 70%); }
+}
+
+.auth-escena > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Palabras gigantes en contorno que suben sin parar. Van dos veces: al subir
+   la mitad de su altura, la segunda tanda ocupa el sitio de la primera. */
+.auth-escena > .auth-escena-fondo {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.auth-escena-palabras {
+    display: flex;
+    flex-direction: column;
+    animation: auth-palabras 40s linear infinite;
+}
+
+.auth-escena-palabras span {
+    margin-left: -10px;
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.16);
+    font-family: "Nunito", sans-serif;
+    font-size: clamp(90px, 11vw, 160px);
+    font-weight: 900;
+    line-height: 0.95;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+@keyframes auth-palabras {
+    to { transform: translateY(-50%); }
+}
+
+.auth-escena-logo {
+    align-self: flex-start;
+    color: white;
+    text-decoration: none;
+    font-family: "Nunito", sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    transition: opacity 0.2s;
+}
+
+.auth-escena-logo:hover {
+    opacity: 0.85;
+}
+
+.auth-escena-logo:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+/* El bloque central queda centrado entre el logo (arriba) y los logros (abajo) */
+.auth-escena-centro {
+    max-width: 460px;
+    margin: auto 0;
+    padding: 30px 0;
+}
+
+/* --- Barra olímpica --- */
+
+.auth-barra {
+    display: block;
+    width: 100%;
+    max-width: 380px;
+    height: auto;
+    margin-bottom: 34px;
+    overflow: visible;
+    filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.2));
+    /* Cuando ya tiene los discos, sube y baja: como si alguien la levantara */
+    animation: auth-levantar 2.6s 1.4s ease-in-out infinite alternate;
+}
+
+@keyframes auth-levantar {
+    to { transform: translateY(-14px); }
+}
+
+.auth-barra-eje {
+    fill: rgba(255, 255, 255, 0.92);
+}
+
+.auth-cierre {
+    fill: #ffffff;
+}
+
+.auth-disco {
+    fill: #ffffff;
+}
+
+.auth-disco-2 { fill: rgba(255, 255, 255, 0.82); }
+.auth-disco-3 { fill: rgba(255, 255, 255, 0.66); }
+
+/* Carga de discos: cada uno entra deslizándose desde fuera, uno tras otro.
+   "transform-box: fill-box" hace que el movimiento sea relativo a cada disco. */
+.auth-lado rect {
+    transform-box: fill-box;
+    animation: 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.auth-lado-izq rect { animation-name: auth-cargar-izq; }
+.auth-lado-der rect { animation-name: auth-cargar-der; }
+
+.auth-lado .auth-disco-1 { animation-delay: 0.2s; }
+.auth-lado .auth-disco-2 { animation-delay: 0.4s; }
+.auth-lado .auth-disco-3 { animation-delay: 0.6s; }
+.auth-lado .auth-cierre  { animation-delay: 0.85s; }
+
+@keyframes auth-cargar-izq {
+    from { transform: translateX(-90px); opacity: 0; }
+}
+
+@keyframes auth-cargar-der {
+    from { transform: translateX(90px); opacity: 0; }
+}
+
+.auth-escena-titulo {
+    margin: 0 0 14px;
+    font-family: "Nunito", sans-serif;
+    font-size: clamp(34px, 3.4vw, 50px);
+    font-weight: 900;
+    line-height: 1.02;
+}
+
+.auth-escena-texto {
+    max-width: 400px;
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.6;
+    opacity: 0.88;
+}
+
+/* --- Logros que se turnan (auth-ui.js) --- */
+
+/* Debajo de la frase, dentro del bloque central. Las 5 tarjetas están una
+   encima de otra (position: absolute) y solo se ve la "activa". */
+.auth-logros {
+    position: relative;
+    height: 64px;
+    margin-top: 32px;
+}
+
+/* Portátiles con poca altura: no cabe todo, así que fuera logros */
+@media (max-height: 760px) {
+    .auth-logros {
+        display: none;
+    }
+}
+
+.auth-logro {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px 12px 12px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.35);
+    color: var(--color-texto);
+    white-space: nowrap;
+
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+    transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.auth-logro.activo {
+    opacity: 1;
+    transform: none;
+}
+
+.auth-logro strong {
+    display: block;
+    font-size: 14px;
+}
+
+.auth-logro div > span {
+    color: var(--color-texto-secundario);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.auth-logro-icono {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--color-suave);
+    color: var(--color-principal);
+    font-size: 18px;
+}
+
+.auth-logro-icono.auth-verde {
+    background: #e7f7ee;
+    color: #22a35c;
+}
+
+.auth-escena-datos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin: 26px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.auth-escena-datos li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.92;
+}
+
+/* =========================
+   TARJETA DEL FORMULARIO
 ========================= */
 
 .auth-card {
     position: relative;
-    z-index: 1;
+    z-index: 2;
+    align-self: center;
+    justify-self: center;
 
-    width: 100%;
-    max-width: 450px;
-    padding: 42px 40px;
+    width: min(460px, calc(100% - 40px));
+    margin: 48px 0;
+    padding: 44px 42px;
 
-    background: rgba(255, 255, 255, 0.45);
-    backdrop-filter: blur(24px) saturate(160%);
-    -webkit-backdrop-filter: blur(24px) saturate(160%);
-
-    border-radius: 22px;
-    border: 1px solid rgba(255, 255, 255, 0.7);
+    background: var(--color-blanco);
+    border: 1px solid var(--color-borde);
+    border-radius: 24px;
     box-shadow:
-        0 25px 50px rgba(201, 47, 75, 0.16),
-        0 2px 10px rgba(0, 0, 0, 0.05),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        0 30px 60px -30px rgba(201, 47, 75, 0.3),
+        0 4px 16px rgba(0, 0, 0, 0.04);
 
     animation: fadeInUp 0.7s ease-out both;
 }
 
-.auth-logo {
-    display: block;
-
-    margin-bottom: 28px;
-
+/* "Buenas tardes" del login (auth-ui.js); vacío = no se ve */
+.auth-saludo {
+    margin: 0 0 6px;
     color: var(--color-principal);
-    text-decoration: none;
-    text-align: center;
-
-    font-family: "Nunito", sans-serif;
-    font-size: 30px;
+    font-size: 13px;
     font-weight: 800;
-
-    transition: color 0.2s;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
 }
 
-.auth-logo:hover {
-    color: var(--color-principal-hover);
+.auth-saludo:empty {
+    display: none;
 }
 
 .auth-card h1 {
     margin: 0;
-
     font-family: "Nunito", sans-serif;
-    font-size: 30px;
-    text-align: center;
+    font-size: 32px;
+    font-weight: 900;
 }
 
 .auth-subtitle {
-    margin: 10px 0 30px;
-
+    margin: 10px 0 28px;
     color: var(--color-texto-secundario);
-    text-align: center;
     line-height: 1.5;
+}
+
+/* Pasos del registro: 1 Tu cuenta · 2 Confirma tu email · 3 Tu objetivo */
+.auth-pasos {
+    display: flex;
+    gap: 8px;
+    margin: 0 0 26px;
+    padding: 0;
+    list-style: none;
+}
+
+.auth-pasos li {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: var(--color-texto-secundario);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.auth-pasos li::before {
+    content: "";
+    height: 4px;
+    border-radius: 999px;
+    background: var(--color-borde);
+}
+
+.auth-pasos li.activo {
+    color: var(--color-principal);
+}
+
+.auth-pasos li.activo::before {
+    background: var(--color-principal);
 }
 
 /* =========================
@@ -414,7 +655,7 @@
 .auth-icono-error {
     width: 64px;
     height: 64px;
-    margin: 0 auto 18px;
+    margin: 0 0 18px;
 
     display: flex;
     align-items: center;
@@ -477,8 +718,59 @@
    RESPONSIVE
 ========================= */
 
+/* Tablet y móvil: el panel pasa a ser una banda roja arriba (sin logros ni
+   lista) y la tarjeta del formulario se monta un poco encima de ella. */
+@media (max-width: 960px) {
+    .auth-page {
+        grid-template-columns: 1fr;
+        align-content: start;
+    }
+
+    .auth-escena {
+        position: relative;
+        height: auto;
+        padding: 22px 22px 90px;
+    }
+
+    .auth-escena-centro {
+        margin: 0;
+        padding: 26px 0 0;
+    }
+
+    .auth-barra {
+        max-width: 230px;
+        margin-bottom: 20px;
+    }
+
+    .auth-escena-titulo {
+        font-size: 28px;
+    }
+
+    .auth-escena-texto {
+        font-size: 15px;
+    }
+
+    .auth-escena-palabras span {
+        font-size: 80px;
+    }
+
+    .auth-logros,
+    .auth-escena-datos {
+        display: none;
+    }
+
+    .auth-card {
+        margin: -60px 0 32px;
+    }
+}
+
 @media (max-width: 500px) {
     .auth-card {
+        width: calc(100% - 24px);
         padding: 30px 22px;
+    }
+
+    .auth-card h1 {
+        font-size: 28px;
     }
 }

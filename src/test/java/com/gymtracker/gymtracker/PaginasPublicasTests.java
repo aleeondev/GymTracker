@@ -45,4 +45,17 @@ class PaginasPublicasTests {
             .contains("M5 12h14M13 6l6 6-6 6")
             .doesNotContain("Ir a mi panel");
     }
+
+    @Test
+    void pantallasDeAccesoConPanelDeMarca() throws Exception {
+        for (String ruta : new String[] { "/login", "/registro", "/recuperar", "/nueva-contrasena", "/enlace-error" }) {
+            HttpResponse<String> r = pedir(ruta);
+            assertThat(r.statusCode()).as(ruta).isEqualTo(200);
+            assertThat(r.body()).as(ruta)
+                .contains("class=\"auth-escena\"").contains("auth-barra").contains("¡Nuevo récord!")
+                .doesNotContain("minlength=\"6\"");
+        }
+        assertThat(pedir("/login").body()).contains("Tu próxima serie te está esperando.").contains("data-saludo");
+        assertThat(pedir("/registro").body()).contains("2 · Confirma tu email").contains("minlength=\"8\"");
+    }
 }

@@ -68,7 +68,7 @@ function initContrasena() {
         const repetida = document.getElementById("repetida").value;
 
         if (!actual) return mostrar(mensaje, "Escribe tu contraseña actual.", "is-error");
-        if (nueva.length < 6) return mostrar(mensaje, "La nueva contraseña debe tener al menos 6 caracteres.", "is-error");
+        if (nueva.length < 8) return mostrar(mensaje, "La nueva contraseña debe tener al menos 8 caracteres.", "is-error");
         if (nueva !== repetida) return mostrar(mensaje, "Las dos contraseñas nuevas no coinciden.", "is-error");
         if (nueva === actual) return mostrar(mensaje, "La nueva contraseña tiene que ser distinta de la actual.", "is-error");
 

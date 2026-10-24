@@ -18,7 +18,7 @@ Sesiones STATELESS. CSRF con `CookieCsrfTokenRepository` (sin rotar: `NullAuthen
 - `config/`: SecurityConfig (rutas públicas, CSP, cabeceras), SupabaseCookieFilter, UsuarioActual, Formato (`${@fmt...}` en vistas), InicializacionBaseDatos (activa RLS en `TABLAS` y siembra la biblioteca de ejercicios)
 - `model/` · `repository/` · `service/` (lógica) · `dto/` (formularios y datos de vistas) · `controller/`
 - `controller/DatosComunesAdvice`: datos de todas las vistas (usuarioNombre, rutaActual, `area`, opcionesPerfil)
-- `templates/fragments/app.html` (cabecera, navegación por áreas, barra móvil, avisos, scripts) · `fragments/iconos.html` (iconos SVG) · `fragments/error.html` + `templates/error/*.html`
+- `templates/fragments/app.html` (cabecera, navegación por áreas, barra móvil, avisos, scripts) · `fragments/iconos.html` (iconos SVG) · `fragments/auth.html` (panel rojo de marca de las 5 pantallas de acceso, estilos en `auth.css`, logros en `auth-ui.js`) · `fragments/error.html` + `templates/error/*.html`
 - `static/css/app.css` (dividido en secciones con título) · `static/js/` (un JS por pantalla; `graficas.js` = estilo común de Chart.js)
 
 ## Reglas del proyecto (respetarlas siempre)
@@ -44,5 +44,5 @@ Sesiones STATELESS. CSRF con `CookieCsrfTokenRepository` (sin rotar: `NullAuthen
 
 ## Pendiente / ideas
 - Pruebas de seguridad manuales del usuario (lista en la conversación del 19/10).
-- Antes de publicar: rol de BD con permisos mínimos (no `postgres`), límite de peticiones, contraseña mínima 8, decidir si cerrar el registro público.
+- Antes de publicar: rol de BD con permisos mínimos (no `postgres`), límite de peticiones, poner mínimo 8 en Supabase (la web ya pide 8), decidir si cerrar el registro público.
 - Futuro: Nutrición y Coach IA (ahora páginas "Próximamente"), publicar en Render con HTTPS, plan gratis + suscripción.

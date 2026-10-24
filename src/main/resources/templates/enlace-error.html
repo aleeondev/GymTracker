@@ -30,8 +30,8 @@
         enlace-error.js rellena el título y el texto según el error.
     -->
     <main class="auth-page">
+        <aside th:replace="~{fragments/auth :: escena('Un enlace caducado no es el fin.', 'Pide uno nuevo y seguimos donde lo dejamos.')}"></aside>
         <section class="auth-card">
-            <a href="/" class="auth-logo">Gym Tracker</a>
             <div class="auth-icono-error" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
@@ -61,6 +61,7 @@
             </div>
         </section>
     </main>
+    <script th:src="@{/js/auth-ui.js}"></script>
     <script th:src="@{/js/enlace-error.js}"></script>
 </body>
 </html>

@@ -22,8 +22,14 @@
 </head>
 <body>
     <main class="auth-page">
+        <aside th:replace="~{fragments/auth :: escena('El mejor día para empezar es hoy.', 'Crea tu cuenta gratis y lleva el control de cada entreno desde el primer día.')}"></aside>
         <section class="auth-card">
-            <a href="/" class="auth-logo">Gym Tracker</a>
+            <!-- Qué pasa después de este formulario: así nadie se pierde al ir a confirmar el email -->
+            <ol class="auth-pasos" aria-label="Pasos para empezar">
+                <li class="activo" aria-current="step">1 · Tu cuenta</li>
+                <li>2 · Confirma tu email</li>
+                <li>3 · Tu objetivo</li>
+            </ol>
             <h1>Crear cuenta</h1>
             <p class="auth-subtitle">Crea tu cuenta y empieza a llevar el control de tus entrenamientos.</p>
             <form id="registroForm">
@@ -40,7 +46,7 @@
                 <input type="email" id="email" placeholder="tu@email.com" autocomplete="email" required>
                 <label for="password">Contraseña</label>
                 <div class="password-field">
-                    <input type="password" id="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password" minlength="6" required>
+                    <input type="password" id="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" minlength="8" required>
                     <button type="button" class="toggle-password" data-target="password" aria-label="Mostrar contraseña">
                         <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"></path>
@@ -58,7 +64,7 @@
 
                 <label for="password2">Repite la contraseña</label>
                 <div class="password-field">
-                    <input type="password" id="password2" placeholder="Escríbela otra vez" autocomplete="new-password" minlength="6" required>
+                    <input type="password" id="password2" placeholder="Escríbela otra vez" autocomplete="new-password" minlength="8" required>
                     <button type="button" class="toggle-password" data-target="password2" aria-label="Mostrar contraseña">
                         <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"></path>

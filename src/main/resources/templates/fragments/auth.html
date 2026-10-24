@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<!--
+    PANEL DE MARCA de las pantallas de acceso (login, registro, recuperar,
+    nueva contraseña, enlace caducado). En ordenador ocupa la mitad izquierda;
+    en el móvil es una banda roja encima del formulario. Estilos en auth.css.
+    Uso:  <aside th:replace="~{fragments/auth :: escena('Título', 'Texto')}"></aside>
+    Las animaciones son CSS (auth.css) y el cambio de logros, auth-ui.js.
+-->
+<body>
+<aside th:fragment="escena(titulo, texto)" class="auth-escena">
+    <!-- Palabras gigantes en contorno que suben despacio (decorativas) -->
+    <div class="auth-escena-fondo" aria-hidden="true">
+        <div class="auth-escena-palabras">
+            <span>Entrena</span><span>Registra</span><span>Evoluciona</span>
+            <span>Entrena</span><span>Registra</span><span>Evoluciona</span>
+        </div>
+    </div>
+
+    <a th:href="@{/}" class="auth-escena-logo">Gym Tracker</a>
+
+    <div class="auth-escena-centro">
+        <!-- Barra olímpica: los discos "se cargan" al entrar y luego se levanta -->
+        <svg class="auth-barra" viewBox="0 0 420 140" aria-hidden="true" focusable="false">
+            <rect class="auth-barra-eje" x="6" y="66" width="408" height="8" rx="4"/>
+            <g class="auth-lado auth-lado-izq">
+                <rect class="auth-disco auth-disco-1" x="96" y="18" width="20" height="104" rx="5"/>
+                <rect class="auth-disco auth-disco-2" x="74" y="30" width="20" height="80" rx="5"/>
+                <rect class="auth-disco auth-disco-3" x="56" y="44" width="16" height="52" rx="4"/>
+                <rect class="auth-cierre" x="44" y="57" width="9" height="26" rx="2"/>
+            </g>
+            <g class="auth-lado auth-lado-der">
+                <rect class="auth-disco auth-disco-1" x="304" y="18" width="20" height="104" rx="5"/>
+                <rect class="auth-disco auth-disco-2" x="326" y="30" width="20" height="80" rx="5"/>
+                <rect class="auth-disco auth-disco-3" x="348" y="44" width="16" height="52" rx="4"/>
+                <rect class="auth-cierre" x="367" y="57" width="9" height="26" rx="2"/>
+            </g>
+            <rect class="auth-cierre" x="122" y="56" width="8" height="28" rx="2"/>
+            <rect class="auth-cierre" x="290" y="56" width="8" height="28" rx="2"/>
+        </svg>
+
+        <h2 class="auth-escena-titulo" th:text="${titulo}">Tu próxima serie te está esperando.</h2>
+        <p class="auth-escena-texto" th:text="${texto}">Texto</p>
+
+    <!-- Logros de ejemplo que se van turnando (auth-ui.js cambia la clase "activo").
+         Van dentro del bloque central, debajo de la frase, para no chocar con nada. -->
+    <div class="auth-logros" aria-hidden="true">
+        <div class="auth-logro activo">
+            <span class="auth-logro-icono"><svg th:replace="~{fragments/iconos :: icono('trofeo')}"></svg></span>
+            <div><strong>¡Nuevo récord!</strong><span>Sentadilla · 100 kg</span></div>
+        </div>
+        <div class="auth-logro">
+            <span class="auth-logro-icono auth-verde"><svg th:replace="~{fragments/iconos :: icono('check')}"></svg></span>
+            <div><strong>Serie completada</strong><span>Press banca · 10 × 60 kg</span></div>
+        </div>
+        <div class="auth-logro">
+            <span class="auth-logro-icono"><svg th:replace="~{fragments/iconos :: icono('grafica')}"></svg></span>
+            <div><strong>Volumen semanal +12 %</strong><span>Más que la semana pasada</span></div>
+        </div>
+        <div class="auth-logro">
+            <span class="auth-logro-icono"><svg th:replace="~{fragments/iconos :: icono('pesa')}"></svg></span>
+            <div><strong>Entreno guardado</strong><span>Pierna · 52 minutos</span></div>
+        </div>
+        <div class="auth-logro">
+            <span class="auth-logro-icono"><svg th:replace="~{fragments/iconos :: icono('calendario')}"></svg></span>
+            <div><strong>4 semanas de racha</strong><span>Sin fallar ni una</span></div>
+        </div>
+    </div>
+    </div>
+
+    <ul class="auth-escena-datos">
+        <li><svg th:replace="~{fragments/iconos :: icono('check')}"></svg> 55 ejercicios</li>
+        <li><svg th:replace="~{fragments/iconos :: icono('check')}"></svg> Gráficas de progreso</li>
+        <li><svg th:replace="~{fragments/iconos :: icono('check')}"></svg> Gratis en la alpha</li>
+    </ul>
+</aside>
+</body>
+</html>
