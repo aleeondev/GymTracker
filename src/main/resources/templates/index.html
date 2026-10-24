@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Gym Tracker: organiza tus rutinas, registra tus entrenamientos y sigue tu progreso en un solo sitio.">
-    <title>Gym Tracker</title>
+    <meta name="description" content="Gym Tracker: organiza tus rutinas, registra cada serie y mira cómo progresas. Gratis durante la versión alpha.">
+    <title>Gym Tracker · Entrena. Registra. Evoluciona.</title>
     <!-- Cargar el favicon SVG -->
     <link rel="icon" type="image/svg+xml" th:href="@{/img/favicon.svg}">
     <link rel="icon" href="/img/favicon.ico" sizes="any">
@@ -15,91 +15,356 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Gym Tracker">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <!-- Título y texto de la vista previa al compartir el enlace (WhatsApp, Telegram...) -->
+    <meta property="og:title" content="Gym Tracker · Entrena. Registra. Evoluciona.">
+    <meta property="og:description" content="Tus rutinas, tus series y tu progreso en un solo sitio.">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" th:href="@{/css/inicio.css}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Solo se cargan las familias que realmente se usan en el CSS: Nunito y Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+    <!-- Marca la página como "animada" ANTES de pintarse, para que no se vea el
+         contenido un instante antes de que GSAP lo anime (ver landing-pre.js) -->
+    <script th:src="@{/js/landing-pre.js}"></script>
 </head>
-<body>
+<body class="landing">
     <header>
         <a class="logo" th:href="@{/}">Gym Tracker</a>
-        <nav>
+        <nav aria-label="Secciones">
             <a href="#funciones">Funciones</a>
-            <a href="#proyecto">Sobre el proyecto</a>
-            <a th:href="@{/login}">Iniciar sesión</a>
+            <a href="#como-funciona">Cómo funciona</a>
+            <a href="#movil">App móvil</a>
+            <a href="#preguntas">Preguntas</a>
         </nav>
-        <a class="header-button" th:href="@{/registro}">Crear cuenta</a>
+        <!-- Con sesión iniciada: acceso directo al panel en vez de "Crear cuenta" -->
+        <div class="header-acciones">
+            <th:block th:if="${usuarioNombre == null}">
+                <a class="header-enlace" th:href="@{/login}">Iniciar sesión</a>
+                <a class="header-button" th:href="@{/registro}">Crear cuenta</a>
+            </th:block>
+            <a th:if="${usuarioNombre != null}" class="header-button" th:href="@{/dashboard}">Ir a mi panel</a>
+        </div>
     </header>
+
     <main>
-        <section class="hero landing-hero">
-            <div class="hero-content">
-                <p class="hero-label">GYM TRACKER · ENTRENAMIENTO PERSONAL</p>
-                <h1>Entrena.<br>Registra.<br>Evoluciona.</h1>
-                <p class="hero-description">Una forma sencilla de organizar tus rutinas, registrar tus entrenamientos y seguir de cerca tu proceso.</p>
-                <div class="hero-buttons">
-                    <a class="button" th:href="@{/registro}">Crear mi cuenta →</a>
-                    <a class="secondary-button" th:href="@{/login}">Ya tengo una cuenta</a>
+        <!-- ===================== HERO ===================== -->
+        <section class="lp-hero">
+            <div class="lp-hero-texto">
+                <p class="lp-pastilla" data-anim="entrar">
+                    <span class="lp-punto" aria-hidden="true"></span>
+                    Versión alpha · Gratis para los primeros
+                </p>
+                <h1 class="lp-titulo" data-split>
+                    <span>Entrena.</span>
+                    <span>Registra.</span>
+                    <span class="lp-titulo-rojo">Evoluciona.</span>
+                </h1>
+                <p class="lp-descripcion" data-anim="entrar">
+                    Tus rutinas, cada serie y todo tu progreso en un solo sitio.
+                    Sin libretas, sin notas del móvil, sin perder la cuenta.
+                </p>
+                <div class="lp-botones" data-anim="entrar">
+                    <a class="button lp-boton-grande" th:href="@{/registro}" th:if="${usuarioNombre == null}">
+                        Empezar gratis
+                        <svg th:replace="~{fragments/iconos :: icono('flecha')}"></svg>
+                    </a>
+                    <a class="button lp-boton-grande" th:href="@{/dashboard}" th:if="${usuarioNombre != null}">
+                        Ir a mi panel
+                        <svg th:replace="~{fragments/iconos :: icono('flecha')}"></svg>
+                    </a>
+                    <a class="secondary-button" href="#funciones">Ver qué incluye</a>
+                </div>
+                <ul class="lp-garantias" data-anim="entrar">
+                    <li><svg th:replace="~{fragments/iconos :: icono('check')}"></svg> Sin anuncios</li>
+                    <li><svg th:replace="~{fragments/iconos :: icono('check')}"></svg> Tus datos solo los ves tú</li>
+                    <li><svg th:replace="~{fragments/iconos :: icono('check')}"></svg> En el móvil y en el ordenador</li>
+                </ul>
+            </div>
+
+            <!-- Maqueta del panel de la app (HTML y CSS, no es una imagen).
+                 Es decorativa: los lectores de pantalla la saltan. -->
+            <div class="lp-hero-visual" aria-hidden="true">
+                <div class="lp-maqueta" data-parallax="1">
+                    <div class="lp-maqueta-barra">
+                        <span></span><span></span><span></span>
+                        <p>Gym Tracker · Panel</p>
+                    </div>
+                    <div class="lp-maqueta-cuerpo">
+                        <p class="lp-maqueta-saludo">Hola, Marta</p>
+                        <p class="lp-maqueta-sub">Llevas 4 semanas seguidas entrenando</p>
+                        <div class="lp-maqueta-stats">
+                            <div><strong data-contar="12">12</strong><span>entrenos este mes</span></div>
+                            <div><strong><span data-contar="8420">8.420</span> kg</strong><span>volumen semanal</span></div>
+                            <div><strong data-contar="4">4</strong><span>semanas de racha</span></div>
+                        </div>
+                        <div class="lp-maqueta-grafica">
+                            <p>Volumen por semana</p>
+                            <div class="lp-barras">
+                                <span></span><span></span><span></span><span></span>
+                                <span></span><span></span><span></span><span class="lp-barra-actual"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lp-flotante lp-flotante-record" data-parallax="2.2">
+                    <span class="lp-flotante-icono"><svg th:replace="~{fragments/iconos :: icono('trofeo')}"></svg></span>
+                    <div><strong>¡Nuevo récord!</strong><span>Press banca · 82,5 kg</span></div>
+                </div>
+                <div class="lp-flotante lp-flotante-serie" data-parallax="1.6">
+                    <span class="lp-flotante-icono lp-verde"><svg th:replace="~{fragments/iconos :: icono('check')}"></svg></span>
+                    <div><strong>Serie 3 de 4</strong><span>10 reps × 60 kg</span></div>
                 </div>
             </div>
-            <div class="hero-side">
-                <span class="hero-side-number">01</span>
-                <p>TU ENTRENAMIENTO.<br> BAJO CONTROL.</p>
+        </section>
+
+        <!-- ===================== CINTA ===================== -->
+        <!-- El texto va dos veces seguidas: al desplazar la pista la mitad de su
+             ancho, la segunda copia ocupa el sitio de la primera y el bucle no se nota -->
+        <div class="lp-cinta" aria-hidden="true">
+            <div class="lp-cinta-pista">
+                <span>Rutinas</span><span>Series</span><span>Récords</span><span>Progreso</span>
+                <span>Peso corporal</span><span>Calculadora de discos</span><span>Historial</span>
+                <span>Rutinas</span><span>Series</span><span>Récords</span><span>Progreso</span>
+                <span>Peso corporal</span><span>Calculadora de discos</span><span>Historial</span>
+            </div>
+        </div>
+
+        <!-- ===================== FUNCIONES ===================== -->
+        <section class="lp-seccion" id="funciones">
+            <div class="lp-encabezado">
+                <span class="lp-etiqueta">01 · Funciones</span>
+                <h2 data-split-scroll>Todo lo que necesitas<br>para entrenar mejor.</h2>
+                <p>Herramientas pensadas para usarlas en el gimnasio, entre serie y serie.</p>
+            </div>
+
+            <div class="lp-bento">
+                <article class="lp-tarjeta lp-tarjeta-ancha">
+                    <span class="lp-icono"><svg th:replace="~{fragments/iconos :: icono('lista')}"></svg></span>
+                    <h3>Rutinas a tu medida</h3>
+                    <p>Crea las tuyas desde una biblioteca de ejercicios o parte de una rutina recomendada según los días que entrenas.</p>
+                    <div class="lp-chips">
+                        <span>Torso / Pierna</span><span>Full body</span><span>Push · Pull · Legs</span>
+                    </div>
+                </article>
+                <article class="lp-tarjeta">
+                    <span class="lp-icono"><svg th:replace="~{fragments/iconos :: icono('pesa')}"></svg></span>
+                    <h3>Entrena en directo</h3>
+                    <p>Apunta series, repeticiones y peso mientras entrenas. ¿Mismo día que la semana pasada? Repítelo con un toque.</p>
+                </article>
+                <article class="lp-tarjeta lp-tarjeta-alta">
+                    <span class="lp-icono"><svg th:replace="~{fragments/iconos :: icono('grafica')}"></svg></span>
+                    <h3>Tu progreso, en gráficas</h3>
+                    <p>Volumen semanal, evolución de cada ejercicio y series por grupo muscular.</p>
+                    <svg class="lp-linea" viewBox="0 0 300 120" preserveAspectRatio="none" aria-hidden="true">
+                        <path class="lp-linea-area" d="M0 120 L0 95 C40 90 60 80 90 78 S140 60 170 55 S230 30 300 12 L300 120 Z"/>
+                        <path class="lp-linea-trazo" pathLength="1" d="M0 95 C40 90 60 80 90 78 S140 60 170 55 S230 30 300 12"/>
+                    </svg>
+                </article>
+                <article class="lp-tarjeta">
+                    <span class="lp-icono"><svg th:replace="~{fragments/iconos :: icono('trofeo')}"></svg></span>
+                    <h3>Mis récords</h3>
+                    <p>Tus mejores marcas de cada ejercicio, calculadas solas. Sabrás en cuanto batas una.</p>
+                </article>
+                <article class="lp-tarjeta">
+                    <span class="lp-icono"><svg th:replace="~{fragments/iconos :: icono('bascula')}"></svg></span>
+                    <h3>Peso corporal</h3>
+                    <p>Registra tu peso y mira la tendencia hacia tu objetivo, con tu IMC en el panel.</p>
+                </article>
+                <article class="lp-tarjeta">
+                    <span class="lp-icono"><svg th:replace="~{fragments/iconos :: icono('disco')}"></svg></span>
+                    <h3>Calculadora de discos</h3>
+                    <p>Dime cuánto quieres levantar y te digo qué discos poner a cada lado de la barra.</p>
+                </article>
+                <article class="lp-tarjeta">
+                    <span class="lp-icono"><svg th:replace="~{fragments/iconos :: icono('calendario')}"></svg></span>
+                    <h3>Historial completo</h3>
+                    <p>Cada entreno guardado con su fecha, sus series y su volumen total.</p>
+                </article>
             </div>
         </section>
 
-        <!-- FUNCIONES -->
-        <section class="landing-section" id="funciones">
-            <div class="section-heading">
-                <span>01 · FUNCIONES</span>
-                <h2>Todo lo que necesitas<br>para entrenar mejor.</h2>
+        <!-- ===================== CÓMO FUNCIONA ===================== -->
+        <section class="lp-seccion" id="como-funciona">
+            <div class="lp-encabezado">
+                <span class="lp-etiqueta">02 · Cómo funciona</span>
+                <h2 data-split-scroll>Tres pasos.<br>Ni uno más.</h2>
             </div>
-            <div class="feature-grid">
-                <article class="feature">
-                    <span class="feature-number">01</span>
-                    <h3>Rutinas</h3>
-                    <p>Crea y organiza tus entrenamiento según tus objetivos.</p>
-                </article>
-                <article class="feature">
-                    <span class="feature-number">02</span>
-                    <h3>Entrenamiento</h3>
-                    <p>Registra series, repeticiones, peso y descanso mientras entrenas.</p>
-                </article>
-                <article class="feature">
-                    <span class="feature-number">03</span>
-                    <h3>Progreso</h3>
-                    <p>Consulta tu historial y descubre la manera en la que evolucionas.</p>
-                </article>
+            <ol class="lp-pasos">
+                <li class="lp-paso">
+                    <span class="lp-paso-numero">1</span>
+                    <h3>Crea tu cuenta</h3>
+                    <p>En un minuto. Confirmas tu correo y respondes unas preguntas rápidas sobre tu objetivo (o te las saltas).</p>
+                </li>
+                <li class="lp-paso">
+                    <span class="lp-paso-numero">2</span>
+                    <h3>Elige tu rutina</h3>
+                    <p>Monta la tuya con ejercicios de la biblioteca o empieza con una recomendada para tus días de gimnasio.</p>
+                </li>
+                <li class="lp-paso">
+                    <span class="lp-paso-numero">3</span>
+                    <h3>Entrena y mejora</h3>
+                    <p>Apunta cada serie y mira cómo suben tus números semana a semana.</p>
+                </li>
+            </ol>
+        </section>
+
+        <!-- ===================== NÚMEROS ===================== -->
+        <section class="lp-numeros" aria-label="Gym Tracker en números">
+            <div class="lp-numero">
+                <strong data-contar="55">55</strong>
+                <span>ejercicios en la biblioteca, de pecho a cardio</span>
+            </div>
+            <div class="lp-numero">
+                <strong data-contar="8">8</strong>
+                <span>herramientas para entrenar y seguir tu progreso</span>
+            </div>
+            <div class="lp-numero">
+                <strong>0 €</strong>
+                <span>durante toda la versión alpha</span>
+            </div>
+            <div class="lp-numero">
+                <strong><span data-contar="100">100</span> %</strong>
+                <span>tus datos: nadie más los ve ni se comparten</span>
             </div>
         </section>
 
-        <!-- PROYECTO -->
-        <section class="project-section" id="proyecto">
+        <!-- ===================== APP MÓVIL ===================== -->
+        <section class="lp-seccion lp-movil" id="movil">
+            <div class="lp-movil-texto">
+                <span class="lp-etiqueta">03 · App móvil</span>
+                <h2 data-split-scroll>Llévala en<br>el bolsillo.</h2>
+                <p>Gym Tracker se instala en tu móvil como una app más: icono en la pantalla de inicio, a pantalla completa y sin pasar por ninguna tienda.</p>
+                <div class="lp-instalar">
+                    <div class="lp-instalar-paso">
+                        <strong>Android</strong>
+                        <span>Abre la web en Chrome → menú ⋮ → <em>Instalar aplicación</em>.</span>
+                    </div>
+                    <div class="lp-instalar-paso">
+                        <strong>iPhone</strong>
+                        <span>Abre la web en Safari → Compartir → <em>Añadir a pantalla de inicio</em>.</span>
+                    </div>
+                </div>
+                <!-- Solo aparece si el navegador permite instalarla directamente (pwa.js) -->
+                <button type="button" class="button lp-boton-grande" data-instalar hidden>
+                    <svg th:replace="~{fragments/iconos :: icono('descargar')}"></svg>
+                    Instalar Gym Tracker
+                </button>
+            </div>
+
+            <div class="lp-movil-visual" aria-hidden="true">
+                <div class="lp-telefono">
+                    <div class="lp-telefono-isla"></div>
+                    <div class="lp-telefono-pantalla">
+                        <p class="lp-tel-titulo">Pecho y tríceps</p>
+                        <p class="lp-tel-sub">Entrenando · 38 min</p>
+                        <div class="lp-tel-ejercicio lp-hecho">
+                            <span class="lp-tel-check"><svg th:replace="~{fragments/iconos :: icono('check')}"></svg></span>
+                            <div><strong>Press banca</strong><span>4 × 8 · 70 kg</span></div>
+                        </div>
+                        <div class="lp-tel-ejercicio lp-hecho">
+                            <span class="lp-tel-check"><svg th:replace="~{fragments/iconos :: icono('check')}"></svg></span>
+                            <div><strong>Press inclinado</strong><span>3 × 10 · 24 kg</span></div>
+                        </div>
+                        <div class="lp-tel-ejercicio lp-actual">
+                            <span class="lp-tel-check">3</span>
+                            <div><strong>Aperturas en polea</strong><span>Serie 2 de 3 · 12 reps</span></div>
+                        </div>
+                        <div class="lp-tel-ejercicio">
+                            <span class="lp-tel-check">4</span>
+                            <div><strong>Fondos en paralelas</strong><span>3 × 10</span></div>
+                        </div>
+                        <div class="lp-tel-descanso">
+                            <span>Descanso</span>
+                            <strong>01:30</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== EL PROYECTO ===================== -->
+        <section class="lp-proyecto" id="proyecto">
             <div>
-                <span class="section-label">02 · EL PROYECTO</span>
-                <h2>Más que un<br>gestor de rutinas.</h2>
+                <span class="lp-etiqueta">04 · El proyecto</span>
+                <h2 data-split-scroll>Hecho por alguien<br>que también entrena.</h2>
             </div>
-            <div class="project-text">
-                <p>Gym Tracker nace como un proyecto de desarrollo web pensado para convertir el entrenamiento en una experiencia más organizada, visual y personal.</p>
-                <p>Desde tus primeras rutinas hasta el seguimiento de tu evolución, todo queda reunido en un mismo lugar.</p>
-                <!-- TODO: enlazar a una página "Sobre el proyecto" cuando exista; de momento se quita el enlace muerto -->
+            <div class="lp-proyecto-texto">
+                <p>Gym Tracker nace de una idea sencilla: dejar de apuntar los entrenos en notas del móvil y poder ver, de verdad, si estás progresando.</p>
+                <p>Ahora mismo está en <strong>versión alpha</strong>: funciona, pero está creciendo. Si la pruebas, tu opinión decide qué viene después.</p>
+                <div class="lp-proximamente">
+                    <span><svg th:replace="~{fragments/iconos :: icono('nutricion')}"></svg> Nutrición</span>
+                    <span><svg th:replace="~{fragments/iconos :: icono('coach')}"></svg> Coach con IA</span>
+                    <em>Próximamente</em>
+                </div>
             </div>
         </section>
 
-        <!-- CTA -->
-        <section class="final-cta">
-            <p class="hero-label">EMPIEZA HOY</p>
-            <h2>Tu próximo<br>entrenamiento empieza aquí.</h2>
-            <a class="button" th:href="@{/registro}">Crear cuenta →</a>
+        <!-- ===================== PREGUNTAS ===================== -->
+        <section class="lp-seccion" id="preguntas">
+            <div class="lp-encabezado">
+                <span class="lp-etiqueta">05 · Preguntas</span>
+                <h2 data-split-scroll>Lo que te estarás<br>preguntando.</h2>
+            </div>
+            <div class="lp-faq">
+                <details>
+                    <summary>¿Cuánto cuesta?</summary>
+                    <p>Nada. Durante la versión alpha todo es gratis. Más adelante habrá un plan gratuito y algunas funciones extra opcionales.</p>
+                </details>
+                <details>
+                    <summary>¿Quién puede ver mis entrenamientos?</summary>
+                    <p>Solo tú. Cada cuenta está separada de las demás y tus datos no se venden ni se comparten con nadie.</p>
+                </details>
+                <details>
+                    <summary>¿Tengo que descargar algo?</summary>
+                    <p>No. Funciona desde el navegador del móvil o del ordenador. Si quieres, la puedes instalar como app en tu pantalla de inicio.</p>
+                </details>
+                <details>
+                    <summary>Soy principiante, ¿me sirve?</summary>
+                    <p>Sí. Puedes empezar con una rutina recomendada según los días que vas al gimnasio, y la calculadora de discos te ayuda a cargar la barra.</p>
+                </details>
+                <details>
+                    <summary>¿Qué viene después?</summary>
+                    <p>Nutrición, un coach con inteligencia artificial y lo que nos pidáis quienes la probéis primero.</p>
+                </details>
+            </div>
+        </section>
+
+        <!-- ===================== CTA FINAL ===================== -->
+        <section class="lp-cta">
+            <div class="lp-cta-brillo" aria-hidden="true"></div>
+            <p class="lp-cta-etiqueta">Empieza hoy</p>
+            <h2 data-split-scroll>Tu próximo entreno<br>empieza aquí.</h2>
+            <a class="lp-cta-boton" th:href="@{/registro}" th:if="${usuarioNombre == null}">
+                Crear mi cuenta gratis
+                <svg th:replace="~{fragments/iconos :: icono('flecha')}"></svg>
+            </a>
+            <a class="lp-cta-boton" th:href="@{/dashboard}" th:if="${usuarioNombre != null}">
+                Ir a mi panel
+                <svg th:replace="~{fragments/iconos :: icono('flecha')}"></svg>
+            </a>
         </section>
     </main>
-    <!-- FOOTER -->
-    <footer>
-        <span>© 2026 Gym Tracker</span>
-        <span>Entrena · Registra · Evoluciona</span>
+
+    <footer class="lp-pie">
+        <div>
+            <a class="logo" th:href="@{/}">Gym Tracker</a>
+            <p>Entrena · Registra · Evoluciona</p>
+        </div>
+        <nav aria-label="Pie de página">
+            <a href="#funciones">Funciones</a>
+            <a href="#preguntas">Preguntas</a>
+            <a th:href="@{/login}">Iniciar sesión</a>
+            <a th:href="@{/registro}">Crear cuenta</a>
+        </nav>
+        <span class="lp-pie-copy">© 2026 Gym Tracker · Versión alpha</span>
     </footer>
+
     <script th:src="@{/js/enlace-error-redirect.js}"></script>
+    <!-- GSAP (animaciones) copiado en vendor/: la CSP no permite cargarlo de un CDN -->
+    <script th:src="@{/js/vendor/gsap-3.13.0.min.js}"></script>
+    <script th:src="@{/js/vendor/gsap-scrolltrigger-3.13.0.min.js}"></script>
+    <script th:src="@{/js/vendor/gsap-splittext-3.13.0.min.js}"></script>
     <script th:src="@{/js/landing.js}"></script>
     <script th:src="@{/js/pwa.js}"></script>
 </body>

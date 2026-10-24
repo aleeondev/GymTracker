@@ -6,7 +6,7 @@ Idioma de la app, del código (nombres) y de las explicaciones: **español**.
 ## Stack
 - Spring Boot 4.1 · Spring Security 7 · Hibernate 7 · Thymeleaf 3.1 · Lombok · Jackson 3 (`tools.jackson`)
 - Postgres en Supabase (pooler, **máx. 15 conexiones**) · Login con Supabase Auth (supabase-js en el navegador)
-- Chart.js 4.5.0 para gráficas · Librerías de terceros copiadas en `static/js/vendor/` (nunca CDN: lo impide la CSP)
+- Chart.js 4.5.0 para gráficas · GSAP 3.13.0 (+ ScrollTrigger, SplitText) para animar la landing · Librerías de terceros copiadas en `static/js/vendor/` (nunca CDN: lo impide la CSP)
 - App instalable (PWA): `static/manifest.webmanifest`, `static/sw.js`, `static/offline.html`
 
 ## Cómo funciona el login
@@ -27,7 +27,7 @@ Sesiones STATELESS. CSRF con `CookieCsrfTokenRepository` (sin rotar: `NullAuthen
 - **CSP estricta:** nada de `<script>` ni `style="..."` dentro del HTML; JS en archivos propios; nunca `innerHTML` con datos del usuario.
 - **Enlaces a CSS/JS siempre con Thymeleaf** (`th:href="@{/css/...}"`, `th:src`): llevan huella automática de caché. No usar `?v=`.
 - Sin emojis en la interfaz: usar `fragments/iconos.html`. Los atributos `hidden` siempre ocultan (regla global en styles.css).
-- La landing (`templates/index.html`, `css/inicio.css`) está cerrada: no tocar salvo petición expresa.
+- La landing (`templates/index.html`, `css/inicio.css`, `js/landing.js` + `landing-pre.js`) se rehízo el 24/10 con GSAP: no tocar salvo petición expresa. Clases con prefijo `lp-`; lo que GSAP revela con transform usa `translate` en el hover.
 - Redirecciones con datos del usuario: solo rutas internas que pasen la lista blanca (`EjercicioController.rutaInternaValida`).
 
 ## Forma de trabajar con el usuario
@@ -38,7 +38,7 @@ Sesiones STATELESS. CSRF con `CookieCsrfTokenRepository` (sin rotar: `NullAuthen
 
 ## Comandos
 - Arrancar: desde VS Code (perfil `local`, credenciales en `application-local.properties`, ignorado por git), puerto 8081.
-- Tests: `./mvnw -q test -Dtest='PaginasErrorTests,SesionCsrfTests,FlujoUsuarioTests'` (usan la BD real con rollback y pool de 2 conexiones).
+- Tests: `./mvnw -q test -Dtest='PaginasErrorTests,PaginasPublicasTests,SesionCsrfTests,FlujoUsuarioTests'` (usan la BD real con rollback y pool de 2 conexiones).
   `GymtrackerApplicationTests` falla porque no usa el perfil `local` (pendiente de arreglar).
 - En Windows, escribir archivos con PowerShell `[IO.File]::WriteAllText` (UTF-8 sin BOM) o Python; ojo con las barras invertidas en heredocs de Git Bash.
 
