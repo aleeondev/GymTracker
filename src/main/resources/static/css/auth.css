@@ -644,6 +644,11 @@
     line-height: 1.5;
 }
 
+.auth-card form .auth-check a {
+    color: var(--color-principal);
+    font-weight: 700;
+}
+
 .auth-card form .auth-check input {
     width: auto;
     margin-top: 2px;

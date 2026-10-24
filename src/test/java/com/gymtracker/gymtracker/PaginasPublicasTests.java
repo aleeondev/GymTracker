@@ -47,6 +47,18 @@ class PaginasPublicasTests {
     }
 
     @Test
+    void privacidadPublicaYEnlazada() throws Exception {
+        HttpResponse<String> r = pedir("/privacidad");
+        assertThat(r.statusCode()).isEqualTo(200);
+        assertThat(r.body()).contains("Tus datos son tuyos.").contains("datos de salud")
+            .contains("mailto:").contains("aepd.es")
+            // Sale de application.properties: la "ó" tiene que llegar bien (codificación UTF-8)
+            .contains("Alejandro León").doesNotContain("PENDIENTE");
+        assertThat(pedir("/registro").body()).contains("href=\"/privacidad\"");
+        assertThat(pedir("/").body()).contains("href=\"/privacidad\"");
+    }
+
+    @Test
     void pantallasDeAccesoConPanelDeMarca() throws Exception {
         for (String ruta : new String[] { "/login", "/registro", "/recuperar", "/nueva-contrasena", "/enlace-error" }) {
             HttpResponse<String> r = pedir(ruta);

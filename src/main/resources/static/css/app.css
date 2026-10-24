@@ -1113,6 +1113,15 @@ form .serie-fila input {
     font-size: 12px;
 }
 
+.app-footer a {
+    color: inherit;
+    font-weight: 700;
+}
+
+.app-footer a:hover {
+    color: var(--color-principal);
+}
+
 /* =========================
    PÁGINA DE ERROR
 ========================= */

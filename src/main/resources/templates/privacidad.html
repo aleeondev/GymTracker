@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Qué datos guarda Gym Tracker, para qué los usa y cómo puedes borrarlos.">
+    <title>Privacidad | Gym Tracker</title>
+    <link rel="icon" type="image/svg+xml" th:href="@{/img/favicon.svg}">
+    <link rel="icon" href="/img/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" th:href="@{/img/favicon-180.png}">
+    <meta name="theme-color" content="#c92f4b">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Misma cabecera y pie que la landing (inicio.css) + estilos del texto legal -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/inicio.css}">
+    <link rel="stylesheet" th:href="@{/css/legal.css}">
+</head>
+<body class="landing">
+    <header>
+        <a class="logo" th:href="@{/}">Gym Tracker</a>
+        <div class="header-acciones">
+            <th:block th:if="${usuarioNombre == null}">
+                <a class="header-enlace" th:href="@{/login}">Iniciar sesión</a>
+                <a class="header-button" th:href="@{/registro}">Crear cuenta</a>
+            </th:block>
+            <a th:if="${usuarioNombre != null}" class="header-button" th:href="@{/dashboard}">Ir a mi panel</a>
+        </div>
+    </header>
+
+    <main class="legal">
+        <span class="lp-etiqueta">Privacidad</span>
+        <h1>Tus datos son tuyos.</h1>
+        <p class="legal-intro">
+            Esto es lo que guarda Gym Tracker, para qué lo usa y cómo puedes borrarlo.
+            Sin letra pequeña: si algo no se entiende, escríbenos.
+        </p>
+
+        <!-- Resumen en cuatro tarjetas -->
+        <ul class="legal-resumen">
+            <li>
+                <span class="lp-icono"><svg th:replace="~{fragments/iconos :: icono('escudo')}"></svg></span>
+                <strong>Solo tú los ves</strong>
+                <span>Cada cuenta está separada de las demás.</span>
+            </li>
+            <li>
+                <span class="lp-icono"><svg th:replace="~{fragments/iconos :: icono('check')}"></svg></span>
+                <strong>No vendemos nada</strong>
+                <span>Ni tus datos ni tu atención: sin publicidad.</span>
+            </li>
+            <li>
+                <span class="lp-icono"><svg th:replace="~{fragments/iconos :: icono('grafica')}"></svg></span>
+                <strong>Sin rastreo</strong>
+                <span>Ni analítica, ni cookies de terceros.</span>
+            </li>
+            <li>
+                <span class="lp-icono"><svg th:replace="~{fragments/iconos :: icono('repetir')}"></svg></span>
+                <strong>Bórralo cuando quieras</strong>
+                <span>Desde Mi perfil, con todos tus datos.</span>
+            </li>
+        </ul>
+
+        <article class="legal-texto">
+            <section id="responsable">
+                <h2>1. Quién es el responsable</h2>
+                <p>
+                    Gym Tracker es un proyecto personal en <strong>versión alpha</strong>. El responsable de tus datos es
+                    <strong th:text="${responsable}">Alejandro León</strong>. Para cualquier pregunta o para ejercer tus derechos, escribe a
+                    <a th:href="'mailto:' + ${contacto}" th:text="${contacto}">gymtraacker.app@gmail.com</a>.
+                </p>
+            </section>
+
+            <section id="datos">
+                <h2>2. Qué datos guardamos</h2>
+                <h3>Tu cuenta</h3>
+                <p>Email, nombre, nombre de usuario y la fecha en la que aceptaste estas condiciones. Tu contraseña la guarda Supabase cifrada: nosotros nunca la vemos.</p>
+                <h3>Tu perfil (opcional)</h3>
+                <p>
+                    Si respondes el cuestionario de bienvenida: sexo, fecha de nacimiento, altura, peso, peso objetivo, objetivo,
+                    experiencia, días y duración de entreno, dónde entrenas, actividad diaria y lesiones o limitaciones.
+                    <strong>El peso, la altura y las lesiones son datos de salud</strong>: solo los guardamos si tú los escribes
+                    y das tu consentimiento expreso.
+                </p>
+                <h3>Tus entrenamientos</h3>
+                <p>Rutinas, ejercicios que crees, entrenamientos con sus series, repeticiones y pesos, y tus registros de peso corporal.</p>
+                <h3>Tus opiniones</h3>
+                <p>Lo que nos envías con el botón «Opinar», la página desde la que lo envías y el tipo de navegador (para reproducir fallos).</p>
+                <h3>Datos técnicos</h3>
+                <p>Como cualquier web, los servidores registran la dirección IP y la hora de las peticiones durante un tiempo limitado, por seguridad (por ejemplo, para frenar ataques).</p>
+            </section>
+
+            <section id="para-que">
+                <h2>3. Para qué los usamos</h2>
+                <ul>
+                    <li>Para que la app funcione: guardar tus entrenos y enseñarte tu progreso, tus récords y tu objetivo.</li>
+                    <li>Para enviarte los correos imprescindibles: confirmar tu cuenta y recuperar la contraseña.</li>
+                    <li>Para leer tus opiniones y mejorar la app.</li>
+                </ul>
+                <p>
+                    <strong>No</strong> los usamos para publicidad, no los vendemos, no hacemos perfiles comerciales y no se los
+                    pasamos a ninguna inteligencia artificial. Si algún día llega el Coach IA, te lo explicaremos y te pediremos permiso antes.
+                </p>
+            </section>
+
+            <section id="base-legal">
+                <h2>4. Por qué podemos tratarlos</h2>
+                <p>
+                    Por tu <strong>consentimiento</strong> (artículo 6.1.a del RGPD y, para los datos de salud, artículo 9.2.a), que das al
+                    crear la cuenta y al rellenar el cuestionario. Puedes retirarlo cuando quieras borrando esos datos o tu cuenta.
+                </p>
+            </section>
+
+            <section id="terceros">
+                <h2>5. Quién más interviene</h2>
+                <p>Para funcionar, Gym Tracker usa estos servicios, que tratan los datos solo por encargo nuestro:</p>
+                <ul>
+                    <li><strong>Supabase</strong>: base de datos e inicio de sesión. Servidores en la Unión Europea (Irlanda).</li>
+                    <li><strong>Render</strong>: alojamiento de la web. Servidores en la Unión Europea (Frankfurt).</li>
+                    <li><strong>Brevo</strong>: envío de los correos de la cuenta. Empresa europea (Francia).</li>
+                    <li><strong>Google Fonts</strong>: las tipografías de la web. Tu navegador las descarga de Google, que puede ver tu dirección IP.</li>
+                </ul>
+            </section>
+
+            <section id="tiempo">
+                <h2>6. Cuánto tiempo los guardamos</h2>
+                <p>
+                    Mientras tengas la cuenta. Si la eliminas, borramos tus datos en ese momento; pueden quedar en las copias de
+                    seguridad automáticas unos días más, hasta que se renuevan.
+                </p>
+            </section>
+
+            <section id="cookies">
+                <h2>7. Cookies y almacenamiento</h2>
+                <p>Solo usamos las imprescindibles para que la app funcione, por eso no verás ningún aviso de cookies:</p>
+                <ul>
+                    <li><code>gt_session</code>: mantiene tu sesión iniciada (dura 1 hora y se renueva sola).</li>
+                    <li><code>XSRF-TOKEN</code>: protege los formularios para que otra web no pueda enviarlos en tu nombre.</li>
+                    <li><strong>Almacenamiento del navegador</strong>: tu sesión de Supabase y el borrador del entreno que estás haciendo, para no perderlo si se cierra la página.</li>
+                </ul>
+            </section>
+
+            <section id="derechos">
+                <h2>8. Tus derechos</h2>
+                <p>Puedes, cuando quieras:</p>
+                <ul>
+                    <li><strong>Ver y corregir</strong> tus datos desde Mi perfil.</li>
+                    <li><strong>Borrarlos</strong>: con «Eliminar mi cuenta» en Mi perfil, o escribiéndonos.</li>
+                    <li><strong>Pedir una copia</strong>, <strong>oponerte</strong> o <strong>limitar</strong> su uso, escribiendo a
+                        <a th:href="'mailto:' + ${contacto}" th:text="${contacto}">correo@gmail.com</a>.</li>
+                </ul>
+                <p>
+                    Si crees que no tratamos bien tus datos, puedes reclamar ante la Agencia Española de Protección de Datos
+                    (<a href="https://www.aepd.es" rel="noopener" target="_blank">aepd.es</a>).
+                </p>
+            </section>
+
+            <section id="seguridad">
+                <h2>9. Cómo los protegemos</h2>
+                <p>
+                    Conexión cifrada (HTTPS), contraseñas cifradas por Supabase, cada consulta filtrada por tu cuenta y
+                    protección a nivel de base de datos para que nadie vea los datos de otra persona.
+                </p>
+            </section>
+
+            <p class="legal-fecha">Última actualización: 24 de octubre de 2026.</p>
+        </article>
+    </main>
+
+    <footer class="lp-pie">
+        <div>
+            <a class="logo" th:href="@{/}">Gym Tracker</a>
+            <p>Entrena · Registra · Evoluciona</p>
+        </div>
+        <nav aria-label="Pie de página">
+            <a th:href="@{/}">Inicio</a>
+            <a th:href="@{/login}">Iniciar sesión</a>
+            <a th:href="@{/registro}">Crear cuenta</a>
+        </nav>
+        <span class="lp-pie-copy">© 2026 Gym Tracker · Versión alpha</span>
+    </footer>
+</body>
+</html>
