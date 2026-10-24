@@ -43,6 +43,7 @@ Sesiones STATELESS. CSRF con `CookieCsrfTokenRepository` (sin rotar: `NullAuthen
 - Arrancar: desde VS Code (perfil `local`, credenciales en `application-local.properties`, ignorado por git), puerto 8081.
 - Tests: `./mvnw -q test -Dtest='PaginasErrorTests,PaginasPublicasTests,SesionCsrfTests,FlujoUsuarioTests'` (usan la BD real con rollback y pool de 2 conexiones).
   `GymtrackerApplicationTests` falla porque no usa el perfil `local` (pendiente de arreglar).
+- Publicación: Render (plan gratis, región Frankfurt) con el `Dockerfile` (build sin tests, perfil `prod` = `application-prod.properties`: puerto `PORT`, cabeceras de proxy HTTPS, pool de 5). Variables en Render: `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `SUPABASE_SECRET_KEY`. Correos de Supabase por SMTP de Brevo (remitente gymtraacker.app@gmail.com).
 - En Windows, escribir archivos con PowerShell `[IO.File]::WriteAllText` (UTF-8 sin BOM) o Python; ojo con las barras invertidas en heredocs de Git Bash.
 
 ## Pendiente / ideas

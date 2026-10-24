@@ -1,0 +1,43 @@
+<!--
+    CORREO: enlace de acceso sin contraseña (Supabase → Authentication → Emails → "Magic link")
+    Asunto: Tu enlace para entrar en Gym Tracker
+    La app ahora no lo usa, pero Supabase puede enviarlo (por ejemplo, si algún
+    día se añade "Entrar sin contraseña"): mejor que también salga con nuestro diseño.
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Tu enlace para entrar en Gym Tracker</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f4f4f5;">
+<div style="display:none; max-height:0; overflow:hidden; opacity:0;">Entra en tu cuenta con un solo clic.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f4f4f5;">
+<tr><td align="center" style="padding:32px 16px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px; background-color:#ffffff; border:1px solid #eeeeee; border-radius:20px; overflow:hidden;">
+        <tr><td style="background-color:#c92f4b; background-image:linear-gradient(135deg,#b8243f 0%,#c92f4b 45%,#e9604f 100%); padding:30px 36px 34px; font-family:Arial,Helvetica,sans-serif; color:#ffffff;">
+            <div style="font-size:22px; font-weight:900; letter-spacing:0.3px;">Gym Tracker</div>
+            <div style="margin-top:30px; font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; opacity:0.85;">Acceso</div>
+            <h1 style="margin:8px 0 0; font-size:30px; line-height:1.1; font-weight:900;">Tu próxima serie te está esperando.</h1>
+        </td></tr>
+        <tr><td style="padding:34px 36px 10px; font-family:Arial,Helvetica,sans-serif; color:#252525;">
+            <p style="margin:0 0 16px; font-size:16px; line-height:1.6;">¡Hola!</p>
+            <p style="margin:0 0 26px; font-size:16px; line-height:1.6; color:#555555;">Pulsa el botón para entrar en tu cuenta de Gym Tracker. No hace falta contraseña.</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="border-radius:12px; background-color:#c92f4b;">
+                <a href="{{ .ConfirmationURL }}" style="display:inline-block; padding:15px 30px; font-family:Arial,Helvetica,sans-serif; font-size:16px; font-weight:700; color:#ffffff; text-decoration:none; border-radius:12px;">Entrar en Gym Tracker</a>
+            </td></tr></table>
+            <p style="margin:18px 0 0; font-size:13px; line-height:1.5; color:#707070;">El enlace caduca en 1 hora y solo sirve una vez.</p>
+        </td></tr>
+        <tr><td style="padding:26px 36px 32px; font-family:Arial,Helvetica,sans-serif;">
+            <p style="margin:0 0 6px; font-size:12px; line-height:1.5; color:#707070;">¿El botón no funciona? Copia este enlace en tu navegador:</p>
+            <p style="margin:0 0 18px; font-size:12px; line-height:1.5; word-break:break-all;"><a href="{{ .ConfirmationURL }}" style="color:#c92f4b;">{{ .ConfirmationURL }}</a></p>
+            <p style="margin:0; font-size:12px; line-height:1.5; color:#707070;">Si no has pedido entrar, ignora este correo: nadie puede acceder sin este enlace.</p>
+        </td></tr>
+    </table>
+    <p style="margin:22px 0 0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.6; color:#9a9aa0;">Gym Tracker · Entrena · Registra · Evoluciona<br>¿Dudas? Escríbenos a gymtraacker.app@gmail.com</p>
+</td></tr>
+</table>
+</body>
+</html>
