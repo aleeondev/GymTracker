@@ -13,6 +13,7 @@
     <meta name="theme-color" content="#c92f4b">
     <!-- App instalable (PWA): ficha de la app e icono/barra en iPhone -->
     <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Gym Tracker">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -25,10 +26,11 @@
 
 <body>
     <main class="auth-page">
+        <aside th:replace="~{fragments/auth :: escena('Tu próxima serie te está esperando.', 'Entra y sigue donde lo dejaste: tus rutinas, tus récords y todo tu progreso.')}"></aside>
         <section class="auth-card">
-            <a href="/" class="auth-logo">Gym Tracker</a>
+            <p class="auth-saludo" data-saludo></p>
             <h1>Iniciar sesión</h1>
-            <p class="auth-subtitle"> Entra en tu cuenta para continuar con tus entrenamientos.</p>
+            <p class="auth-subtitle">Entra en tu cuenta para continuar con tus entrenamientos.</p>
 
             <form id="loginForm">
                 <label for="email">Email</label>

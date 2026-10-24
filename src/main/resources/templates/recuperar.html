@@ -13,6 +13,7 @@
     <meta name="theme-color" content="#c92f4b">
     <!-- App instalable (PWA): ficha de la app e icono/barra en iPhone -->
     <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Gym Tracker">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -29,8 +30,8 @@
         Al pulsarlo, el usuario llega a /nueva-contrasena (nueva-contrasena.html).
     -->
     <main class="auth-page">
+        <aside th:replace="~{fragments/auth :: escena('Hasta los mejores fallan una rep.', 'Te mandamos un enlace al correo y en un minuto vuelves a entrenar.')}"></aside>
         <section class="auth-card">
-            <a href="/" class="auth-logo">Gym Tracker</a>
             <h1>Recuperar contraseña</h1>
             <p class="auth-subtitle">Escribe el email de tu cuenta y te enviaremos un enlace para crear una contraseña nueva.</p>
 

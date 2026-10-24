@@ -18,6 +18,44 @@
             <a class="button button-grande" th:href="@{/entrenamiento}">Empezar entrenamiento →</a>
         </section>
 
+        <!-- PRIMEROS PASOS (dto/PrimerosPasos): solo mientras falte alguno.
+             "Ocultar" la esconde en este navegador (js/primeros-pasos.js). -->
+        <section class="panel primeros-pasos" id="primeros-pasos" aria-labelledby="pp-titulo"
+                 th:unless="${primerosPasos.completo()}">
+            <div class="pp-cabecera">
+                <div>
+                    <span class="eyebrow">PRIMEROS PASOS</span>
+                    <h2 id="pp-titulo">Saca todo el partido a Gym Tracker</h2>
+                </div>
+                <button type="button" class="pp-ocultar" data-ocultar-pasos>Ocultar</button>
+            </div>
+            <div class="pp-progreso">
+                <progress th:attr="max=${primerosPasos.total()},value=${primerosPasos.hechos()}"
+                          th:text="${primerosPasos.hechos()} + ' de ' + ${primerosPasos.total()}">1 de 4</progress>
+                <span th:text="${primerosPasos.hechos()} + ' de ' + ${primerosPasos.total()}">1 de 4</span>
+            </div>
+            <ol class="pp-lista">
+                <li th:each="paso, it : ${primerosPasos.pasos()}" th:classappend="${paso.hecho()} ? 'hecho'">
+                    <span class="pp-marca" aria-hidden="true">
+                        <!-- th:replace va antes que th:if: por eso el if va en un bloque aparte -->
+                        <th:block th:if="${paso.hecho()}"><svg th:replace="~{fragments/iconos :: icono('check')}"></svg></th:block>
+                        <th:block th:unless="${paso.hecho()}" th:text="${it.count}">1</th:block>
+                    </span>
+                    <div class="pp-texto">
+                        <strong th:text="${paso.titulo()}">Crea tu primera rutina</strong>
+                        <span th:text="${paso.texto()}">Explicación</span>
+                    </div>
+                    <span class="pp-hecho" th:if="${paso.hecho()}">Hecho</span>
+                    <th:block th:unless="${paso.hecho()}">
+                        <a class="button button-pequeno" th:if="${paso.url() != null}" th:href="@{${paso.url()}}"
+                           th:text="${paso.boton()}">Empezar</a>
+                        <button type="button" class="button button-pequeno" th:if="${paso.url() == null}"
+                                data-abrir-opinion th:text="${paso.boton()}">Opinar</button>
+                    </th:block>
+                </li>
+            </ol>
+        </section>
+
         <!-- ESTADÍSTICAS -->
         <section class="stats" aria-label="Resumen">
             <div class="stat">
@@ -207,5 +245,6 @@
     <script th:src="@{/js/vendor/chart-4.5.0.umd.min.js}"></script>
     <script th:src="@{/js/graficas.js}"></script>
     <script th:src="@{/js/grafica-volumen.js}"></script>
+    <script th:src="@{/js/primeros-pasos.js}"></script>
 </body>
 </html>

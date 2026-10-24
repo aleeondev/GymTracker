@@ -1,0 +1,8 @@
+# Lo que NO se copia al construir la imagen de Docker
+target/
+.git/
+.vscode/
+.idea/
+*.log
+# Credenciales de local: jamás dentro de la imagen
+src/main/resources/application-local.properties

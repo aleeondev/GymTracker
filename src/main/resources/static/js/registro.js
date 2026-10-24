@@ -97,8 +97,8 @@ formulario.addEventListener("submit", async function (event) {
         campoUsuario.focus();
         return;
     }
-    if (password.length < 6) {
-        mostrarMensaje("La contraseña debe tener al menos 6 caracteres.", "is-error");
+    if (password.length < 8) {
+        mostrarMensaje("La contraseña debe tener al menos 8 caracteres.", "is-error");
         return;
     }
     if (password !== repetida) {
@@ -152,7 +152,7 @@ formulario.addEventListener("submit", async function (event) {
 function traducirError(error) {
     const texto = (error.message || "").toLowerCase();
     if (texto.includes("already registered") || texto.includes("already been registered")) return "Ya existe una cuenta con ese email. Inicia sesión.";
-    if (texto.includes("password")) return "La contraseña no es válida: usa al menos 6 caracteres.";
+    if (texto.includes("password")) return "La contraseña no es válida: usa al menos 8 caracteres.";
     if (texto.includes("invalid") && texto.includes("email")) return "El email no es válido.";
     if (texto.includes("rate limit") || error.status === 429) return "Demasiados intentos. Espera un momento y vuelve a probar.";
     return "No se ha podido crear la cuenta: " + error.message;

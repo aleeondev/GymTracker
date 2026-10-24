@@ -13,6 +13,7 @@
     <meta name="theme-color" content="#c92f4b">
     <!-- App instalable (PWA): ficha de la app e icono/barra en iPhone -->
     <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Gym Tracker">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -29,15 +30,15 @@
         nueva-contrasena.js comprueba el enlace y solo entonces muestra el formulario.
     -->
     <main class="auth-page">
+        <aside th:replace="~{fragments/auth :: escena('Nueva contraseña, mismos objetivos.', 'Elige una que recuerdes: al menos 8 caracteres, mezclando letras y números.')}"></aside>
         <section class="auth-card">
-            <a href="/" class="auth-logo">Gym Tracker</a>
             <h1>Nueva contraseña</h1>
             <p class="auth-subtitle" id="subtitulo">Comprobando el enlace...</p>
 
             <form id="nuevaForm" hidden>
                 <label for="password">Nueva contraseña</label>
                 <div class="password-field">
-                    <input type="password" id="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password" minlength="6" required>
+                    <input type="password" id="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" minlength="8" required>
                     <button type="button" class="toggle-password" data-target="password" aria-label="Mostrar contraseña">
                         <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"></path>
@@ -51,7 +52,7 @@
                 </div>
                 <label for="password2">Repite la contraseña</label>
                 <div class="password-field">
-                    <input type="password" id="password2" placeholder="Escríbela otra vez" autocomplete="new-password" minlength="6" required>
+                    <input type="password" id="password2" placeholder="Escríbela otra vez" autocomplete="new-password" minlength="8" required>
                     <button type="button" class="toggle-password" data-target="password2" aria-label="Mostrar contraseña">
                         <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"></path>

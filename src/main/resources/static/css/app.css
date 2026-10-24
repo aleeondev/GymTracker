@@ -651,10 +651,25 @@ form label:first-of-type {
     gap: 0 18px;
 }
 
+/* "form label:first-of-type" quita el margen a la primera etiqueta... pero
+   cuenta por columna, así que las etiquetas de .campos-2 quedaban pegadas al
+   campo de encima (p. ej. "Nueva contraseña" en Mi perfil). Si antes hay un
+   campo visible, recuperan su margen normal. */
+form > input:not([type="hidden"]) ~ .campos-2 label,
+form > .campos-2 ~ .campos-2 label {
+    margin-top: 20px;
+}
+
 .ayuda {
     margin: 6px 0 0;
     color: var(--color-texto-secundario);
     font-size: 13px;
+}
+
+/* Texto de ayuda seguido de un botón: que no vayan pegados */
+.ayuda + .button,
+.ayuda + .button-secundario {
+    margin-top: 16px;
 }
 
 .form-acciones {
@@ -1098,6 +1113,15 @@ form .serie-fila input {
     font-size: 12px;
 }
 
+.app-footer a {
+    color: inherit;
+    font-weight: 700;
+}
+
+.app-footer a:hover {
+    color: var(--color-principal);
+}
+
 /* =========================
    PÁGINA DE ERROR
 ========================= */
@@ -1249,6 +1273,11 @@ form .serie-fila input {
 
     .campos-2 {
         grid-template-columns: 1fr;
+    }
+
+    /* Apiladas en una columna, la segunda etiqueta necesita su margen */
+    .campos-2 > * + * label {
+        margin-top: 20px;
     }
 
     .stat {
@@ -1573,8 +1602,178 @@ form .serie-fila input {
 }
 
 .perfil-subtitulo {
-    margin: 0 0 6px;
+    margin: 0 0 14px;
     font-size: 18px;
+}
+
+/* Subtítulo + su explicación (p. ej. "Sesiones"): la explicación va justo debajo */
+.perfil-subtitulo + .ayuda {
+    margin-top: -6px;
+}
+
+/* =========================
+   PRIMEROS PASOS (dashboard.html + js/primeros-pasos.js)
+========================= */
+
+.primeros-pasos {
+    margin-bottom: 40px;
+    border-color: rgba(201, 47, 75, 0.25);
+    background:
+        radial-gradient(500px 220px at 100% 0%, rgba(201, 47, 75, 0.07), transparent 70%),
+        var(--color-blanco);
+    animation: fadeInUp 0.6s 0.1s ease-out both;
+}
+
+.pp-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.pp-cabecera h2 {
+    margin: 6px 0 0;
+    font-size: 24px;
+}
+
+.pp-ocultar {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    color: var(--color-texto-secundario);
+    font: 700 13px "Plus Jakarta Sans", sans-serif;
+    cursor: pointer;
+}
+
+.pp-ocultar:hover {
+    background: var(--color-fondo);
+    color: var(--color-texto);
+}
+
+.pp-progreso {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 18px 0 22px;
+}
+
+.pp-progreso span {
+    flex-shrink: 0;
+    color: var(--color-principal);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.pp-lista {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.pp-lista li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    background: var(--color-fondo);
+    border: 1px solid var(--color-borde);
+    border-radius: 14px;
+}
+
+.pp-marca {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border: 2px solid var(--color-borde);
+    border-radius: 50%;
+    background: var(--color-blanco);
+    font-family: "Nunito", sans-serif;
+    font-weight: 900;
+}
+
+.pp-marca .icono {
+    width: 18px;
+    height: 18px;
+}
+
+.pp-texto {
+    flex: 1;
+    min-width: 0;
+}
+
+.pp-texto strong {
+    display: block;
+    font-size: 15px;
+}
+
+.pp-texto span {
+    color: var(--color-texto-secundario);
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.pp-lista .button {
+    flex-shrink: 0;
+}
+
+/* Paso hecho: check verde y el texto más apagado */
+.pp-lista li.hecho {
+    background: var(--color-blanco);
+}
+
+.pp-lista li.hecho .pp-marca {
+    border-color: #22a35c;
+    background: #22a35c;
+    color: white;
+}
+
+.pp-lista li.hecho .pp-texto {
+    opacity: 0.6;
+}
+
+.pp-hecho {
+    flex-shrink: 0;
+    color: #1f9254;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+@media (max-width: 900px) {
+    .pp-lista {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .pp-lista li {
+        flex-wrap: wrap;
+    }
+
+    /* El botón baja a su propia línea, alineado con el texto (no con el número) */
+    .pp-lista li .button {
+        margin-left: 50px;
+        width: calc(100% - 50px);
+        text-align: center;
+    }
+}
+
+/* "Eliminar mi cuenta": borde rojo suave para que se note que es delicado */
+.panel-peligro {
+    border-color: #f1c4cd;
+}
+
+.panel-peligro .ayuda strong {
+    color: var(--color-principal);
+}
+
+.panel-peligro form {
+    margin-top: 18px;
 }
 
 /* Separa cada bloque dentro del mismo panel con una línea fina */
@@ -1874,9 +2073,34 @@ form .check-consentimiento input {
     margin-left: auto;
 }
 
+/* "Saltar por ahora": separado del cuestionario por una línea, como botón
+   discreto (sin el subrayado de .enlace-boton, que es para enlaces dentro de avisos) */
 .bienvenida-saltar {
-    margin-top: 16px;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-borde);
     text-align: center;
+}
+
+.bienvenida-saltar .enlace-boton {
+    margin: 0;
+    padding: 10px 18px;
+    border-radius: 9px;
+    color: var(--color-texto-secundario);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.bienvenida-saltar .enlace-boton:hover {
+    background: var(--color-suave);
+    color: var(--color-principal);
+}
+
+.bienvenida-saltar .enlace-boton:focus-visible {
+    outline: 2px solid var(--color-principal);
+    outline-offset: 2px;
 }
 
 /* Tarjeta "Tu objetivo" del panel */
@@ -1934,8 +2158,8 @@ form .check-consentimiento input {
 .datos-perfil {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 16px 24px;
-    margin: 0 0 16px;
+    gap: 18px 24px;
+    margin: 0 0 20px;
 }
 
 .datos-perfil .ancho {
@@ -2578,6 +2802,175 @@ form .boton-discos:hover {
 @media (max-width: 600px) {
     .error-codigo {
         font-size: 80px;
+    }
+}
+
+/* =========================
+   OPINAR (fragments/app.html + js/opinion.js)
+========================= */
+
+/* Botón de la cabecera: con texto en ordenador, solo el icono en móvil */
+.btn-opinar {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 13px;
+    border: 1px solid rgba(201, 47, 75, 0.3);
+    border-radius: 9px;
+    background: var(--color-suave);
+    color: var(--color-principal);
+    font: 700 13px "Plus Jakarta Sans", sans-serif;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-opinar:hover {
+    background: var(--color-principal);
+    border-color: var(--color-principal);
+    color: white;
+}
+
+.btn-opinar:focus-visible {
+    outline: 2px solid var(--color-principal);
+    outline-offset: 2px;
+}
+
+.btn-opinar .icono {
+    width: 16px;
+    height: 16px;
+}
+
+.opinion {
+    width: min(500px, calc(100% - 24px));
+    padding: 24px;
+    border: none;
+    border-radius: var(--radio);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.opinion::backdrop {
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.opinion[open] {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+.opinion form {
+    max-width: none;
+    margin: 0;
+}
+
+.opinion-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.opinion-cabecera h2 {
+    margin: 4px 0 0;
+    font-size: 22px;
+}
+
+.opinion form .opinion-cerrar {
+    margin: 0;
+    padding: 0 4px;
+    border: none;
+    background: none;
+    color: var(--color-texto-secundario);
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.opinion form .opinion-cerrar:hover {
+    color: var(--color-principal);
+}
+
+.opinion-intro {
+    margin: 8px 0 18px;
+    color: var(--color-texto-secundario);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Tres "pastillas": el radio real queda oculto pero se puede usar con teclado */
+.opinion-tipos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 14px;
+    padding: 0;
+    border: none;
+}
+
+.opinion form .opinion-tipos label {
+    position: relative;
+    margin: 0;
+    cursor: pointer;
+}
+
+.opinion-tipos input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+}
+
+.opinion-tipos span {
+    display: inline-block;
+    padding: 8px 14px;
+    border: 1px solid #dddddd;
+    border-radius: 999px;
+    background: var(--color-blanco);
+    font-size: 14px;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.opinion-tipos label:hover span {
+    border-color: var(--color-principal);
+}
+
+.opinion-tipos input:checked + span {
+    border-color: var(--color-principal);
+    background: var(--color-principal);
+    color: white;
+}
+
+.opinion-tipos input:focus-visible + span {
+    outline: 2px solid var(--color-principal);
+    outline-offset: 2px;
+}
+
+.opinion-mensaje {
+    min-height: 20px;
+    margin: 10px 0 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.opinion-mensaje.is-error {
+    color: var(--color-principal);
+}
+
+.opinion-mensaje.is-success {
+    color: #1f9254;
+}
+
+.opinion form button[type="submit"] {
+    width: 100%;
+    margin-top: 12px;
+}
+
+@media (max-width: 900px) {
+    .btn-opinar {
+        padding: 8px 10px;
+    }
+
+    .btn-opinar span {
+        display: none;
     }
 }
 

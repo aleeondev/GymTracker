@@ -166,11 +166,11 @@
                         <div class="campos-2">
                             <div>
                                 <label for="nueva">Nueva contraseña</label>
-                                <input type="password" id="nueva" autocomplete="new-password" minlength="6" required placeholder="Mínimo 6 caracteres">
+                                <input type="password" id="nueva" autocomplete="new-password" minlength="8" required placeholder="Mínimo 8 caracteres">
                             </div>
                             <div>
                                 <label for="repetida">Repite la nueva</label>
-                                <input type="password" id="repetida" autocomplete="new-password" minlength="6" required>
+                                <input type="password" id="repetida" autocomplete="new-password" minlength="8" required>
                             </div>
                         </div>
                         <div class="form-acciones">
@@ -184,6 +184,28 @@
                         <p class="ayuda">¿Has iniciado sesión en un móvil u ordenador que no es tuyo? Cierra la sesión en todos los dispositivos a la vez.</p>
                         <button type="button" class="button button-secundario" id="cerrar-todas">Cerrar sesión en todos los dispositivos</button>
                     </div>
+                </div>
+            </section>
+
+            <!-- 04 · ELIMINAR CUENTA (CuentaController). Se envía con fetch desde perfil.js
+                 (data-sin-recarga) para poder cerrar después la sesión de Supabase del navegador. -->
+            <section class="seccion perfil-seccion">
+                <span class="eyebrow">04 · ELIMINAR CUENTA</span>
+                <div class="panel panel-peligro">
+                    <h3 class="perfil-subtitulo">Eliminar mi cuenta</h3>
+                    <p class="ayuda">
+                        Se borran para siempre tu cuenta y todos tus datos: rutinas, entrenamientos, récords, peso,
+                        cuestionario y opiniones. <strong>No se puede deshacer.</strong>
+                    </p>
+                    <form id="form-eliminar" th:action="@{/perfil/eliminar-cuenta}" method="post" data-sin-recarga novalidate>
+                        <label for="confirmacion">Escribe <strong>ELIMINAR</strong> para confirmar</label>
+                        <div class="campo-con-boton">
+                            <input type="text" id="confirmacion" name="confirmacion" autocomplete="off"
+                                   autocapitalize="characters" spellcheck="false" placeholder="ELIMINAR" required>
+                            <button type="submit" class="button button-peligro">Eliminar mi cuenta</button>
+                        </div>
+                        <p class="mensaje-form" id="mensaje-eliminar" role="status" aria-live="polite"></p>
+                    </form>
                 </div>
             </section>
         </div>

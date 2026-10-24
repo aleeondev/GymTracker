@@ -24,6 +24,11 @@ function mostrarMensaje(texto, tipo) {
     if (tipo) mensaje.classList.add(tipo);
 }
 
+// Venimos de "Eliminar mi cuenta" (perfil.js)
+if (parametros.has("eliminada")) {
+    mostrarMensaje("Tu cuenta y todos tus datos se han eliminado. ¡Gracias por probar Gym Tracker!", "is-success");
+}
+
 // Si ya hay una sesión de Supabase (por ejemplo, el servidor nos mandó aquí
 // porque el token había caducado), la renovamos y volvemos solos.
 // El contador evita un bucle infinito si el servidor la rechazara.

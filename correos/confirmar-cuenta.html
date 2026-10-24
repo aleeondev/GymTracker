@@ -1,0 +1,63 @@
+<!--
+    CORREO: confirmar la cuenta (Supabase → Authentication → Emails → "Confirm signup")
+    Asunto: Confirma tu cuenta de Gym Tracker
+    Se pega TAL CUAL en Supabase. Los correos no admiten hojas de estilo: todo el
+    estilo va dentro de cada etiqueta (style="...") y la estructura es con tablas,
+    que es lo único que entienden bien Gmail, Outlook y compañía.
+    {{ .ConfirmationURL }} lo rellena Supabase con el enlace de verificación.
+    No usamos el nombre del usuario: lo escribe quien se registra y podría meter
+    un texto o enlace engañoso en un correo que llega a otra persona.
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Confirma tu cuenta de Gym Tracker</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f4f4f5;">
+<!-- Texto de vista previa (lo que se lee en la bandeja de entrada antes de abrir) -->
+<div style="display:none; max-height:0; overflow:hidden; opacity:0;">Un clic y ya puedes empezar a registrar tus entrenos.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f4f4f5;">
+<tr><td align="center" style="padding:32px 16px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px; background-color:#ffffff; border:1px solid #eeeeee; border-radius:20px; overflow:hidden;">
+        <!-- Cabecera roja -->
+        <tr><td style="background-color:#c92f4b; background-image:linear-gradient(135deg,#b8243f 0%,#c92f4b 45%,#e9604f 100%); padding:30px 36px 34px; font-family:Arial,Helvetica,sans-serif; color:#ffffff;">
+            <div style="font-size:22px; font-weight:900; letter-spacing:0.3px;">Gym Tracker</div>
+            <div style="margin-top:30px; font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; opacity:0.85;">Último paso</div>
+            <h1 style="margin:8px 0 0; font-size:30px; line-height:1.1; font-weight:900;">Ya casi estás dentro.</h1>
+        </td></tr>
+        <!-- Cuerpo -->
+        <tr><td style="padding:34px 36px 10px; font-family:Arial,Helvetica,sans-serif; color:#252525;">
+            <p style="margin:0 0 16px; font-size:16px; line-height:1.6;">¡Hola!</p>
+            <p style="margin:0 0 26px; font-size:16px; line-height:1.6; color:#555555;">Gracias por apuntarte a Gym Tracker. Confirma tu email con el botón y tu cuenta quedará lista para empezar a entrenar.</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="border-radius:12px; background-color:#c92f4b;">
+                <a href="{{ .ConfirmationURL }}" style="display:inline-block; padding:15px 30px; font-family:Arial,Helvetica,sans-serif; font-size:16px; font-weight:700; color:#ffffff; text-decoration:none; border-radius:12px;">Confirmar mi cuenta</a>
+            </td></tr></table>
+            <p style="margin:18px 0 0; font-size:13px; line-height:1.5; color:#707070;">El enlace caduca en 1 hora.</p>
+        </td></tr>
+        <!-- Qué te espera -->
+        <tr><td style="padding:26px 36px 6px; font-family:Arial,Helvetica,sans-serif;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f8f8f8; border-radius:14px;">
+                <tr><td style="padding:20px 22px;">
+                    <div style="margin:0 0 12px; font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#c92f4b;">Lo que te espera</div>
+                    <p style="margin:0 0 8px; font-size:14px; line-height:1.5; color:#252525;"><strong>1.</strong> Responde 1 minuto de preguntas sobre tu objetivo.</p>
+                    <p style="margin:0 0 8px; font-size:14px; line-height:1.5; color:#252525;"><strong>2.</strong> Crea tu rutina o elige una recomendada.</p>
+                    <p style="margin:0; font-size:14px; line-height:1.5; color:#252525;"><strong>3.</strong> Apunta tus series y mira cómo mejoras.</p>
+                </td></tr>
+            </table>
+        </td></tr>
+        <!-- Enlace de respaldo y aviso -->
+        <tr><td style="padding:24px 36px 32px; font-family:Arial,Helvetica,sans-serif;">
+            <p style="margin:0 0 6px; font-size:12px; line-height:1.5; color:#707070;">¿El botón no funciona? Copia este enlace en tu navegador:</p>
+            <p style="margin:0 0 18px; font-size:12px; line-height:1.5; word-break:break-all;"><a href="{{ .ConfirmationURL }}" style="color:#c92f4b;">{{ .ConfirmationURL }}</a></p>
+            <p style="margin:0; font-size:12px; line-height:1.5; color:#707070;">Si no has creado tú esta cuenta, ignora este correo: no se activará nada.</p>
+        </td></tr>
+    </table>
+    <!-- Pie -->
+    <p style="margin:22px 0 0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.6; color:#9a9aa0;">Gym Tracker · Entrena · Registra · Evoluciona<br>¿Dudas? Escríbenos a gymtraacker.app@gmail.com</p>
+</td></tr>
+</table>
+</body>
+</html>

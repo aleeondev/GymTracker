@@ -71,8 +71,8 @@ formulario.addEventListener("submit", async (evento) => {
     const password = document.getElementById("password").value;
     const repetida = document.getElementById("password2").value;
 
-    if (password.length < 6) {
-        mostrarMensaje("La contraseña debe tener al menos 6 caracteres.", "is-error");
+    if (password.length < 8) {
+        mostrarMensaje("La contraseña debe tener al menos 8 caracteres.", "is-error");
         return;
     }
     if (password !== repetida) {

@@ -50,6 +50,13 @@ class FlujoUsuarioTests {
     @Autowired
     EjercicioRepository ejercicioRepository;
 
+    @Autowired
+    org.springframework.jdbc.core.JdbcTemplate jdbc;
+
+    /** Supabase de mentira: en los tests no se borran cuentas de verdad. */
+    @org.springframework.test.context.bean.override.mockito.MockitoBean
+    com.gymtracker.gymtracker.service.SupabaseAdmin supabaseAdmin;
+
     /**
      * Usuario simulado. (No usamos jwt() de spring-security-test porque ese
      * atajo se salta la protección CSRF, y queremos comprobarla.)
@@ -104,6 +111,10 @@ class FlujoUsuarioTests {
                 .param("diasSemana", "4").param("duracionSesion", "60").param("lugarEntreno", "gimnasio")
                 .param("aceptoDatos", "true"))
             .andExpect(redirectedUrl("/dashboard"));
+        // Primeros pasos: el perfil ya cuenta; rutina, entreno y opinión aún no
+        mvc.perform(get("/dashboard").with(auth)).andExpect(status().isOk())
+            .andExpect(content().string(containsString("id=\"primeros-pasos\"")))
+            .andExpect(content().string(containsString("1 de 4")));
         mvc.perform(get("/dashboard").with(auth)).andExpect(status().isOk())
             .andExpect(content().string(containsString("Hola, Prueba.")))
             .andExpect(content().string(containsString("Ganar músculo")))
@@ -171,9 +182,15 @@ class FlujoUsuarioTests {
         mvc.perform(get(segundo).with(auth)).andExpect(status().isOk())
             .andExpect(content().string(containsString("Récord")));
 
-        // Con entrenos, el panel muestra la gráfica de volumen semanal
+        // Con entrenos, el panel muestra la gráfica de volumen semanal (y Primeros pasos va por 3 de 4)
         mvc.perform(get("/dashboard").with(auth)).andExpect(status().isOk())
-            .andExpect(content().string(containsString("id=\"grafica-volumen\"")));
+            .andExpect(content().string(containsString("id=\"grafica-volumen\"")))
+            .andExpect(content().string(containsString("3 de 4")));
+        // Al opinar se completa el último paso y la tarjeta desaparece
+        mvc.perform(post("/opinion").with(auth).with(csrf()).param("tipo", "gusta").param("texto", "Todo genial"))
+            .andExpect(status().isOk());
+        mvc.perform(get("/dashboard").with(auth))
+            .andExpect(content().string(org.hamcrest.Matchers.not(containsString("id=\"primeros-pasos\""))));
 
         // Y en Progreso, la de series por grupo muscular
         mvc.perform(get("/progreso").with(auth)).andExpect(status().isOk())
@@ -235,6 +252,76 @@ class FlujoUsuarioTests {
         mvc.perform(post("/rutinas/eliminar/" + rutinaId).with(auth).with(csrf())).andExpect(redirectedUrl("/rutinas"));
         mvc.perform(get("/historial/" + idSegundo).with(auth)).andExpect(status().isOk());
         mvc.perform(get("/entrenamiento/nuevo?repetir=" + idSegundo).with(auth)).andExpect(status().isOk());
+    }
+
+    @Test
+    void enviarOpinion() throws Exception {
+        RequestPostProcessor auth = usuario(UUID.randomUUID(), "Tester");
+
+        // El botón y su diálogo están en las páginas de la app
+        mvc.perform(get("/rutinas").with(auth))
+            .andExpect(content().string(containsString("data-abrir-opinion")))
+            .andExpect(content().string(containsString("id=\"dialogo-opinion\"")));
+
+        // Bien: responde JSON con el "gracias"
+        mvc.perform(post("/opinion").with(auth).with(csrf())
+                .param("tipo", "mejora").param("texto", "Pondría un modo oscuro").param("pagina", "/dashboard"))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("Gracias")));
+        // Página de fuera: se guarda igual, pero sin la página (no da error)
+        mvc.perform(post("/opinion").with(auth).with(csrf())
+                .param("tipo", "gusta").param("texto", "Me encanta").param("pagina", "https://web-falsa.com"))
+            .andExpect(status().isOk());
+
+        // Mal: tipo inventado, texto vacío, sin CSRF y sin sesión
+        mvc.perform(post("/opinion").with(auth).with(csrf()).param("tipo", "hackeo").param("texto", "Hola hola"))
+            .andExpect(status().isBadRequest());
+        mvc.perform(post("/opinion").with(auth).with(csrf()).param("tipo", "fallo").param("texto", "  "))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("al menos 3")));
+        mvc.perform(post("/opinion").with(auth).param("tipo", "fallo").param("texto", "Sin token"))
+            .andExpect(status().isForbidden());
+        mvc.perform(post("/opinion").with(csrf()).param("tipo", "fallo").param("texto", "Sin sesión"))
+            .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    void eliminarMiCuenta() throws Exception {
+        UUID yo = UUID.randomUUID();
+        RequestPostProcessor auth = usuario(yo, "Borrable");
+
+        // Algo de datos: perfil (al entrar), una rutina, un peso y una opinión
+        mvc.perform(get("/perfil").with(auth)).andExpect(status().isOk())
+            .andExpect(content().string(containsString("id=\"form-eliminar\"")));
+        mvc.perform(post("/rutinas/guardar").with(auth).with(csrf()).param("nombre", "Rutina a borrar"));
+        mvc.perform(post("/peso/registrar").with(auth).with(csrf()).param("pesoKg", "70"));
+        mvc.perform(post("/opinion").with(auth).with(csrf()).param("tipo", "gusta").param("texto", "Adiós"));
+
+        // Sin escribir ELIMINAR: no se borra nada
+        mvc.perform(post("/perfil/eliminar-cuenta").with(auth).with(csrf()).param("confirmacion", "borrar"))
+            .andExpect(status().isBadRequest());
+        org.mockito.Mockito.verifyNoInteractions(supabaseAdmin);
+
+        // Si Supabase falla, se deshace todo y se avisa
+        org.mockito.Mockito.when(supabaseAdmin.configurado()).thenReturn(true);
+        org.mockito.Mockito.doThrow(new IllegalStateException("caído")).when(supabaseAdmin).eliminarUsuario(yo);
+        mvc.perform(post("/perfil/eliminar-cuenta").with(auth).with(csrf()).param("confirmacion", "eliminar"))
+            .andExpect(status().isServiceUnavailable());
+
+        // Bien: borra la cuenta en Supabase, los datos y la cookie de sesión
+        org.mockito.Mockito.doNothing().when(supabaseAdmin).eliminarUsuario(yo);
+        mvc.perform(post("/perfil/eliminar-cuenta").with(auth).with(csrf()).param("confirmacion", " ELIMINAR "))
+            .andExpect(status().isOk())
+            .andExpect(header().string("Set-Cookie", containsString("gt_session=;")));
+        org.mockito.Mockito.verify(supabaseAdmin, org.mockito.Mockito.times(2)).eliminarUsuario(yo);
+        for (String tabla : new String[] { "rutinas", "pesos_corporales", "opiniones", "perfiles" }) {
+            Integer filas = jdbc.queryForObject("select count(*) from " + tabla + " where usuario_id = ?", Integer.class, yo);
+            org.assertj.core.api.Assertions.assertThat(filas).as(tabla).isZero();
+        }
+
+        // Sin token CSRF: rechazado
+        mvc.perform(post("/perfil/eliminar-cuenta").with(auth).param("confirmacion", "ELIMINAR"))
+            .andExpect(status().isForbidden());
     }
 
     private String guardarEntreno(RequestPostProcessor auth, long rutinaId, long ejercicioId, LocalDate fecha,

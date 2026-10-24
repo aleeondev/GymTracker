@@ -24,8 +24,9 @@ function initCerrarSesion() {
 //  1) si tiene data-confirmar, pide confirmación (para borrar cosas);
 //  2) se asegura de que el token de sesión está al día. Importante en el
 //     gimnasio: un entrenamiento dura más de 1 hora y el token caduca.
+// (Los formularios con data-sin-recarga, como el de "Opinar", los envía su propio JS con fetch.)
 function initFormulariosPost() {
-    document.querySelectorAll('form[method="post"]').forEach((form) => {
+    document.querySelectorAll('form[method="post"]:not([data-sin-recarga])').forEach((form) => {
         form.addEventListener("submit", async (evento) => {
             if (form.dataset.enviando === "1") {
                 return; // segunda vuelta: ya revisado, se envía de verdad

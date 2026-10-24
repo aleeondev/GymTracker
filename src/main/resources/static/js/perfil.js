@@ -4,6 +4,8 @@
 //   1) Nombre visible  -> updateUser({ data: { nombre } })
 //   2) Contraseña      -> comprueba la actual y luego updateUser({ password })
 //   3) Cerrar sesión en todos los dispositivos -> signOut({ scope: "global" })
+//   4) Eliminar mi cuenta -> POST a CuentaController (con fetch) y, si sale
+//      bien, cerrar también la sesión de Supabase guardada en el navegador.
 // El nombre de usuario (@) es un formulario normal que va a PerfilController.
 // ==========================================================
 
@@ -11,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initNombre();
     initContrasena();
     initCerrarTodas();
+    initEliminarCuenta();
 });
 
 function mostrar(elemento, texto, tipo) {
@@ -68,7 +71,7 @@ function initContrasena() {
         const repetida = document.getElementById("repetida").value;
 
         if (!actual) return mostrar(mensaje, "Escribe tu contraseña actual.", "is-error");
-        if (nueva.length < 6) return mostrar(mensaje, "La nueva contraseña debe tener al menos 6 caracteres.", "is-error");
+        if (nueva.length < 8) return mostrar(mensaje, "La nueva contraseña debe tener al menos 8 caracteres.", "is-error");
         if (nueva !== repetida) return mostrar(mensaje, "Las dos contraseñas nuevas no coinciden.", "is-error");
         if (nueva === actual) return mostrar(mensaje, "La nueva contraseña tiene que ser distinta de la actual.", "is-error");
 
@@ -112,5 +115,55 @@ function initCerrarTodas() {
         await supabaseClient.auth.signOut({ scope: "global" });
         guardarCookieSesion(null);
         window.location.href = "/login";
+    });
+}
+
+// ---------- 4) Eliminar mi cuenta ----------
+// El servidor borra los datos y la cuenta de Supabase. Aquí solo pedimos una
+// última confirmación y, al terminar, limpiamos la sesión del navegador: si no,
+// supabase-js seguiría guardando un token de una cuenta que ya no existe.
+function initEliminarCuenta() {
+    const form = document.getElementById("form-eliminar");
+    const mensaje = document.getElementById("mensaje-eliminar");
+    if (!form) return;
+
+    form.addEventListener("submit", async (evento) => {
+        evento.preventDefault();
+        const palabra = form.elements.confirmacion.value.trim().toUpperCase();
+        if (palabra !== "ELIMINAR") {
+            mostrar(mensaje, "Para confirmar, escribe ELIMINAR en el campo.", "is-error");
+            return;
+        }
+        if (!confirm("Última comprobación: se borrarán tu cuenta y TODOS tus datos para siempre. ¿Eliminar?")) return;
+
+        cargando(form, true);
+        mostrar(mensaje, "Eliminando...");
+        try {
+            await sesionActualizada(); // por si el token había caducado
+            const respuesta = await fetch(form.action, {
+                method: "POST",
+                body: new URLSearchParams(new FormData(form)),
+                headers: { "Accept": "application/json" }
+            });
+            const datos = await respuesta.json().catch(() => ({}));
+            if (!respuesta.ok || !datos.ok) {
+                cargando(form, false);
+                mostrar(mensaje, datos.error || "No se ha podido eliminar la cuenta. Recarga la página y vuelve a probar.", "is-error");
+                return;
+            }
+        } catch (e) {
+            cargando(form, false);
+            mostrar(mensaje, "No hay conexión con el servidor. Revisa tu internet.", "is-error");
+            return;
+        }
+
+        // Cuenta borrada: fuera la sesión local (scope "local": la cuenta ya no existe en Supabase)
+        try {
+            await supabaseClient.auth.signOut({ scope: "local" });
+        } catch (e) {
+            /* da igual: la cuenta ya no existe */
+        }
+        guardarCookieSesion(null);
+        window.location.replace("/login?eliminada");
     });
 }

@@ -47,7 +47,7 @@ public class SecurityConfig {
 
     /** Páginas y recursos accesibles sin iniciar sesión. */
     static final String[] RUTAS_PUBLICAS = {
-        "/", "/login", "/registro", "/recuperar", "/nueva-contrasena", "/enlace-error", "/error",
+        "/", "/login", "/registro", "/recuperar", "/nueva-contrasena", "/enlace-error", "/error", "/privacidad",
         "/css/**", "/js/**", "/img/**", "/favicon.ico",
         // App instalable (PWA): el navegador los pide sin sesión
         "/manifest.webmanifest", "/sw.js", "/offline.html",

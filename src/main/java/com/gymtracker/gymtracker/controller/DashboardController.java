@@ -12,9 +12,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.gymtracker.gymtracker.config.Formato;
 import com.gymtracker.gymtracker.config.UsuarioActual;
+import com.gymtracker.gymtracker.dto.PrimerosPasos;
+import com.gymtracker.gymtracker.dto.ResumenDashboard;
 import com.gymtracker.gymtracker.dto.SemanaVolumen;
 import com.gymtracker.gymtracker.model.Perfil;
+import com.gymtracker.gymtracker.model.Rutina;
 import com.gymtracker.gymtracker.service.EntrenamientoService;
+import com.gymtracker.gymtracker.service.OpinionService;
 import com.gymtracker.gymtracker.service.PerfilService;
 import com.gymtracker.gymtracker.service.PesoCorporalService;
 import com.gymtracker.gymtracker.service.RutinaService;
@@ -32,14 +36,17 @@ public class DashboardController {
     private final RutinaService rutinaService;
     private final PerfilService perfilService;
     private final PesoCorporalService pesoCorporalService;
+    private final OpinionService opinionService;
     private final Formato fmt;
 
     public DashboardController(EntrenamientoService entrenamientoService, RutinaService rutinaService,
-                               PerfilService perfilService, PesoCorporalService pesoCorporalService, Formato fmt) {
+                               PerfilService perfilService, PesoCorporalService pesoCorporalService,
+                               OpinionService opinionService, Formato fmt) {
         this.entrenamientoService = entrenamientoService;
         this.rutinaService = rutinaService;
         this.perfilService = perfilService;
         this.pesoCorporalService = pesoCorporalService;
+        this.opinionService = opinionService;
         this.fmt = fmt;
     }
 
@@ -57,8 +64,13 @@ public class DashboardController {
         model.addAttribute("perfil", perfil);
         model.addAttribute("pesoHoy", pesoCorporalService.deHoy(usuarioId).orElse(null));
 
-        model.addAttribute("resumen", entrenamientoService.resumen(usuarioId));
-        model.addAttribute("rutinas", rutinaService.obtenerDelUsuario(usuarioId));
+        ResumenDashboard resumen = entrenamientoService.resumen(usuarioId);
+        List<Rutina> rutinas = rutinaService.obtenerDelUsuario(usuarioId);
+        model.addAttribute("resumen", resumen);
+        model.addAttribute("rutinas", rutinas);
+        // Tarjeta "Primeros pasos" (cuentas nuevas): desaparece cuando están los cuatro
+        model.addAttribute("primerosPasos", PrimerosPasos.de(perfil.isCuestionarioCompleto(), !rutinas.isEmpty(),
+            resumen.totalEntrenos() > 0, opinionService.haOpinado(usuarioId)));
         model.addAttribute("hoy", EntrenamientoService.hoy());
         prepararGraficaVolumen(usuarioId, model);
         return "dashboard";
