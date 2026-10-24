@@ -52,7 +52,9 @@ public class SecurityConfig {
         // App instalable (PWA): el navegador los pide sin sesión
         "/manifest.webmanifest", "/sw.js", "/offline.html",
         // Registro: comprobar si un nombre de usuario está libre
-        "/api/usuario-disponible"
+        "/api/usuario-disponible",
+        // Web de prelanzamiento: pantalla de carga, Fitness Challenge y lista de espera
+        "/pronto", "/pronto/**"
     };
 
     @Bean

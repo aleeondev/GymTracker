@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" class="sin-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymTracker · Muy pronto</title>
+    <meta name="description" content="Tu próximo récord se está cargando. Apúntate al acceso anticipado de GymTracker y pruébalo antes que nadie.">
+    <!-- Vista previa al compartir el enlace (WhatsApp, Instagram, X...) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="GymTracker · Algo grande se está cargando">
+    <meta property="og:description" content="Acceso anticipado abierto. Juega al Fitness Challenge y reserva tu plaza.">
+    <meta property="og:image" th:content="@{/img/icon-512.png}">
+    <meta name="twitter:card" content="summary">
+    <meta name="theme-color" content="#09090b">
+    <link rel="icon" type="image/svg+xml" th:href="@{/img/favicon.svg}">
+    <link rel="icon" href="/img/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" th:href="@{/img/favicon-180.png}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/pronto.css}">
+    <script th:src="@{/js/pronto.js}" defer></script>
+    <script th:src="@{/js/reto.js}" defer></script>
+</head>
+<body>
+
+<!-- =========================================================
+     1. PANTALLA DE CARGA (la anima pronto.js; sin JS no se ve)
+     ========================================================= -->
+<div class="intro" id="intro" aria-hidden="true">
+    <div class="intro-fila mono">
+        <span>GYMTRACKER</span>
+        <span>BUILD 0.9 · ACCESO PRIVADO</span>
+    </div>
+    <div class="intro-centro">
+        <p class="intro-frase mono" id="intro-frase">Calentando motores</p>
+        <div class="bloques" id="intro-bloques">
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+    </div>
+    <div class="intro-fila intro-pie mono">
+        <span>Pulsa para saltar</span>
+        <span class="intro-porcentaje"><span id="intro-porcentaje">000</span>%</span>
+    </div>
+</div>
+
+<div class="progreso-scroll" id="progreso-scroll" aria-hidden="true"></div>
+<div class="fondo-rejilla" aria-hidden="true"></div>
+<div class="fondo-brillo" aria-hidden="true"></div>
+
+<header class="barra">
+    <a class="marca" th:href="@{/pronto}">
+        <span class="marca-logo" aria-hidden="true"><svg th:replace="~{fragments/iconos :: icono('pesa')}"></svg></span>
+        GymTracker
+    </a>
+    <span class="estado mono"><span class="punto" aria-hidden="true"></span>Beta privada en curso</span>
+    <a class="barra-boton" href="#apuntate">Acceso anticipado</a>
+</header>
+
+<main>
+    <!-- =========================================================
+         2. HERO
+         ========================================================= -->
+    <section class="hero" id="inicio">
+        <p class="etiqueta mono" data-scramble>[ 001 ] Algo se está cargando</p>
+        <h1 class="titular">
+            <span class="linea"><span>Tu próximo</span></span>
+            <span class="linea"><span>récord</span></span>
+            <span class="linea acento"><span>se está cargando.</span></span>
+        </h1>
+
+        <div class="carga-hero">
+            <div class="carga-info mono">
+                <span>Cargando GymTracker</span>
+                <span><span id="hero-porcentaje">87</span>%</span>
+            </div>
+            <div class="carga-bloques" id="hero-bloques" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <p class="carga-nota mono">El 13% que falta lo pones tú<span class="cursor" aria-hidden="true">_</span></p>
+        </div>
+
+        <p class="hero-texto">No es otra app de gimnasio. Es la que vas a abrir cada vez que entres por la puerta.
+            Series, récords, progreso y mucho más que todavía no podemos contar.</p>
+
+        <div class="hero-botones">
+            <a class="boton-principal magnetico" href="#apuntate">
+                <span>Quiero entrar antes que nadie</span>
+                <svg th:replace="~{fragments/iconos :: icono('flecha')}"></svg>
+            </a>
+            <a class="boton-secundario" href="#reto">
+                <svg th:replace="~{fragments/iconos :: icono('rayo')}"></svg>
+                Jugar al Fitness Challenge
+            </a>
+        </div>
+
+        <a class="bajar mono" href="#manifiesto">
+            <span>Scroll</span><span class="bajar-linea" aria-hidden="true"></span>
+        </a>
+    </section>
+
+    <!-- Cinta en movimiento -->
+    <div class="cinta" aria-hidden="true">
+        <div class="cinta-pista">
+            <span>Series</span><span>Repeticiones</span><span>Récords</span><span>Progreso</span><span>Rutinas</span><span>Discos</span><span>Constancia</span>
+            <span>Series</span><span>Repeticiones</span><span>Récords</span><span>Progreso</span><span>Rutinas</span><span>Discos</span><span>Constancia</span>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         3. MANIFIESTO (las palabras se encienden al bajar)
+         ========================================================= -->
+    <section class="manifiesto" id="manifiesto">
+        <p class="etiqueta mono" data-scramble>[ 002 ] Por qué existe</p>
+        <p class="manifiesto-texto" id="manifiesto-texto">Cada serie cuenta. Cada kilo suma. Cada día que vuelves al gimnasio es un dato que casi nadie guarda. Nosotros lo convertimos en progreso que se ve.</p>
+    </section>
+
+    <!-- =========================================================
+         4. LO QUE ESTAMOS PREPARANDO (con partes clasificadas)
+         ========================================================= -->
+    <section class="seccion" id="funciones">
+        <div class="seccion-cabecera">
+            <p class="etiqueta mono" data-scramble>[ 003 ] Lo que estamos preparando</p>
+            <h2 class="revelar">Algunas cosas<br>ya te las podemos enseñar.</h2>
+        </div>
+
+        <div class="tarjetas">
+            <article class="tarjeta revelar">
+                <div class="tarjeta-top mono"><span>01</span><span class="chip chip-listo">Listo</span></div>
+                <svg th:replace="~{fragments/iconos :: icono('pesa')}"></svg>
+                <h3>Registra en segundos</h3>
+                <p>Series, peso y repeticiones mientras entrenas. Sin libretas ni notas perdidas en el móvil.</p>
+            </article>
+            <article class="tarjeta revelar">
+                <div class="tarjeta-top mono"><span>02</span><span class="chip chip-listo">Listo</span></div>
+                <svg th:replace="~{fragments/iconos :: icono('trofeo')}"></svg>
+                <h3>Récords automáticos</h3>
+                <p>Cada vez que superas una marca, lo sabes al momento. Tu mejor versión, siempre a la vista.</p>
+            </article>
+            <article class="tarjeta revelar">
+                <div class="tarjeta-top mono"><span>03</span><span class="chip chip-listo">Listo</span></div>
+                <svg th:replace="~{fragments/iconos :: icono('grafica')}"></svg>
+                <h3>Progreso que se ve</h3>
+                <p>Gráficas de fuerza, volumen y peso corporal. Ver la línea subir engancha.</p>
+            </article>
+            <article class="tarjeta revelar">
+                <div class="tarjeta-top mono"><span>04</span><span class="chip chip-listo">Listo</span></div>
+                <svg th:replace="~{fragments/iconos :: icono('repetir')}"></svg>
+                <h3>Repite y supera</h3>
+                <p>Rutinas recomendadas, repetir tu último entreno con un toque y calculadora de discos.</p>
+            </article>
+            <article class="tarjeta tarjeta-secreta revelar">
+                <div class="tarjeta-top mono"><span>05</span><span class="chip chip-camino">En camino</span></div>
+                <svg th:replace="~{fragments/iconos :: icono('nutricion')}"></svg>
+                <h3>Nutrición</h3>
+                <p><span class="tachado">Comidas, macros</span> y <span class="tachado">algo más que aún</span> no podemos contar.</p>
+            </article>
+            <article class="tarjeta tarjeta-secreta revelar">
+                <div class="tarjeta-top mono"><span>06</span><span class="chip chip-clasificado"><svg th:replace="~{fragments/iconos :: icono('candado')}"></svg>Clasificado</span></div>
+                <svg th:replace="~{fragments/iconos :: icono('coach')}"></svg>
+                <h3 data-scramble>Coach IA</h3>
+                <p><span class="tachado">Un entrenador que</span> aprende <span class="tachado">de cada serie que haces</span>. Y hasta aquí podemos leer.</p>
+            </article>
+        </div>
+
+        <div class="cifras">
+            <div class="cifra revelar"><span class="cifra-numero" data-contar="55">55</span><span class="cifra-texto">ejercicios en la biblioteca desde el primer día</span></div>
+            <div class="cifra revelar"><span class="cifra-numero" data-contar="1">1</span><span class="cifra-texto">toque para repetir tu último entreno</span></div>
+            <div class="cifra revelar"><span class="cifra-numero">∞</span><span class="cifra-texto">récords esperando a que los rompas</span></div>
+        </div>
+    </section>
+
+    <!-- =========================================================
+         5. FITNESS CHALLENGE (lo maneja reto.js)
+         ========================================================= -->
+    <section class="seccion reto" id="reto">
+        <div class="seccion-cabecera">
+            <p class="etiqueta mono" data-scramble>[ 004 ] Fitness Challenge</p>
+            <h2 class="revelar">¿Cuánto sabes<br>de verdad?</h2>
+            <p class="seccion-texto revelar">10 preguntas de entrenamiento, nutrición y gimnasio. 15 segundos cada una.
+                Cuanto antes aciertes, más puntos. Las rachas suman extra.</p>
+        </div>
+
+        <div class="reto-panel revelar" id="reto-panel">
+            <!-- Inicio -->
+            <div class="reto-pantalla reto-inicio" id="reto-inicio">
+                <div class="reto-reglas mono">
+                    <span><svg th:replace="~{fragments/iconos :: icono('reloj')}"></svg>15 s por pregunta</span>
+                    <span><svg th:replace="~{fragments/iconos :: icono('rayo')}"></svg>Bonus por velocidad</span>
+                    <span><svg th:replace="~{fragments/iconos :: icono('trofeo')}"></svg>Hasta 2000 puntos</span>
+                </div>
+                <button type="button" class="boton-principal magnetico" id="reto-empezar">
+                    <span>Empezar el reto</span>
+                    <svg th:replace="~{fragments/iconos :: icono('flecha')}"></svg>
+                </button>
+                <p class="reto-mejor mono" id="reto-mejor" hidden>Tu mejor marca: <strong id="reto-mejor-puntos">0</strong> pts</p>
+                <noscript><p class="reto-aviso">Activa JavaScript para jugar.</p></noscript>
+            </div>
+
+            <!-- Juego -->
+            <div class="reto-pantalla reto-juego" id="reto-juego" hidden>
+                <div class="reto-marcador mono">
+                    <span>Pregunta <strong id="reto-numero">1</strong>/10</span>
+                    <span class="chip" id="reto-categoria">Entrenamiento</span>
+                    <span class="reto-racha" id="reto-racha" hidden><svg th:replace="~{fragments/iconos :: icono('rayo')}"></svg>Racha <strong id="reto-racha-num">0</strong></span>
+                    <span class="reto-puntos"><strong id="reto-puntos">0</strong> pts</span>
+                </div>
+                <div class="reto-tiempo" aria-hidden="true"><span id="reto-tiempo-barra"></span></div>
+                <h3 class="reto-pregunta" id="reto-pregunta"></h3>
+                <div class="reto-opciones" id="reto-opciones"></div>
+                <div class="reto-respuesta" id="reto-respuesta" hidden>
+                    <p class="reto-veredicto" id="reto-veredicto" role="status"></p>
+                    <p class="reto-explicacion" id="reto-explicacion"></p>
+                    <button type="button" class="boton-secundario" id="reto-siguiente">
+                        Siguiente <svg th:replace="~{fragments/iconos :: icono('flecha')}"></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Resultado -->
+            <div class="reto-pantalla reto-final" id="reto-final" hidden>
+                <p class="etiqueta mono">Resultado</p>
+                <p class="reto-rango" id="reto-rango"></p>
+                <p class="reto-total"><span id="reto-total">0</span><small>pts</small></p>
+                <p class="reto-resumen" id="reto-resumen"></p>
+                <div class="reto-premios">
+                    <p class="etiqueta mono">Recompensas desbloqueadas</p>
+                    <ul class="lista-premios" id="reto-premios-lista"></ul>
+                    <p class="reto-proximo mono" id="reto-proximo"></p>
+                </div>
+                <div class="hero-botones">
+                    <a class="boton-principal magnetico" href="#apuntate" id="reto-guardar">
+                        <span>Reservar plaza con estos puntos</span>
+                        <svg th:replace="~{fragments/iconos :: icono('flecha')}"></svg>
+                    </a>
+                    <button type="button" class="boton-secundario" id="reto-repetir">
+                        <svg th:replace="~{fragments/iconos :: icono('repetir')}"></svg> Repetir
+                    </button>
+                    <button type="button" class="boton-secundario boton-compartir">
+                        <svg th:replace="~{fragments/iconos :: icono('compartir')}"></svg> Retar a un amigo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recompensas por puntos (reto.js marca las conseguidas con tu mejor marca) -->
+        <div class="premios-cabecera revelar">
+            <h3>Tus puntos tienen premio</h3>
+            <p>Las recompensas se acumulan y cuenta tu mejor marca. Se activan en tu cuenta el día del lanzamiento, con el email con el que reserves plaza.</p>
+        </div>
+        <div class="premios">
+            <article class="premio revelar">
+                <span class="chip premio-chip">Al apuntarte</span>
+                <svg th:replace="~{fragments/iconos :: icono('insignia')}"></svg>
+                <h4>Miembro fundador</h4>
+                <p>Insignia para siempre en tu perfil. Solo para quien se apunta antes del lanzamiento.</p>
+            </article>
+            <article class="premio revelar" data-min="500">
+                <span class="chip premio-chip">500+ pts · Constante</span>
+                <svg th:replace="~{fragments/iconos :: icono('rayo')}"></svg>
+                <h4>Primera tanda</h4>
+                <p>Entras en la primera tanda de invitaciones a la beta.</p>
+            </article>
+            <article class="premio revelar" data-min="1000">
+                <span class="chip premio-chip">1000+ pts · Bestia</span>
+                <svg th:replace="~{fragments/iconos :: icono('trofeo')}"></svg>
+                <h4>Insignia de rango</h4>
+                <p>Tu rango del reto junto a tu nombre dentro de la app.</p>
+            </article>
+            <article class="premio revelar" data-min="1500">
+                <span class="chip premio-chip">1500+ pts · Leyenda</span>
+                <svg th:replace="~{fragments/iconos :: icono('destello')}"></svg>
+                <h4>Novedades antes que nadie</h4>
+                <p>Pruebas Nutrición, Coach IA y lo que venga antes que el resto.</p>
+            </article>
+        </div>
+    </section>
+
+    <!-- =========================================================
+         6. ACCESO ANTICIPADO (formulario)
+         ========================================================= -->
+    <section class="seccion apuntate" id="apuntate">
+        <div class="apuntate-grid">
+            <div class="apuntate-texto">
+                <p class="etiqueta mono" data-scramble>[ 005 ] Acceso anticipado</p>
+                <h2 class="revelar">Entra antes<br><span class="acento">que nadie.</span></h2>
+                <p class="seccion-texto revelar">Apúntate a la lista. Cuando abramos las puertas, serás de los primeros en probar GymTracker.</p>
+                <ul class="ventajas">
+                    <li class="revelar"><svg th:replace="~{fragments/iconos :: icono('check')}"></svg>Invitación a la beta antes que el resto</li>
+                    <li class="revelar"><svg th:replace="~{fragments/iconos :: icono('check')}"></svg>Novedades en tu correo antes que en redes</li>
+                    <li class="revelar"><svg th:replace="~{fragments/iconos :: icono('check')}"></svg>Tu opinión dará forma a la app</li>
+                </ul>
+            </div>
+
+            <div class="apuntate-caja revelar">
+                <form class="formulario" id="form-apuntate" method="post" th:action="@{/pronto/apuntarme}"
+                      th:hidden="${param.apuntado != null}" novalidate>
+                    <div class="campo">
+                        <label for="nombre">Nombre <span class="opcional">(opcional)</span></label>
+                        <input type="text" id="nombre" name="nombre" maxlength="40" autocomplete="given-name" placeholder="Cómo te llamamos">
+                    </div>
+                    <div class="campo">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" maxlength="254" autocomplete="email" required placeholder="tu@email.com">
+                    </div>
+                    <!-- Trampa para bots: las personas no la ven ni la rellenan -->
+                    <div class="campo-trampa" aria-hidden="true">
+                        <label for="web">No rellenes este campo</label>
+                        <input type="text" id="web" name="web" tabindex="-1" autocomplete="off">
+                    </div>
+                    <input type="hidden" id="puntuacion" name="puntuacion">
+                    <p class="puntos-guardados mono" id="puntos-guardados" hidden>
+                        <svg th:replace="~{fragments/iconos :: icono('trofeo')}"></svg>
+                        Tus <strong id="puntos-guardados-num">0</strong> puntos (<span id="puntos-guardados-rango">Calentando</span>) se guardarán con tu plaza
+                    </p>
+
+                    <label class="consentimiento">
+                        <input type="checkbox" id="consentimiento" name="consentimiento" value="true" required>
+                        <span class="casilla" aria-hidden="true"><svg th:replace="~{fragments/iconos :: icono('check')}"></svg></span>
+                        <span>Acepto que GymTracker guarde mi email para invitarme a probar la app y enviarme novedades.
+                            Puedo darme de baja cuando quiera desde cualquier correo.</span>
+                    </label>
+
+                    <button type="submit" class="boton-principal boton-enviar" id="boton-enviar">
+                        <span class="boton-texto">Reservar mi plaza</span>
+                        <svg th:replace="~{fragments/iconos :: icono('flecha')}"></svg>
+                        <span class="boton-cargando" aria-hidden="true"><i></i><i></i><i></i></span>
+                    </button>
+                    <p class="form-mensaje" id="form-mensaje" role="alert"
+                       th:text="${param.error != null} ? 'No hemos podido apuntarte. Revisa el email y marca la casilla de permiso.' : ''"></p>
+
+                    <details class="privacidad">
+                        <summary>Información sobre privacidad</summary>
+                        <p><strong>Qué guardamos:</strong> tu email, tu nombre si lo escribes, tus puntos del reto y la fecha en que te apuntas.</p>
+                        <p><strong>Para qué:</strong> solo para invitarte a la beta de GymTracker y contarte novedades de la app. No lo compartimos ni lo vendemos.</p>
+                        <p><strong>Base legal:</strong> tu consentimiento, que puedes retirar cuando quieras con el enlace de baja de cada correo. Al darte de baja, borramos tus datos.</p>
+                        <p><strong>Tus derechos:</strong> puedes pedir acceso, corrección o borrado de tus datos respondiendo a cualquiera de nuestros correos.</p>
+                    </details>
+                </form>
+
+                <div class="exito" id="exito" th:hidden="${param.apuntado == null}" tabindex="-1">
+                    <div class="exito-icono"><svg th:replace="~{fragments/iconos :: icono('check')}"></svg></div>
+                    <p class="etiqueta mono">Plaza reservada</p>
+                    <h3>Estás dentro.</h3>
+                    <p>Te avisaremos antes que a nadie. Mientras tanto, a entrenar.</p>
+                    <ul class="lista-premios exito-premios" id="exito-premios">
+                        <li>Insignia de Miembro fundador</li>
+                    </ul>
+                    <button type="button" class="boton-secundario boton-compartir">
+                        <svg th:replace="~{fragments/iconos :: icono('compartir')}"></svg> Avisar a un amigo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="pie">
+    <p class="pie-grande" aria-hidden="true">GYMTRACKER</p>
+    <div class="pie-fila mono">
+        <span>© 2026 GymTracker</span>
+        <span>Hecho por y para gente que entrena</span>
+    </div>
+</footer>
+
+<!-- Aviso flotante (enlace copiado...) -->
+<p class="aviso mono" id="aviso" role="status" hidden></p>
+</body>
+</html>

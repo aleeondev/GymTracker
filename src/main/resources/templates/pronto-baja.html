@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>GymTracker · Darse de baja</title>
+    <meta name="theme-color" content="#09090b">
+    <link rel="icon" type="image/svg+xml" th:href="@{/img/favicon.svg}">
+    <link rel="icon" href="/img/favicon.ico" sizes="any">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/pronto.css}">
+</head>
+<body>
+<div class="fondo-rejilla" aria-hidden="true"></div>
+<div class="fondo-brillo" aria-hidden="true"></div>
+
+<header class="barra">
+    <a class="marca" th:href="@{/pronto}">
+        <span class="marca-logo" aria-hidden="true"><svg th:replace="~{fragments/iconos :: icono('pesa')}"></svg></span>
+        GymTracker
+    </a>
+</header>
+
+<main class="seccion baja">
+    <div class="apuntate-caja baja-caja">
+        <!-- 1) Baja hecha -->
+        <th:block th:if="${hecho}">
+            <p class="etiqueta mono">Baja completada</p>
+            <h1>Hecho.</h1>
+            <p class="seccion-texto">Te hemos quitado de la lista y hemos borrado tus datos. No volverás a recibir correos nuestros.
+                Si cambias de idea, siempre puedes volver a apuntarte.</p>
+            <div class="hero-botones">
+                <a class="boton-secundario" th:href="@{/pronto}">Volver a GymTracker</a>
+            </div>
+        </th:block>
+
+        <!-- 2) Enlace válido: confirmar -->
+        <th:block th:if="${hecho == null and token != null}">
+            <p class="etiqueta mono">Darse de baja</p>
+            <h1>¿Te vas?</h1>
+            <p class="seccion-texto">Si confirmas, te quitamos de la lista de acceso anticipado, borramos tus datos y dejarás de recibir nuestros correos.</p>
+            <form method="post" th:action="@{/pronto/baja}" class="hero-botones">
+                <input type="hidden" name="token" th:value="${token}">
+                <button type="submit" class="boton-principal">Sí, darme de baja</button>
+                <a class="boton-secundario" th:href="@{/pronto}">Mejor me quedo</a>
+            </form>
+        </th:block>
+
+        <!-- 3) Enlace no válido o ya usado -->
+        <th:block th:if="${hecho == null and token == null}">
+            <p class="etiqueta mono">Enlace no válido</p>
+            <h1>Nada que hacer.</h1>
+            <p class="seccion-texto">Este enlace de baja no es válido o ya se usó. Si sigues recibiendo correos nuestros, responde a cualquiera de ellos y te quitamos de la lista a mano.</p>
+            <div class="hero-botones">
+                <a class="boton-secundario" th:href="@{/pronto}">Ir a GymTracker</a>
+            </div>
+        </th:block>
+    </div>
+</main>
+</body>
+</html>

@@ -19,6 +19,7 @@ Sesiones STATELESS. CSRF con `CookieCsrfTokenRepository` (sin rotar: `NullAuthen
 - `model/` · `repository/` · `service/` (lógica) · `dto/` (formularios y datos de vistas) · `controller/`
 - `controller/DatosComunesAdvice`: datos de todas las vistas (usuarioNombre, rutaActual, `area`, opcionesPerfil)
 - `templates/fragments/app.html` (cabecera, navegación por áreas, barra móvil, avisos, scripts) · `fragments/iconos.html` (iconos SVG) · `fragments/error.html` + `templates/error/*.html`
+- Web de prelanzamiento `/pronto` (pública): `PrelanzamientoController`, `templates/pronto.html` + `pronto-baja.html`, `css/pronto.css` (diseño oscuro propio), `js/pronto.js` (intro, animaciones, formulario) y `js/reto.js` (Fitness Challenge). Lista de espera en la tabla `interesados` (`InteresadoService`, límite por IP en `config/LimitePeticiones`, baja con token en `/pronto/baja`)
 - `static/css/app.css` (dividido en secciones con título) · `static/js/` (un JS por pantalla; `graficas.js` = estilo común de Chart.js)
 
 ## Reglas del proyecto (respetarlas siempre)
