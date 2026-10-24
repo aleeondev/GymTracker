@@ -20,12 +20,13 @@ Sesiones STATELESS. CSRF con `CookieCsrfTokenRepository` (sin rotar: `NullAuthen
 - `controller/DatosComunesAdvice`: datos de todas las vistas (usuarioNombre, rutaActual, `area`, opcionesPerfil)
 - `templates/fragments/app.html` (cabecera, navegación por áreas, barra móvil, avisos, scripts) · `fragments/iconos.html` (iconos SVG) · `fragments/auth.html` (panel rojo de marca de las 5 pantallas de acceso, estilos en `auth.css`, logros en `auth-ui.js`) · `fragments/error.html` + `templates/error/*.html`
 - Botón "Opinar" (alpha): botón en la cabecera + `<dialog>` en el fragmento `scripts` de `app.html`, `js/opinion.js` (fetch, sin recargar), `OpinionController` (JSON) → tabla `opiniones`. Formularios con `data-sin-recarga` los ignora `app.js`
+- Eliminar mi cuenta (Mi perfil, sección 04): `perfil.js` → `CuentaController` (JSON) → `CuentaService` (borra nuestras tablas en una transacción) + `SupabaseAdmin` (borra auth.users con `supabase.secret-key`, variable `SUPABASE_SECRET_KEY`; en tests es un `@MockitoBean`)
 - Privacidad `/privacidad` (pública): `LegalController`, `templates/privacidad.html`, `css/legal.css`. Responsable y email en `app.responsable.nombre` / `app.contacto.email`. Si se añade un servicio externo o un dato nuevo, actualizar la página (y su fecha)
 - `static/css/app.css` (dividido en secciones con título) · `static/js/` (un JS por pantalla; `graficas.js` = estilo común de Chart.js)
 
 ## Reglas del proyecto (respetarlas siempre)
 - **Seguridad de datos:** toda consulta filtra por `UsuarioActual.id()`; un id ajeno → 404. Formularios con DTO o `@InitBinder(setAllowedFields)`. Validar todo en el servidor.
-- **Tabla nueva:** añadirla a `TABLAS` de `InicializacionBaseDatos` (RLS). Ruta pública nueva: a `RUTAS_PUBLICAS` de `SecurityConfig`.
+- **Tabla nueva:** añadirla a `TABLAS` de `InicializacionBaseDatos` (RLS) y, si tiene datos de usuario, a `BORRADOS` de `CuentaService` ("Eliminar mi cuenta") y a `/privacidad`. Ruta pública nueva: a `RUTAS_PUBLICAS` de `SecurityConfig`.
 - **CSP estricta:** nada de `<script>` ni `style="..."` dentro del HTML; JS en archivos propios; nunca `innerHTML` con datos del usuario.
 - **Enlaces a CSS/JS siempre con Thymeleaf** (`th:href="@{/css/...}"`, `th:src`): llevan huella automática de caché. No usar `?v=`.
 - Sin emojis en la interfaz: usar `fragments/iconos.html`. Los atributos `hidden` siempre ocultan (regla global en styles.css).

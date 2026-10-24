@@ -186,6 +186,28 @@
                     </div>
                 </div>
             </section>
+
+            <!-- 04 · ELIMINAR CUENTA (CuentaController). Se envía con fetch desde perfil.js
+                 (data-sin-recarga) para poder cerrar después la sesión de Supabase del navegador. -->
+            <section class="seccion perfil-seccion">
+                <span class="eyebrow">04 · ELIMINAR CUENTA</span>
+                <div class="panel panel-peligro">
+                    <h3 class="perfil-subtitulo">Eliminar mi cuenta</h3>
+                    <p class="ayuda">
+                        Se borran para siempre tu cuenta y todos tus datos: rutinas, entrenamientos, récords, peso,
+                        cuestionario y opiniones. <strong>No se puede deshacer.</strong>
+                    </p>
+                    <form id="form-eliminar" th:action="@{/perfil/eliminar-cuenta}" method="post" data-sin-recarga novalidate>
+                        <label for="confirmacion">Escribe <strong>ELIMINAR</strong> para confirmar</label>
+                        <div class="campo-con-boton">
+                            <input type="text" id="confirmacion" name="confirmacion" autocomplete="off"
+                                   autocapitalize="characters" spellcheck="false" placeholder="ELIMINAR" required>
+                            <button type="submit" class="button button-peligro">Eliminar mi cuenta</button>
+                        </div>
+                        <p class="mensaje-form" id="mensaje-eliminar" role="status" aria-live="polite"></p>
+                    </form>
+                </div>
+            </section>
         </div>
     </main>
     <footer th:replace="~{fragments/app :: pie}"></footer>

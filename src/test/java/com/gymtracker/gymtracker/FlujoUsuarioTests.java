@@ -50,6 +50,13 @@ class FlujoUsuarioTests {
     @Autowired
     EjercicioRepository ejercicioRepository;
 
+    @Autowired
+    org.springframework.jdbc.core.JdbcTemplate jdbc;
+
+    /** Supabase de mentira: en los tests no se borran cuentas de verdad. */
+    @org.springframework.test.context.bean.override.mockito.MockitoBean
+    com.gymtracker.gymtracker.service.SupabaseAdmin supabaseAdmin;
+
     /**
      * Usuario simulado. (No usamos jwt() de spring-security-test porque ese
      * atajo se salta la protección CSRF, y queremos comprobarla.)
@@ -266,6 +273,45 @@ class FlujoUsuarioTests {
             .andExpect(status().isForbidden());
         mvc.perform(post("/opinion").with(csrf()).param("tipo", "fallo").param("texto", "Sin sesión"))
             .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    void eliminarMiCuenta() throws Exception {
+        UUID yo = UUID.randomUUID();
+        RequestPostProcessor auth = usuario(yo, "Borrable");
+
+        // Algo de datos: perfil (al entrar), una rutina, un peso y una opinión
+        mvc.perform(get("/perfil").with(auth)).andExpect(status().isOk())
+            .andExpect(content().string(containsString("id=\"form-eliminar\"")));
+        mvc.perform(post("/rutinas/guardar").with(auth).with(csrf()).param("nombre", "Rutina a borrar"));
+        mvc.perform(post("/peso/registrar").with(auth).with(csrf()).param("pesoKg", "70"));
+        mvc.perform(post("/opinion").with(auth).with(csrf()).param("tipo", "gusta").param("texto", "Adiós"));
+
+        // Sin escribir ELIMINAR: no se borra nada
+        mvc.perform(post("/perfil/eliminar-cuenta").with(auth).with(csrf()).param("confirmacion", "borrar"))
+            .andExpect(status().isBadRequest());
+        org.mockito.Mockito.verifyNoInteractions(supabaseAdmin);
+
+        // Si Supabase falla, se deshace todo y se avisa
+        org.mockito.Mockito.when(supabaseAdmin.configurado()).thenReturn(true);
+        org.mockito.Mockito.doThrow(new IllegalStateException("caído")).when(supabaseAdmin).eliminarUsuario(yo);
+        mvc.perform(post("/perfil/eliminar-cuenta").with(auth).with(csrf()).param("confirmacion", "eliminar"))
+            .andExpect(status().isServiceUnavailable());
+
+        // Bien: borra la cuenta en Supabase, los datos y la cookie de sesión
+        org.mockito.Mockito.doNothing().when(supabaseAdmin).eliminarUsuario(yo);
+        mvc.perform(post("/perfil/eliminar-cuenta").with(auth).with(csrf()).param("confirmacion", " ELIMINAR "))
+            .andExpect(status().isOk())
+            .andExpect(header().string("Set-Cookie", containsString("gt_session=;")));
+        org.mockito.Mockito.verify(supabaseAdmin, org.mockito.Mockito.times(2)).eliminarUsuario(yo);
+        for (String tabla : new String[] { "rutinas", "pesos_corporales", "opiniones", "perfiles" }) {
+            Integer filas = jdbc.queryForObject("select count(*) from " + tabla + " where usuario_id = ?", Integer.class, yo);
+            org.assertj.core.api.Assertions.assertThat(filas).as(tabla).isZero();
+        }
+
+        // Sin token CSRF: rechazado
+        mvc.perform(post("/perfil/eliminar-cuenta").with(auth).param("confirmacion", "ELIMINAR"))
+            .andExpect(status().isForbidden());
     }
 
     private String guardarEntreno(RequestPostProcessor auth, long rutinaId, long ejercicioId, LocalDate fecha,

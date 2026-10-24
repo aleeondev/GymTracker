@@ -1611,6 +1611,19 @@ form .serie-fila input {
     margin-top: -6px;
 }
 
+/* "Eliminar mi cuenta": borde rojo suave para que se note que es delicado */
+.panel-peligro {
+    border-color: #f1c4cd;
+}
+
+.panel-peligro .ayuda strong {
+    color: var(--color-principal);
+}
+
+.panel-peligro form {
+    margin-top: 18px;
+}
+
 /* Separa cada bloque dentro del mismo panel con una línea fina */
 .perfil-separado {
     margin-top: 26px;
