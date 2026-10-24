@@ -237,6 +237,37 @@ class FlujoUsuarioTests {
         mvc.perform(get("/entrenamiento/nuevo?repetir=" + idSegundo).with(auth)).andExpect(status().isOk());
     }
 
+    @Test
+    void enviarOpinion() throws Exception {
+        RequestPostProcessor auth = usuario(UUID.randomUUID(), "Tester");
+
+        // El botón y su diálogo están en las páginas de la app
+        mvc.perform(get("/rutinas").with(auth))
+            .andExpect(content().string(containsString("data-abrir-opinion")))
+            .andExpect(content().string(containsString("id=\"dialogo-opinion\"")));
+
+        // Bien: responde JSON con el "gracias"
+        mvc.perform(post("/opinion").with(auth).with(csrf())
+                .param("tipo", "mejora").param("texto", "Pondría un modo oscuro").param("pagina", "/dashboard"))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("Gracias")));
+        // Página de fuera: se guarda igual, pero sin la página (no da error)
+        mvc.perform(post("/opinion").with(auth).with(csrf())
+                .param("tipo", "gusta").param("texto", "Me encanta").param("pagina", "https://web-falsa.com"))
+            .andExpect(status().isOk());
+
+        // Mal: tipo inventado, texto vacío, sin CSRF y sin sesión
+        mvc.perform(post("/opinion").with(auth).with(csrf()).param("tipo", "hackeo").param("texto", "Hola hola"))
+            .andExpect(status().isBadRequest());
+        mvc.perform(post("/opinion").with(auth).with(csrf()).param("tipo", "fallo").param("texto", "  "))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("al menos 3")));
+        mvc.perform(post("/opinion").with(auth).param("tipo", "fallo").param("texto", "Sin token"))
+            .andExpect(status().isForbidden());
+        mvc.perform(post("/opinion").with(csrf()).param("tipo", "fallo").param("texto", "Sin sesión"))
+            .andExpect(status().is3xxRedirection());
+    }
+
     private String guardarEntreno(RequestPostProcessor auth, long rutinaId, long ejercicioId, LocalDate fecha,
                                   String peso, String reps) throws Exception {
         return mvc.perform(post("/entrenamiento/guardar").with(auth).with(csrf())

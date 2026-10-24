@@ -41,6 +41,11 @@
         <a th:href="@{/coach}" th:classappend="${area == 'coach'} ? 'activo'">Coach IA</a>
     </nav>
     <div class="app-usuario">
+        <!-- Botón "Opinar" (versión alpha): abre el diálogo de abajo (js/opinion.js) -->
+        <button type="button" class="btn-opinar" data-abrir-opinion aria-label="Enviar una opinión">
+            <svg th:replace="~{fragments/iconos :: icono('opinion')}"></svg>
+            <span>Opinar</span>
+        </button>
         <!-- Avatar + nombre: enlace a "Mi perfil" (en móvil solo se ve el avatar) -->
         <a class="app-perfil" th:href="@{/perfil}" th:classappend="${rutaActual == '/perfil'} ? 'activo'" title="Mi perfil">
             <span class="app-avatar" aria-hidden="true"
@@ -97,13 +102,46 @@
     <span>Entrena · Registra · Evoluciona</span>
 </footer>
 
-<!-- SCRIPTS comunes: Supabase (copia local en /js/vendor), sesión y utilidades -->
+<!-- SCRIPTS comunes: Supabase (copia local en /js/vendor), sesión y utilidades.
+     Incluye también el diálogo de "Opinar", porque este bloque está en todas las páginas de la app. -->
 <th:block th:fragment="scripts">
+    <!-- DIÁLOGO "OPINAR" (OpinionController). data-sin-recarga: app.js no lo envía
+         de la forma normal; lo manda opinion.js con fetch y la página no se recarga. -->
+    <dialog class="opinion" id="dialogo-opinion" aria-labelledby="opinion-titulo">
+        <form class="opinion-form" th:action="@{/opinion}" method="post" data-sin-recarga>
+            <div class="opinion-cabecera">
+                <div>
+                    <span class="eyebrow">VERSIÓN ALPHA</span>
+                    <h2 id="opinion-titulo">¿Qué te parece Gym Tracker?</h2>
+                </div>
+                <button type="button" class="opinion-cerrar" data-cerrar-opinion aria-label="Cerrar">×</button>
+            </div>
+            <p class="opinion-intro">Lo que te gusta, lo que cambiarías o lo que no funciona: lo leemos todo.</p>
+
+            <fieldset class="opinion-tipos">
+                <legend class="sr-only">Tipo de opinión</legend>
+                <label><input type="radio" name="tipo" value="gusta" required> <span>Me gusta</span></label>
+                <label><input type="radio" name="tipo" value="mejora"> <span>Mejoraría</span></label>
+                <label><input type="radio" name="tipo" value="fallo"> <span>Algo falla</span></label>
+            </fieldset>
+
+            <label for="opinion-texto" class="sr-only">Tu opinión</label>
+            <textarea id="opinion-texto" name="texto" rows="5" minlength="3" maxlength="1000" required
+                      placeholder="Cuéntanos con detalle. Si algo falla, ¿qué estabas haciendo?"></textarea>
+            <!-- La página desde la que se abre (la pone opinion.js; el servidor la valida) -->
+            <input type="hidden" name="pagina" value="">
+
+            <p class="opinion-mensaje" role="status" aria-live="polite"></p>
+            <button type="submit" class="button">Enviar opinión</button>
+        </form>
+    </dialog>
+
     <script th:src="@{/js/vendor/supabase-2.117.2.min.js}"></script>
     <script th:src="@{/js/supabase.js}"></script>
     <script th:src="@{/js/auth-session.js}"></script>
     <script th:src="@{/js/app.js}"></script>
     <script th:src="@{/js/pwa.js}"></script>
+    <script th:src="@{/js/opinion.js}"></script>
 </th:block>
 
 </html>

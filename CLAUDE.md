@@ -19,6 +19,7 @@ Sesiones STATELESS. CSRF con `CookieCsrfTokenRepository` (sin rotar: `NullAuthen
 - `model/` · `repository/` · `service/` (lógica) · `dto/` (formularios y datos de vistas) · `controller/`
 - `controller/DatosComunesAdvice`: datos de todas las vistas (usuarioNombre, rutaActual, `area`, opcionesPerfil)
 - `templates/fragments/app.html` (cabecera, navegación por áreas, barra móvil, avisos, scripts) · `fragments/iconos.html` (iconos SVG) · `fragments/auth.html` (panel rojo de marca de las 5 pantallas de acceso, estilos en `auth.css`, logros en `auth-ui.js`) · `fragments/error.html` + `templates/error/*.html`
+- Botón "Opinar" (alpha): botón en la cabecera + `<dialog>` en el fragmento `scripts` de `app.html`, `js/opinion.js` (fetch, sin recargar), `OpinionController` (JSON) → tabla `opiniones`. Formularios con `data-sin-recarga` los ignora `app.js`
 - `static/css/app.css` (dividido en secciones con título) · `static/js/` (un JS por pantalla; `graficas.js` = estilo común de Chart.js)
 
 ## Reglas del proyecto (respetarlas siempre)
