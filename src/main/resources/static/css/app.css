@@ -1611,6 +1611,158 @@ form .serie-fila input {
     margin-top: -6px;
 }
 
+/* =========================
+   PRIMEROS PASOS (dashboard.html + js/primeros-pasos.js)
+========================= */
+
+.primeros-pasos {
+    margin-bottom: 40px;
+    border-color: rgba(201, 47, 75, 0.25);
+    background:
+        radial-gradient(500px 220px at 100% 0%, rgba(201, 47, 75, 0.07), transparent 70%),
+        var(--color-blanco);
+    animation: fadeInUp 0.6s 0.1s ease-out both;
+}
+
+.pp-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.pp-cabecera h2 {
+    margin: 6px 0 0;
+    font-size: 24px;
+}
+
+.pp-ocultar {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    color: var(--color-texto-secundario);
+    font: 700 13px "Plus Jakarta Sans", sans-serif;
+    cursor: pointer;
+}
+
+.pp-ocultar:hover {
+    background: var(--color-fondo);
+    color: var(--color-texto);
+}
+
+.pp-progreso {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 18px 0 22px;
+}
+
+.pp-progreso span {
+    flex-shrink: 0;
+    color: var(--color-principal);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.pp-lista {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.pp-lista li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    background: var(--color-fondo);
+    border: 1px solid var(--color-borde);
+    border-radius: 14px;
+}
+
+.pp-marca {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border: 2px solid var(--color-borde);
+    border-radius: 50%;
+    background: var(--color-blanco);
+    font-family: "Nunito", sans-serif;
+    font-weight: 900;
+}
+
+.pp-marca .icono {
+    width: 18px;
+    height: 18px;
+}
+
+.pp-texto {
+    flex: 1;
+    min-width: 0;
+}
+
+.pp-texto strong {
+    display: block;
+    font-size: 15px;
+}
+
+.pp-texto span {
+    color: var(--color-texto-secundario);
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.pp-lista .button {
+    flex-shrink: 0;
+}
+
+/* Paso hecho: check verde y el texto más apagado */
+.pp-lista li.hecho {
+    background: var(--color-blanco);
+}
+
+.pp-lista li.hecho .pp-marca {
+    border-color: #22a35c;
+    background: #22a35c;
+    color: white;
+}
+
+.pp-lista li.hecho .pp-texto {
+    opacity: 0.6;
+}
+
+.pp-hecho {
+    flex-shrink: 0;
+    color: #1f9254;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+@media (max-width: 900px) {
+    .pp-lista {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .pp-lista li {
+        flex-wrap: wrap;
+    }
+
+    /* El botón baja a su propia línea, alineado con el texto (no con el número) */
+    .pp-lista li .button {
+        margin-left: 50px;
+        width: calc(100% - 50px);
+        text-align: center;
+    }
+}
+
 /* "Eliminar mi cuenta": borde rojo suave para que se note que es delicado */
 .panel-peligro {
     border-color: #f1c4cd;

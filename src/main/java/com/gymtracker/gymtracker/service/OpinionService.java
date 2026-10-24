@@ -57,6 +57,10 @@ public class OpinionService {
         return null;
     }
 
+    public boolean haOpinado(UUID usuarioId) {
+        return opinionRepository.existsByUsuarioId(usuarioId);
+    }
+
     private static String recortar(String valor, int maximo) {
         if (valor == null || valor.isBlank()) {
             return null;

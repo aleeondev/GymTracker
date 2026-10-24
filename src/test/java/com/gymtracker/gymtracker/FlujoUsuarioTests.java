@@ -111,6 +111,10 @@ class FlujoUsuarioTests {
                 .param("diasSemana", "4").param("duracionSesion", "60").param("lugarEntreno", "gimnasio")
                 .param("aceptoDatos", "true"))
             .andExpect(redirectedUrl("/dashboard"));
+        // Primeros pasos: el perfil ya cuenta; rutina, entreno y opinión aún no
+        mvc.perform(get("/dashboard").with(auth)).andExpect(status().isOk())
+            .andExpect(content().string(containsString("id=\"primeros-pasos\"")))
+            .andExpect(content().string(containsString("1 de 4")));
         mvc.perform(get("/dashboard").with(auth)).andExpect(status().isOk())
             .andExpect(content().string(containsString("Hola, Prueba.")))
             .andExpect(content().string(containsString("Ganar músculo")))
@@ -178,9 +182,15 @@ class FlujoUsuarioTests {
         mvc.perform(get(segundo).with(auth)).andExpect(status().isOk())
             .andExpect(content().string(containsString("Récord")));
 
-        // Con entrenos, el panel muestra la gráfica de volumen semanal
+        // Con entrenos, el panel muestra la gráfica de volumen semanal (y Primeros pasos va por 3 de 4)
         mvc.perform(get("/dashboard").with(auth)).andExpect(status().isOk())
-            .andExpect(content().string(containsString("id=\"grafica-volumen\"")));
+            .andExpect(content().string(containsString("id=\"grafica-volumen\"")))
+            .andExpect(content().string(containsString("3 de 4")));
+        // Al opinar se completa el último paso y la tarjeta desaparece
+        mvc.perform(post("/opinion").with(auth).with(csrf()).param("tipo", "gusta").param("texto", "Todo genial"))
+            .andExpect(status().isOk());
+        mvc.perform(get("/dashboard").with(auth))
+            .andExpect(content().string(org.hamcrest.Matchers.not(containsString("id=\"primeros-pasos\""))));
 
         // Y en Progreso, la de series por grupo muscular
         mvc.perform(get("/progreso").with(auth)).andExpect(status().isOk())

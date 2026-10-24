@@ -11,4 +11,7 @@ public interface OpinionRepository extends JpaRepository<Opinion, Long> {
 
     /** Cuántas ha enviado el usuario desde una fecha (límite diario contra el spam). */
     long countByUsuarioIdAndCreadoEnAfter(UUID usuarioId, LocalDateTime desde);
+
+    /** ¿Ha enviado alguna? (paso "Cuéntanos qué te parece" de Primeros pasos) */
+    boolean existsByUsuarioId(UUID usuarioId);
 }
