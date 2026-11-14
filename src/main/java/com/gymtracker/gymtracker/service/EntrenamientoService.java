@@ -147,12 +147,12 @@ public class EntrenamientoService {
 
     // ---------- Estadísticas ----------
 
-    @Transactional(readOnly = true)
     /**
      * Volumen de cada una de las últimas {@code semanas} semanas, de la más antigua
      * a la actual. Las semanas sin entrenos también aparecen (con 0), para que la
      * gráfica muestre los huecos.
      */
+    @Transactional(readOnly = true)
     public List<SemanaVolumen> volumenSemanal(UUID usuarioId, int semanas) {
         LocalDate lunesActual = hoy().with(DayOfWeek.MONDAY);
         LocalDate desde = lunesActual.minusWeeks(semanas - 1L);
@@ -180,6 +180,7 @@ public class EntrenamientoService {
      * de más a menos. Incluye los grupos con 0 series (es justo lo que interesa ver),
      * salvo Cardio, que solo aparece si lo has hecho. Ejercicios sin grupo: "Otros".
      */
+    @Transactional(readOnly = true)
     public Map<String, Integer> seriesPorGrupo(UUID usuarioId, int dias) {
         LocalDate hoy = hoy();
         LocalDate desde = hoy.minusDays(dias - 1L);
@@ -211,6 +212,7 @@ public class EntrenamientoService {
         return resultado;
     }
 
+    @Transactional(readOnly = true)
     public ResumenDashboard resumen(UUID usuarioId) {
         List<Entrenamiento> todos = historial(usuarioId);
         LocalDate hoy = hoy();
