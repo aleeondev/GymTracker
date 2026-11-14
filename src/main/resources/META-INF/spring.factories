@@ -1,0 +1,4 @@
+# Clases que Spring Boot carga automaticamente al arrancar.
+# FailureAnalyzer: explica en espanol los errores de arranque que entiende.
+org.springframework.boot.diagnostics.FailureAnalyzer=\
+com.gymtracker.gymtracker.config.BaseDeDatosNoDisponibleAnalyzer
