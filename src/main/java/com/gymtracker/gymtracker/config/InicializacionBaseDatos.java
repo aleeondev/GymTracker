@@ -34,7 +34,9 @@ public class InicializacionBaseDatos implements ApplicationRunner {
     private static final Logger log = LoggerFactory.getLogger(InicializacionBaseDatos.class);
 
     private static final List<String> TABLAS = List.of(
-        "ejercicios", "rutinas", "rutina_ejercicios", "entrenamientos", "series_entrenamiento", "perfiles", "pesos_corporales", "opiniones");
+        "ejercicios", "rutinas", "rutina_ejercicios", "entrenamientos", "series_entrenamiento", "perfiles", "pesos_corporales", "opiniones",
+        // Tabla de control de Flyway: también está en "public", así que también lleva RLS
+        "flyway_schema_history");
 
     private final JdbcTemplate jdbc;
     private final EjercicioRepository ejercicioRepository;
