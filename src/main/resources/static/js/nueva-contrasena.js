@@ -75,6 +75,10 @@ formulario.addEventListener("submit", async (evento) => {
         mostrarMensaje("La contraseña debe tener al menos 8 caracteres.", "is-error");
         return;
     }
+    if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
+        mostrarMensaje("La contraseña debe tener letras y números.", "is-error");
+        return;
+    }
     if (password !== repetida) {
         mostrarMensaje("Las dos contraseñas no coinciden.", "is-error");
         return;

@@ -18,7 +18,7 @@ public class DatosComunesAdvice {
 
     /** Rutas que pertenecen al área "Entrenamiento" (muestran su barra secundaria). */
     private static final List<String> RUTAS_ENTRENO = List.of(
-        "/entrenamiento", "/rutinas", "/ejercicios", "/historial", "/progreso", "/records");
+        "/entrenamiento", "/rutinas", "/ejercicios", "/historial", "/progreso", "/records", "/logros");
 
     @ModelAttribute
     public void datosComunes(Model model, HttpServletRequest request) {

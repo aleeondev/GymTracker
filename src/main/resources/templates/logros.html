@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/app :: head('Mis logros')}"></head>
+<body class="app">
+    <header th:replace="~{fragments/app :: cabecera}"></header>
+    <main>
+        <div class="page-head">
+            <div>
+                <span class="eyebrow">MIS LOGROS</span>
+                <h1>Mis logros</h1>
+                <p>Medallas por entrenar con constancia, batir tus marcas y crear buenos hábitos. Tu único rival eres tú.</p>
+            </div>
+        </div>
+
+        <section class="stats" aria-label="Resumen de logros">
+            <div class="stat">
+                <span class="stat-label">MEDALLAS</span>
+                <span class="stat-valor" th:text="${resumen.conseguidos}">3</span>
+                <span class="stat-unidad" th:text="'de ' + ${resumen.total} + ' conseguidas'">de 14 conseguidas</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">ÚLTIMA MEDALLA</span>
+                <span class="stat-valor stat-valor-texto"
+                      th:text="${resumen.ultimo != null} ? ${@fmt.relativa(resumen.ultimo.conseguidoEn())} : '-'">Ayer</span>
+                <span class="stat-unidad" th:text="${resumen.ultimo != null} ? ${resumen.ultimo.nombre()} : 'aún ninguna'">Primer récord</span>
+            </div>
+            <div class="stat" th:with="cerca=${resumen.masCercano}">
+                <span class="stat-label">TE FALTA POCO</span>
+                <span class="stat-valor stat-valor-texto" th:text="${cerca != null} ? ${cerca.nombre()} : '¡A por la primera!'">Diez de diez</span>
+                <span class="stat-unidad"
+                      th:text="${cerca != null} ? ${@fmt.entero(cerca.progresoNum)} + ' / ' + ${@fmt.entero(cerca.objetivoNum)} + ' ' + ${cerca.unidad()} : 'Entrena y empieza a sumar'">7 / 10 entrenos</span>
+            </div>
+        </section>
+
+        <!-- Una sección por categoría: 01 Constancia, 02 Fuerza, 03 Hábitos -->
+        <section class="seccion" th:each="cat, it : ${resumen.porCategoria}">
+            <div class="seccion-head">
+                <div>
+                    <span class="eyebrow" th:text="${#numbers.formatInteger(it.count, 2)} + ' · ' + ${#strings.toUpperCase(cat.key)}">01 · CONSTANCIA</span>
+                    <h2 th:text="${cat.key}">Constancia</h2>
+                </div>
+            </div>
+            <div class="logros-grid">
+                <article class="logro" th:each="l : ${cat.value}"
+                         th:classappend="${l.conseguido} ? 'conseguido ' + ${l.nivel()} : 'bloqueado'"
+                         th:attr="data-logro=${l.id()},data-conseguido=${l.conseguido}">
+                    <div class="logro-medalla">
+                        <svg th:replace="~{fragments/iconos :: icono(${l.icono()})}"></svg>
+                    </div>
+                    <div class="logro-cuerpo">
+                        <span class="logro-nivel" th:text="${l.nivel()}">bronce</span>
+                        <h3 th:text="${l.nombre()}">Diez de diez</h3>
+                        <p th:text="${l.descripcion()}">Completa 10 entrenamientos.</p>
+
+                        <p class="logro-fecha" th:if="${l.conseguido}">
+                            <svg th:replace="~{fragments/iconos :: icono('check')}"></svg>
+                            <span th:text="${l.conseguidoEn() != null} ? 'Conseguida el ' + ${@fmt.diaMes(l.conseguidoEn())} : 'Conseguida'">Conseguida el 12 oct</span>
+                        </p>
+                        <th:block th:unless="${l.conseguido}">
+                            <!-- <progress> en vez de un div con style="width:70%": la CSP no deja estilos en el HTML -->
+                            <progress class="logro-barra" th:value="${l.progreso}" th:max="${l.objetivo()}"
+                                      th:attr="aria-label='Progreso de ' + ${l.nombre()}"></progress>
+                            <span class="logro-cuenta"
+                                  th:text="${@fmt.entero(l.progresoNum)} + ' / ' + ${@fmt.entero(l.objetivoNum)} + ' ' + ${l.unidad()}">7 / 10 entrenos</span>
+                        </th:block>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+    <footer th:replace="~{fragments/app :: pie}"></footer>
+    <nav th:replace="~{fragments/app :: tabbar}"></nav>
+    <th:block th:replace="~{fragments/app :: scripts}"></th:block>
+</body>
+</html>

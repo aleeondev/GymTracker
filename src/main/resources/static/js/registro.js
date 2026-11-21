@@ -48,6 +48,10 @@ async function comprobarUsuario() {
     }
     try {
         const respuesta = await fetch("/api/usuario-disponible?u=" + encodeURIComponent(nombre));
+        if (respuesta.status === 429) { // el portero: demasiadas comprobaciones seguidas
+            estado("Demasiadas comprobaciones seguidas. Espera un minuto.", "is-error");
+            return false;
+        }
         const { estado: resultado } = await respuesta.json();
         if (normalizar(campoUsuario.value) !== nombre) return false; // ha seguido escribiendo
         usuarioLibre = resultado === "libre";
@@ -101,6 +105,10 @@ formulario.addEventListener("submit", async function (event) {
         mostrarMensaje("La contraseña debe tener al menos 8 caracteres.", "is-error");
         return;
     }
+    if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
+        mostrarMensaje("La contraseña debe tener letras y números.", "is-error");
+        return;
+    }
     if (password !== repetida) {
         mostrarMensaje("Las dos contraseñas no coinciden.", "is-error");
         return;
@@ -152,7 +160,7 @@ formulario.addEventListener("submit", async function (event) {
 function traducirError(error) {
     const texto = (error.message || "").toLowerCase();
     if (texto.includes("already registered") || texto.includes("already been registered")) return "Ya existe una cuenta con ese email. Inicia sesión.";
-    if (texto.includes("password")) return "La contraseña no es válida: usa al menos 8 caracteres.";
+    if (texto.includes("password")) return "La contraseña no es válida: usa al menos 8 caracteres, con letras y números.";
     if (texto.includes("invalid") && texto.includes("email")) return "El email no es válido.";
     if (texto.includes("rate limit") || error.status === 429) return "Demasiados intentos. Espera un momento y vuelve a probar.";
     return "No se ha podido crear la cuenta: " + error.message;

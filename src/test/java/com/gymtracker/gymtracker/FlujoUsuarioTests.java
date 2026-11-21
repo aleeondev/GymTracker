@@ -171,7 +171,7 @@ class FlujoUsuarioTests {
         for (String url : new String[] { "/rutinas", "/rutinas/" + rutinaId, "/rutinas/editar/" + rutinaId,
                 "/rutinas/nuevo", "/rutinas/" + rutinaId + "/ejercicios/nuevo", "/ejercicios", "/ejercicios?grupo=Pecho",
                 "/ejercicios/nuevo", "/entrenamiento", "/entrenamiento/nuevo", "/entrenamiento/nuevo?rutina=" + rutinaId,
-                "/historial", "/progreso" }) {
+                "/historial", "/progreso", "/logros" }) {
             mvc.perform(get(url).with(auth)).andExpect(status().isOk());
         }
 
@@ -198,6 +198,13 @@ class FlujoUsuarioTests {
             .andExpect(content().string(containsString("class=\"mini-grafica\" data-puntos=\"")));
         mvc.perform(get("/progreso/" + ejercicioId).with(auth)).andExpect(status().isOk())
             .andExpect(content().string(containsString("id=\"grafica-evolucion\"")));
+
+        // Mis logros: con 2 entrenos (50 kg y luego 55 kg) y una rutina, ya hay medallas
+        mvc.perform(get("/logros").with(auth)).andExpect(status().isOk())
+            .andExpect(content().string(containsString("data-logro=\"primer-entreno\" data-conseguido=\"true\"")))
+            .andExpect(content().string(containsString("data-logro=\"primer-record\" data-conseguido=\"true\"")))
+            .andExpect(content().string(containsString("data-logro=\"primera-rutina\" data-conseguido=\"true\"")))
+            .andExpect(content().string(containsString("data-logro=\"entrenos-10\" data-conseguido=\"false\"")));
 
         // Mis récords: pasó de 50 a 55 kg -> récord batido de +5 kg
         mvc.perform(get("/records").with(auth)).andExpect(status().isOk())

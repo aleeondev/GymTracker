@@ -60,6 +60,8 @@ public class SecurityConfig {
                                             @Value("${supabase.url}") String supabaseUrl) throws Exception {
         http
             .addFilterBefore(new SupabaseCookieFilter(jwtDecoder), BasicAuthenticationFilter.class)
+            // El portero (límite de peticiones por minuto): después del filtro anterior, para saber ya quién es el usuario
+            .addFilterAfter(new LimitePeticionesFilter(), SupabaseCookieFilter.class)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(RUTAS_PUBLICAS).permitAll()
                 .anyRequest().authenticated())

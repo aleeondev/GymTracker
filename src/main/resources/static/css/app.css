@@ -2974,3 +2974,160 @@ form .boton-discos:hover {
     }
 }
 
+
+/* =========================
+   MIS LOGROS (medallas) - templates/logros.html
+   Cada medalla es un círculo con el icono. El color sale de dos variables
+   (--medalla y --medalla-aro) que cambian según el nivel: bronce, plata, oro.
+   Las bloqueadas se ven en gris con su barra de progreso.
+========================= */
+
+.logros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.logro {
+    --medalla: #ececec;
+    --medalla-aro: #f6f6f6;
+    --medalla-texto: var(--color-texto-secundario);
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 20px;
+    border: 1px solid var(--color-borde);
+    border-radius: 18px;
+    background: var(--color-blanco);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.logro.bronce {
+    --medalla: linear-gradient(145deg, #e2a46c, #a8642f);
+    --medalla-aro: #f7e6d6;
+    --medalla-texto: #a8642f;
+}
+
+.logro.plata {
+    --medalla: linear-gradient(145deg, #dfe4ea, #8e99a6);
+    --medalla-aro: #edf0f3;
+    --medalla-texto: #6f7b88;
+}
+
+.logro.oro {
+    --medalla: linear-gradient(145deg, #f8d75a, #c9971a);
+    --medalla-aro: #fbf0c9;
+    --medalla-texto: #a87d10;
+}
+
+.logro.conseguido:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.07);
+}
+
+.logro-medalla {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--medalla);
+    box-shadow: 0 0 0 5px var(--medalla-aro), inset 0 -4px 0 rgba(0, 0, 0, 0.14);
+    color: #ffffff;
+    font-size: 26px;
+}
+
+.logro.bloqueado .logro-medalla {
+    box-shadow: 0 0 0 5px var(--medalla-aro), inset 0 0 0 2px #e0e0e0;
+    color: #b8b8b8;
+}
+
+.logro-cuerpo {
+    flex: 1;
+    min-width: 0;
+}
+
+.logro-nivel {
+    display: block;
+    color: var(--medalla-texto);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.logro h3 {
+    margin: 4px 0 4px;
+    font-family: "Nunito", sans-serif;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.logro.bloqueado h3 {
+    color: var(--color-texto-secundario);
+}
+
+.logro-cuerpo > p {
+    margin: 0;
+    color: var(--color-texto-secundario);
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.logro-cuerpo > p.logro-fecha {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin-top: 10px;
+    color: #1f9254;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* Barra de progreso (<progress>): se dibuja distinto en cada navegador, por eso
+   hay reglas para Chrome/Safari (-webkit-) y para Firefox (-moz-). */
+.logro-barra {
+    display: block;
+    width: 100%;
+    height: 8px;
+    margin-top: 12px;
+    overflow: hidden;
+    border: 0;
+    border-radius: 99px;
+    background: #f0f0f0;
+    appearance: none;
+}
+
+.logro-barra::-webkit-progress-bar {
+    border-radius: 99px;
+    background: #f0f0f0;
+}
+
+.logro-barra::-webkit-progress-value {
+    border-radius: 99px;
+    background: var(--color-principal);
+}
+
+.logro-barra::-moz-progress-bar {
+    border-radius: 99px;
+    background: var(--color-principal);
+}
+
+.logro-cuenta {
+    display: block;
+    margin-top: 6px;
+    color: var(--color-texto-secundario);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .logro {
+        transition: none;
+    }
+
+    .logro.conseguido:hover {
+        transform: none;
+    }
+}
